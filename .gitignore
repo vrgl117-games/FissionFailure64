@@ -1,0 +1,6 @@
+game64.*
+*.o
+*.sprite
+.DS_Store
+*~
+filesystem/
