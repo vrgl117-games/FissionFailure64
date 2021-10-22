@@ -1,27 +1,31 @@
 #include <stdlib.h>
 
+#include "actions.h"
 #include "colors.h"
+#include "control_panel.h"
 #include "debug.h"
 #include "fps.h"
 #include "input.h"
 #include "rdp.h"
 #include "screens.h"
 
-#define ENABLE_FPS 0
+#define ENABLE_FPS 1
 
-screen_t screen = intro;
-screen_t prev_screen; //used in credits to know where to go back to
+screen_t screen = game;
 
 int main()
 {
-    display_init(RESOLUTION_640x480, DEPTH_16_BPP, 2, GAMMA_NONE, ANTIALIAS_RESAMPLE);
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, ANTIALIAS_RESAMPLE);
     dfs_init(DFS_DEFAULT_LOCATION);
     rdp_init();
     rdp_set_default_clipping();
-    controller_init();
+    control_panel_init();
     timer_init();
     debug_init_isviewer();
+    actions_init();
     colors_init();
+
+    control_panel_init();
 
     srand(timer_ticks() & 0x7FFFFFFF);
 
@@ -31,7 +35,7 @@ int main()
 #endif
 
     // 500ms
-    new_timer(TIMER_TICKS(500000), TF_CONTINUOUS, screen_timer_title);
+    new_timer(TIMER_TICKS(500000), TF_CONTINUOUS, control_panel_timer);
 
     // 50ms
     new_timer(TIMER_TICKS(50000), TF_CONTINUOUS, input_timer);
@@ -52,11 +56,27 @@ int main()
         case intro: // n64, n64brew jam and vrgl117 logo.
             if (screen_intro(disp))
             {
-	      screen = game;
+                screen = game;
             }
             break;
         case game: // actual game.
-	    screen = screen_game(disp, &input);
+            screen = screen_game(disp, &input);
+            break;
+        case game_over:
+            if (screen_game_over(disp, &input))
+            {
+                actions_reset();
+                control_panel_reset();
+                screen = game;
+            }
+            break;
+        case win:
+            if (screen_win(disp, &input))
+            {
+                actions_reset();
+                control_panel_reset();
+                screen = game;
+            }
             break;
         }
 

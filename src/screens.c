@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "colors.h"
+#include "control_panel.h"
 #include "dfs.h"
 #include "rdp.h"
 #include "screens.h"
@@ -8,8 +9,6 @@
 extern uint32_t __width;
 extern uint32_t __height;
 extern uint32_t colors[];
-
-static volatile int tick = 0;
 
 // display the n64 logo and then the vrgl117 games logo.
 // return true when the animation is done.
@@ -59,10 +58,64 @@ bool screen_intro(display_context_t disp)
 // main screen for the game
 screen_t screen_game(display_context_t disp, input_t *input)
 {
+
+    control_panel_input(input);
+
+    switch (control_panel_check_status(actions_get_current()))
+    {
+    case DEAD:
+        return game_over;
+
+    case CORRECT:
+        if (actions_next())
+            return win;
+        break;
+    case INCORRECT:
+        break;
+    }
+
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BG]);
+
+    sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/bg.sprite");
+    graphics_draw_sprite(disp, 0, 0, bg);
+    free(bg);
+
+    control_panel_draw(disp);
+
+    rdp_detach_display();
     return game;
 }
 
-void screen_timer_title()
+// game over screen
+bool screen_game_over(display_context_t disp, input_t *input)
 {
-    tick++;
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BG]);
+
+    rdp_detach_display();
+
+    graphics_draw_text(disp, 100, 100, "GAME OVER");
+
+    graphics_draw_text(disp, 200, 200, "<continue>");
+
+    return (input->A || input->start);
+}
+
+// end game screen
+bool screen_win(display_context_t disp, input_t *input)
+{
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BG]);
+
+    rdp_detach_display();
+
+    graphics_draw_text(disp, 100, 100, "WELL DONE");
+
+    graphics_draw_text(disp, 200, 200, "<continue>");
+
+    return (input->A || input->start);
 }

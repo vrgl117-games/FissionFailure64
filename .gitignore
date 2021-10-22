@@ -4,3 +4,4 @@ game64.*
 .DS_Store
 *~
 filesystem/
+.vscode/

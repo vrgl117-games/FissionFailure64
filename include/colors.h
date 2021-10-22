@@ -7,6 +7,7 @@ typedef enum
 {
     COLOR_BG,
     COLOR_BLACK,
+    COLOR_RED,
 } colors_name_t;
 
 void colors_init();
