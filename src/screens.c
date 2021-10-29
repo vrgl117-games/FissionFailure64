@@ -1,14 +1,18 @@
+#include "screens.h"
+
 #include <stdlib.h>
 
 #include "colors.h"
 #include "control_panel.h"
 #include "dfs.h"
 #include "rdp.h"
-#include "screens.h"
 
 extern uint32_t __width;
 extern uint32_t __height;
 extern uint32_t colors[];
+
+static volatile uint16_t xx = 0;
+static volatile bool direction = true;
 
 // display the n64 logo and then the vrgl117 games logo.
 // return true when the animation is done.
@@ -76,11 +80,17 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     rdp_attach(disp);
 
-    rdp_draw_filled_fullscreen(colors[COLOR_BG]);
+    rdp_draw_filled_rectangle_size(0, 0, 210, 180, colors[COLOR_BG]);
 
-    sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/bg.sprite");
-    graphics_draw_sprite(disp, 0, 0, bg);
+    sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/window.sprite");
+    graphics_draw_sprite(disp, 45, 20, bg);
     free(bg);
+
+    rdp_draw_filled_rectangle_size(0, 120, 210, 2, colors[COLOR_BLACK]);
+
+    sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right.sprite" : "/gfx/sprites/scientist/left.sprite"));
+    graphics_draw_sprite_trans(disp, xx, 100, scientist);
+    free(scientist);
 
     control_panel_draw(disp);
 
@@ -118,4 +128,17 @@ bool screen_win(display_context_t disp, input_t *input)
     graphics_draw_text(disp, 200, 200, "<continue>");
 
     return (input->A || input->start);
+}
+
+void screen_timer()
+{
+    if (direction)
+        xx++;
+    else
+        xx--;
+
+    if (xx > 200)
+        direction = !direction;
+    if (xx <= 0)
+        direction = !direction;
 }

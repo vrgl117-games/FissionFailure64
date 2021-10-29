@@ -37,6 +37,9 @@ int main()
     // 500ms
     new_timer(TIMER_TICKS(500000), TF_CONTINUOUS, control_panel_timer);
 
+    // 20ms
+    new_timer(TIMER_TICKS(20000), TF_CONTINUOUS, screen_timer);
+
     // 50ms
     new_timer(TIMER_TICKS(50000), TF_CONTINUOUS, input_timer);
 

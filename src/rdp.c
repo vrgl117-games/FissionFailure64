@@ -22,6 +22,16 @@ void rdp_draw_filled_rectangle_size(int x, int y, int width, int height, uint32_
     rdp_draw_filled_rectangle(x, y, x + width, y + height);
 }
 
+void rdp_draw_filled_rectangle_with_border_size(int x, int y, int width, int height, uint32_t color, uint32_t border_color)
+{
+    rdp_enable_primitive_fill();
+    rdp_sync(SYNC_PIPE);
+    rdp_set_primitive_color(border_color);
+    rdp_draw_filled_rectangle(x, y, x + width, y + height);
+    rdp_set_primitive_color(color);
+    rdp_draw_filled_rectangle(x + 2, y + 2, x + width - 2, y + height - 2);
+}
+
 void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
 {
     rdp_enable_texture_copy();

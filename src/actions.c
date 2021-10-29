@@ -17,7 +17,7 @@ void actions_init()
             },
         },
         .num_buttons = 1,
-        .text = "PRESS GREEN\n\nBUTTON ON CENTER STATION",
+        .text = "TURN ON\n\nGREEN FAN",
     };
 
     action_t action1 = {
@@ -29,7 +29,7 @@ void actions_init()
             },
         },
         .num_buttons = 1,
-        .text = "DO NOT PRESS GREEN\n\nBUTTON ON CENTER STATION",
+        .text = "TURN GREEN\n\nFAN BACK OFF",
 
     };
 
@@ -47,7 +47,7 @@ void actions_init()
             },
         },
         .num_buttons = 2,
-        .text = "PRESS BLUE BUTTON ON CENTER\n\nSTATION AND SET GREEN LEVER\n\nTO RIGHT ON RIGHT STATION",
+        .text = "TURN ON BLUE\n\nFAN AND\n\nENGAGE GREEN\n\nTURBINE",
 
     };
 
@@ -60,7 +60,7 @@ void actions_init()
             },
         },
         .num_buttons = 1,
-        .text = "DO NOT PRESS BLUE\n\nBUTTON ON CENTER STATION",
+        .text = "TURN OFF\n\nBLUE FAN",
 
     };
 
@@ -73,7 +73,7 @@ void actions_init()
             },
         },
         .num_buttons = 1,
-        .text = "SET GREEN LEVER TO\n\nLEFT ON RIGHT STATION",
+        .text = "DISENGAGE\n\nGREEN\n\nTURBINE",
 
     };
 

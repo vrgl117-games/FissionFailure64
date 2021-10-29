@@ -51,6 +51,9 @@ void station_right_input(input_t *input);
 
 typedef struct control_panel
 {
+    int8_t temp;
+    int16_t freq;
+    int16_t power;
     u_int8_t stress; // 0 to 100
     station_left_t left;
     station_center_t center;
