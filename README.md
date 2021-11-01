@@ -1,4 +1,4 @@
-# game64 for Nintendo64
+# FissionFailure64 for Nintendo64
 
 N64 game developed for the N64brew Jam #2
 
@@ -20,12 +20,12 @@ instead of the proprietary SDK used by official licensed Nintendo software.
 All development can be done using Docker. It's the easiest way to build the ROM on Windows and MacOS.
 
  * Install [Docker](https://docker.com)
- * Run `make` to produce the `game64.z64` ROM file.
+ * Run `make` to produce the `FissionFailure.z64` ROM file.
 
  ### On linux
 
 * Install [libdragon development toolchain](https://github.com/DragonMinded/libdragon)
-* Run `make sblobber.z64` to produce the `game64.z64` ROM file.
+* Run `make FissionFailure.z64` to produce the `FissionFailure.z64` ROM file.
 
 ## Testing
 
