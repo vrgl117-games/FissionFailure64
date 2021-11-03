@@ -34,6 +34,19 @@ input_t input_get()
     return input;
 }
 
+void input_vru()
+{
+    if (identify_accessory(3) == ACCESSORY_VRU)
+    {
+        uint8_t out[64] = {0};
+        uint8_t in[64] = {0};
+        execute_raw_command(3, VRU_READ, 0, 34, out, in);
+        for (int i = 0; i < 34; i++)
+            debugf("%02X", in[i]);
+        debugf("\n");
+    }
+}
+
 void input_timer()
 {
     tick++;

@@ -58,9 +58,12 @@ int main()
         {
         case intro: // n64, n64brew jam and vrgl117 logo.
             if (screen_intro(disp))
-            {
+                screen = vru;
+            break;
+
+        case vru:
+            if (screen_vru(disp, &input))
                 screen = game;
-            }
             break;
         case game: // actual game.
             screen = screen_game(disp, &input);
