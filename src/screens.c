@@ -13,6 +13,7 @@ extern uint32_t colors[];
 
 static volatile uint16_t xx = 0;
 static volatile bool direction = true;
+static volatile uint32_t ticks = 0;
 
 // display the n64 logo and then the vrgl117 games logo.
 // return true when the animation is done.
@@ -114,6 +115,47 @@ bool screen_game_over(display_context_t disp, input_t *input)
     return (input->A || input->start);
 }
 
+bool screen_message(display_context_t disp)
+{
+    static int anim = 0;
+
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+
+    rdp_detach_display();
+
+    sprite_t *message = dfs_load_sprite("/gfx/sprites/misc/message.sprite");
+    graphics_draw_sprite(disp, __width / 2 - message->width / 2, 60, message);
+    free(message);
+
+    anim++;
+    return (anim >= 82);
+}
+
+bool screen_title(display_context_t disp, input_t *input)
+{
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+
+    rdp_detach_display();
+
+    sprite_t *logo = dfs_load_sprite("/gfx/sprites/misc/logo.sprite");
+    graphics_draw_sprite(disp, __width / 2 - logo->width / 2, 20, logo);
+    free(logo);
+
+    if (ticks % 40 > 19)
+    {
+        sprite_t *press_start = dfs_load_sprite("/gfx/sprites/misc/press_start.sprite");
+        graphics_draw_sprite(disp, __width / 2 - press_start->width / 2, 200, press_start);
+        free(press_start);
+    }
+
+    return (input->start);
+}
+
+/*
 bool screen_vru(display_context_t disp, input_t *input)
 {
     if (identify_accessory(3) == ACCESSORY_VRU)
@@ -129,6 +171,7 @@ bool screen_vru(display_context_t disp, input_t *input)
     }
     return true;
 }
+*/
 
 // end game screen
 bool screen_win(display_context_t disp, input_t *input)
@@ -148,6 +191,8 @@ bool screen_win(display_context_t disp, input_t *input)
 
 void screen_timer()
 {
+    ticks++;
+
     if (direction)
         xx++;
     else

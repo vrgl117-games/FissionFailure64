@@ -18,6 +18,6 @@ typedef struct SI_condat input_t;
 
 input_t input_get();
 void input_timer();
-void input_vru();
+//void input_vru();
 
 #endif //__INPUT_H__

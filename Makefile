@@ -4,6 +4,7 @@ CHKSUM64PATH = $(ROOTDIR)/bin/chksum64
 MKDFSPATH = $(ROOTDIR)/bin/mkdfs
 MKSPRITE = $(ROOTDIR)/bin/mksprite
 N64TOOL = $(ROOTDIR)/bin/n64tool
+N64_AUDIOCONV = $(ROOTDIR)/bin/audioconv64
 LINK_FLAGS = -L$(ROOTDIR)/lib -L$(ROOTDIR)/mips64-elf/lib -ldragon -lc -lm -ldragonsys -Tn64.ld
 PROG_NAME = FissionFailure64
 CFLAGS = -std=gnu99 -march=vr4300 -mtune=vr4300 -O2 -Wall -Werror -I$(ROOTDIR)/include -Iinclude -I/usr/local/include/
@@ -40,6 +41,13 @@ filesystem/gfx/%.sprite: resources/gfx/%.png
 	@mkdir -p `echo $@ | xargs dirname`
 	$(MKSPRITE) 16 1 1 $< $@
 
+# sfx #
+WAVS := $(wildcard resources/sfx/*.wav) 
+WAV64S := $(subst .wav,.wav64,$(subst resources/,filesystem/,$(WAVS)))
+filesystem/sfx/%.wav64: resources/sfx/%.wav
+	@mkdir -p `echo $@ | xargs dirname`
+	$(N64_AUDIOCONV) -o $@ $<
+
 # code #
 SRCS := $(wildcard src/*.c)
 OBJS := $(SRCS:.c=.o)
@@ -50,14 +58,14 @@ $(PROG_NAME).bin : $(PROG_NAME).elf
 	$(OBJCOPY) -O binary $< $@
 
 # dfs #
-$(PROG_NAME).dfs: $(SPRITES)
+$(PROG_NAME).dfs: $(SPRITES) $(WAV64S)
 	@mkdir -p ./filesystem/
 	@echo `git rev-parse HEAD` > ./filesystem/hash
 	$(MKDFSPATH) $@ ./filesystem/
 
 $(PROG_NAME).z64: $(PROG_NAME).bin $(PROG_NAME).dfs
 	@rm -f $@
-	$(N64TOOL) -l 7M -t "$(PROG_NAME)" -h $(ROOTDIR)/mips64-elf/lib/header -o $(PROG_NAME).z64 $(PROG_NAME).bin -s 1M $(PROG_NAME).dfs
+	$(N64TOOL) -t "$(PROG_NAME)" -h $(ROOTDIR)/mips64-elf/lib/header -o $(PROG_NAME).z64 $(PROG_NAME).bin -s 1M $(PROG_NAME).dfs
 	$(CHKSUM64PATH) $@
 
 setup:		##    Create dev environment (docker image).

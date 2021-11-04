@@ -33,7 +33,7 @@ input_t input_get()
     }
     return input;
 }
-
+/*
 void input_vru()
 {
     if (identify_accessory(3) == ACCESSORY_VRU)
@@ -46,7 +46,7 @@ void input_vru()
         debugf("\n");
     }
 }
-
+*/
 void input_timer()
 {
     tick++;

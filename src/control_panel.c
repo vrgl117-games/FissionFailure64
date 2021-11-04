@@ -11,6 +11,7 @@
 
 control_panel_t control_panel;
 static sprite_t *tiles[816] = {0};
+static wav64_t sfx_button;
 
 extern uint32_t __width;
 extern uint32_t __height;
@@ -152,6 +153,7 @@ void control_panel_init()
     {
         tiles[i] = dfs_load_spritef("/gfx/sprites/stations/tile_%04d.sprite", i);
     }
+    wav64_open(&sfx_button, "/sfx/146718__leszek-szary__button.wav64");
     control_panel_reset();
 }
 
@@ -251,7 +253,10 @@ void station_center_input(input_t *input)
         station->C[INPUT_RIGHT] = !station->C[INPUT_RIGHT];
 
     if (input->A)
+    {
         station->A = !station->A;
+        mixer_ch_play(2, &sfx_button.wave);
+    }
     if (input->B)
         station->B = !station->B;
 }

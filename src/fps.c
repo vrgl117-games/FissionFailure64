@@ -2,13 +2,12 @@
 
 static volatile bool fps_refresh = false;
 static volatile uint8_t fps;
-static bool show = false;
 
 extern uint32_t __width;
 
 void fps_draw(display_context_t disp)
 {
-    if (show && fps > 0)
+    if (fps > 0)
         debugf("FPS: %d\n", fps);
 }
 
