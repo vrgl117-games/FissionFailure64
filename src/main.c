@@ -8,6 +8,7 @@
 #include "input.h"
 #include "rdp.h"
 #include "screens.h"
+#include "sfx.h"
 
 #define ENABLE_FPS 0
 
@@ -25,7 +26,8 @@ int main()
     rdp_init();
     rdp_set_default_clipping();
     audio_init(44100, 4);
-    mixer_init(16);
+    audio_write_silence();
+    sfx_init();
     control_panel_init();
     timer_init();
     debug_init_isviewer();
@@ -73,17 +75,14 @@ int main()
             if (screen_message(disp))
             {
                 screen = title;
-                wav64_t theme;
-                wav64_open(&theme, "/sfx/01_Fission_Failure_64_Theme_mono.wav64");
-                wav64_set_loop(&theme, true);
-                mixer_ch_play(0, &theme.wave);
+                sfx_play(CH_MUSIC, SFX_THEME, true);
             }
             break;
         case title:
             if (screen_title(disp, &input))
             {
                 screen = game;
-                mixer_ch_stop(0);
+                sfx_stop(SFX_THEME);
                 control_panel_reset();
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
             }
@@ -125,12 +124,7 @@ int main()
         display_show(disp);
 
         // Check whether one audio buffer is ready, otherwise wait for next frame to perform mixing.
-        if (audio_can_write())
-        {
-            short *buf = audio_write_begin();
-            mixer_poll(buf, audio_get_buffer_length());
-            audio_write_end();
-        }
+        sfx_update();
     }
 
     return 0;

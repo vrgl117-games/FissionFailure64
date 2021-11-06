@@ -8,10 +8,10 @@
 #include "dfs.h"
 #include "graphics.h"
 #include "rdp.h"
+#include "sfx.h"
 
 control_panel_t control_panel;
 static sprite_t *tiles[816] = {0};
-static wav64_t sfx_button;
 
 extern uint32_t __width;
 extern uint32_t __height;
@@ -150,10 +150,8 @@ control_panel_status_t control_panel_check_status(action_t *action)
 void control_panel_init()
 {
     for (int i = 0; i < 816; i++)
-    {
         tiles[i] = dfs_load_spritef("/gfx/sprites/stations/tile_%04d.sprite", i);
-    }
-    wav64_open(&sfx_button, "/sfx/146718__leszek-szary__button.wav64");
+
     control_panel_reset();
 }
 
@@ -167,6 +165,12 @@ void control_panel_reset()
 void control_panel_timer()
 {
     control_panel.stress++;
+    if (control_panel.stress <= 28)
+        sfx_set_next_music(SFX_IDLE);
+    else if (control_panel.stress <= 62)
+        sfx_set_next_music(SFX_STRESS);
+    else
+        sfx_set_next_music(SFX_HELL);
     control_panel.freq = 10 + (rand() % 230);
     control_panel.power = 1000 + (rand() % 7777);
     control_panel.temp = (rand() % 100) - 40;
@@ -255,7 +259,7 @@ void station_center_input(input_t *input)
     if (input->A)
     {
         station->A = !station->A;
-        mixer_ch_play(2, &sfx_button.wave);
+        sfx_play(CH_SFX, SFX_BUTTON, false);
     }
     if (input->B)
         station->B = !station->B;
