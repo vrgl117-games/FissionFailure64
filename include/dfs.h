@@ -11,14 +11,12 @@ typedef struct sprites
 
     int height;
     int width;
-
-    int mod;
 } sprites_t;
 
 void dfs_free_sprites(sprites_t *sprites);
 sprite_t *dfs_load_sprite(const char *const path);
 sprite_t *dfs_load_spritef(const char *const format, ...);
-sprites_t *dfs_load_sprites(const char *const path, char *lang);
+sprites_t *dfs_load_sprites(const char *const path);
 int dfs_openf(const char *const format, ...);
 
 #endif //__FILESYSTEM_H__

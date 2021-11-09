@@ -3,6 +3,8 @@
 extern uint32_t __width;
 extern uint32_t __height;
 
+static bool filled = false; //filled or texture_copy
+
 void rdp_attach(display_context_t disp)
 {
     rdp_attach_display(disp);
@@ -16,7 +18,11 @@ void rdp_draw_filled_fullscreen(uint32_t color)
 
 void rdp_draw_filled_rectangle_size(int x, int y, int width, int height, uint32_t color)
 {
-    rdp_enable_primitive_fill();
+    if (!filled)
+    {
+        rdp_enable_primitive_fill();
+        filled = true;
+    }
     rdp_sync(SYNC_PIPE);
     rdp_set_primitive_color(color);
     rdp_draw_filled_rectangle(x, y, x + width, y + height);
@@ -24,7 +30,11 @@ void rdp_draw_filled_rectangle_size(int x, int y, int width, int height, uint32_
 
 void rdp_draw_filled_rectangle_with_border_size(int x, int y, int width, int height, uint32_t color, uint32_t border_color)
 {
-    rdp_enable_primitive_fill();
+    if (!filled)
+    {
+        rdp_enable_primitive_fill();
+        filled = true;
+    }
     rdp_sync(SYNC_PIPE);
     rdp_set_primitive_color(border_color);
     rdp_draw_filled_rectangle(x, y, x + width, y + height);
@@ -34,7 +44,11 @@ void rdp_draw_filled_rectangle_with_border_size(int x, int y, int width, int hei
 
 void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
 {
-    rdp_enable_texture_copy();
+    if (filled)
+    {
+        rdp_enable_texture_copy();
+        filled = false;
+    }
     rdp_sync(SYNC_PIPE);
     rdp_load_texture(0, 0, mirror, sp);
     rdp_draw_sprite(0, x, y, mirror);
@@ -42,19 +56,10 @@ void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
 
 void rdp_draw_sprites_with_texture(sprites_t *sprites, int x, int y, mirror_t mirror)
 {
-    int xx = 0;
-    int yy = 0;
-
+    int offset = 0;
     for (int i = 0; i < sprites->slices; i++)
     {
-        int ii = (mirror == MIRROR_XY ? sprites->slices - 1 - i : i);
-        rdp_draw_sprite_with_texture(sprites->sprites[ii], x + xx, y + yy, mirror);
-        if (i % sprites->mod == sprites->mod - 1)
-        {
-            yy += sprites->sprites[ii]->height;
-            xx = 0;
-        }
-        else
-            xx += sprites->sprites[ii]->width;
+        rdp_draw_sprite_with_texture(sprites->sprites[i], x + offset, y, mirror);
+        offset += sprites->sprites[i]->width;
     }
 }

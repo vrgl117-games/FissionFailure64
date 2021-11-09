@@ -24,7 +24,6 @@ int main()
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, ANTIALIAS_RESAMPLE);
     dfs_init(DFS_DEFAULT_LOCATION);
     rdp_init();
-    rdp_set_default_clipping();
     audio_init(44100, 4);
     audio_write_silence();
     sfx_init();
@@ -51,6 +50,11 @@ int main()
     timer_link_t *game_timer = NULL;
     display_context_t disp = 0;
 
+    if (screen == message)
+        screen_message_load();
+    else if (screen == title)
+        screen_title_load();
+
     while (true)
     {
         // get controllers
@@ -64,7 +68,10 @@ int main()
         {
         case intro: // n64, n64brew jam and vrgl117 logo.
             if (screen_intro(disp))
+            {
+                screen_message_load();
                 screen = message;
+            }
             //screen = vru;
             break;
         //case vru:
@@ -72,15 +79,18 @@ int main()
         //        screen = message;
         //    break;
         case message:
-            if (screen_message(disp))
+            if (screen_message_draw(disp))
             {
+                screen_message_unload();
+                screen_title_load();
                 screen = title;
                 sfx_play(CH_MUSIC, SFX_THEME, true);
             }
             break;
         case title:
-            if (screen_title(disp, &input))
+            if (screen_title_draw(disp, &input))
             {
+                screen_title_unload();
                 screen = game;
                 sfx_stop(SFX_THEME);
                 control_panel_reset();
@@ -100,6 +110,7 @@ int main()
             {
                 actions_reset();
                 control_panel_reset();
+                screen_title_load();
                 screen = title;
             }
             break;
@@ -108,6 +119,7 @@ int main()
             {
                 actions_reset();
                 control_panel_reset();
+                screen_title_load();
                 screen = title;
             }
             break;

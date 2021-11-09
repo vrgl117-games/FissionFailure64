@@ -49,6 +49,7 @@ static void instruments_draw(display_context_t disp)
     rdp_draw_filled_rectangle_size(__width - 86, 30 + 100 - control_panel.stress, 2, control_panel.stress, colors[COLOR_RED]);
     graphics_draw_text(disp, __width - 100, 56, "S\nT\nR\nE\nS\nS");
 }
+
 void control_panel_draw(display_context_t disp)
 {
 
@@ -73,6 +74,7 @@ void control_panel_draw(display_context_t disp)
     graphics_draw_textf_with_background(disp, __width - 105, 142, colors[COLOR_BROWN], "INSTRUCTIONS");
 
     rdp_draw_filled_rectangle_size(__width - 105, 164, 100, 62, colors[COLOR_BLACK]);
+
     graphics_set_color(colors[COLOR_YELLOW], 0);
     graphics_draw_text(disp, __width - 102, 168, actions_get_current()->text);
     graphics_set_color(colors[COLOR_WHITE], 0);

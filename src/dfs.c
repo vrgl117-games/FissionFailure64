@@ -49,47 +49,26 @@ sprite_t *dfs_load_spritef(const char *const format, ...)
     return dfs_load_sprite(buffer);
 }
 
-sprites_t *dfs_load_sprites(const char *const path, char *lang)
+sprites_t *dfs_load_sprites(const char *const path)
 {
     char buffer[256];
 
     sprites_t *data = calloc(1, sizeof(sprites_t));
 
-    int x = 0;
-    int y = 0;
     int i = 0;
     while (true)
     {
-        if (lang == NULL)
-            sprintf(buffer, path, x, y);
-        else
-            sprintf(buffer, path, lang, x, y);
-
+        sprintf(buffer, path, i);
         sprite_t *sp = dfs_load_sprite(buffer);
         if (sp == NULL)
-        {
-            if (x == 0)
-                break;
-            else
-            {
-                y++;
-                if (data->mod == 0)
-                    data->mod = x;
-                x = 0;
-                continue;
-            }
-        }
+            break;
+
         data->sprites[i] = sp;
-
-        if (x == 0)
-            data->height += data->sprites[i]->height;
-        if (y == 0)
-            data->width += data->sprites[i]->width;
-
+        data->width += data->sprites[i]->width;
         i++;
-        x++;
     }
     data->slices = i;
+    data->height = data->sprites[0]->height;
     return data;
 }
 
