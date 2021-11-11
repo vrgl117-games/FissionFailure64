@@ -2,12 +2,29 @@
 
 font='resources/fonts/sh-pinscher/SHPinscher-Regular.otf'
 
+generate() {
+    convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" /tmp/image.png
+    convert /tmp/image.png -background $1 -extent  $(convert /tmp/image.png -format '%[fx:2*int((w+1)/2)]x%[fx:2*int((h+1)/2)]!' info:) $6
+}
+
 # message
-convert -strip -background "#000000ff" -fill "#ffff00ff" -font "$font" -pointsize 24 -gravity center label:"This game is best\nenjoyed using the\noriginal N64 controller" resources/gfx/sprites/misc/message.png
+generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
 # title screen
-convert -strip -background "#000000ff" -fill "#ffff00ff" -font "$font" -pointsize 34 -gravity center label:"Fission Failure 64" resources/gfx/sprites/misc/logo.png
-convert -strip -background "#000000ff" -fill "#ffff00ff" -font "$font" -pointsize 14 -gravity center label:"PRESS START" resources/gfx/sprites/misc/press_start.png
+generate "#000000ff" "#ffff00ff" "$font" 34 "Fission Failure 64" resources/gfx/sprites/ui/logo.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "PRESS START" resources/gfx/sprites/ui/press_start.png
+
+# credits
+generate "#000000ff" "#ffff00ff" "$font" 34 "Credits" resources/gfx/sprites/ui/credits_big.png
+generate "#000000ff" "#ffff00ff" "$font" 22 "Programming" resources/gfx/sprites/ui/programming.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Isabel Jimenez & Victor Vieux" resources/gfx/sprites/ui/isabel_victor.png
+generate "#000000ff" "#ffffffff" "$font" 18 "www.vrgl117.games" resources/gfx/sprites/ui/vrgl117games.png
+generate "#000000ff" "#ffff00ff" "$font" 22 "Art" resources/gfx/sprites/ui/art.png
+generate "#000000ff" "#ffffffff" "$font" 18 "jphosho" resources/gfx/sprites/ui/jphosho.png
+generate "#000000ff" "#ffffffff" "$font" 18 "www.jessphoa.com" resources/gfx/sprites/ui/jessphoacom.png
+generate "#000000ff" "#ffff00ff" "$font" 22 "Music" resources/gfx/sprites/ui/music.png
+generate "#000000ff" "#ffffffff" "$font" 18 "manuhoz" resources/gfx/sprites/ui/manuhoz.png
+generate "#000000ff" "#ffffffff" "$font" 18 "IG/TT: @radiatorhymn" resources/gfx/sprites/ui/radiatorhymn.png
 
 # studio logo
 convert -strip -brightness-contrast -10 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_9.png

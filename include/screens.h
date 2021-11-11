@@ -12,10 +12,12 @@ typedef enum screen
     game,
     game_over,
     message,
+    credits,
     //   vru,
     win,
 } screen_t;
 
+bool screen_credits(display_context_t disp, input_t *input);
 bool screen_intro(display_context_t disp);
 screen_t screen_game(display_context_t disp, input_t *input);
 bool screen_game_over(display_context_t disp, input_t *input);

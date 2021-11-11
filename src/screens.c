@@ -15,6 +15,52 @@ static volatile uint16_t xx = 0;
 static volatile bool direction = true;
 static volatile uint32_t ticks = 0;
 
+// credits screen
+bool screen_credits(display_context_t disp, input_t *input)
+{
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+
+    rdp_detach_display();
+
+    sprite_t *credits_sp = dfs_load_sprite("/gfx/sprites/ui/credits_big.sprite");
+    graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 10, credits_sp);
+    free(credits_sp);
+
+    sprite_t *programming_sp = dfs_load_sprite("/gfx/sprites/ui/programming.sprite");
+    graphics_draw_sprite(disp, __width / 2 - programming_sp->width / 2, 70, programming_sp);
+    free(programming_sp);
+    sprite_t *isabel_victor_sp = dfs_load_sprite("/gfx/sprites/ui/isabel_victor.sprite");
+    graphics_draw_sprite(disp, __width / 2 - isabel_victor_sp->width / 2, 100, isabel_victor_sp);
+    free(isabel_victor_sp);
+    sprite_t *vrgl117games_sp = dfs_load_sprite("/gfx/sprites/ui/vrgl117games.sprite");
+    graphics_draw_sprite(disp, __width / 2 - vrgl117games_sp->width / 2, 120, vrgl117games_sp);
+    free(vrgl117games_sp);
+
+    sprite_t *art_sp = dfs_load_sprite("/gfx/sprites/ui/art.sprite");
+    graphics_draw_sprite(disp, 70 - art_sp->width / 2, 150, art_sp);
+    free(art_sp);
+    sprite_t *jphosho_sp = dfs_load_sprite("/gfx/sprites/ui/jphosho.sprite");
+    graphics_draw_sprite(disp, 70 - jphosho_sp->width / 2, 180, jphosho_sp);
+    free(jphosho_sp);
+    sprite_t *jessphoacom_sp = dfs_load_sprite("/gfx/sprites/ui/jessphoacom.sprite");
+    graphics_draw_sprite(disp, 70 - jessphoacom_sp->width / 2, 200, jessphoacom_sp);
+    free(jessphoacom_sp);
+
+    sprite_t *music_sp = dfs_load_sprite("/gfx/sprites/ui/music.sprite");
+    graphics_draw_sprite(disp, __width - 80 - music_sp->width / 2, 150, music_sp);
+    free(music_sp);
+    sprite_t *manuhoz_sp = dfs_load_sprite("/gfx/sprites/ui/manuhoz.sprite");
+    graphics_draw_sprite(disp, __width - 80 - manuhoz_sp->width / 2, 180, manuhoz_sp);
+    free(manuhoz_sp);
+    sprite_t *radiatorhymn_sp = dfs_load_sprite("/gfx/sprites/ui/radiatorhymn.sprite");
+    graphics_draw_sprite(disp, __width - 80 - radiatorhymn_sp->width / 2, 200, radiatorhymn_sp);
+    free(radiatorhymn_sp);
+
+    return (input->A || input->start);
+}
+
 // display the n64 logo and then the vrgl117 games logo.
 // return true when the animation is done.
 bool screen_intro(display_context_t disp)
@@ -118,7 +164,7 @@ bool screen_game_over(display_context_t disp, input_t *input)
 static sprite_t *message_sp = NULL;
 void screen_message_load()
 {
-    message_sp = dfs_load_sprite("/gfx/sprites/misc/message.sprite");
+    message_sp = dfs_load_sprite("/gfx/sprites/ui/message.sprite");
 }
 void screen_message_unload()
 {
@@ -145,8 +191,8 @@ static sprite_t *logo_sp = NULL;
 static sprite_t *press_start_sp = NULL;
 void screen_title_load()
 {
-    logo_sp = dfs_load_sprite("/gfx/sprites/misc/logo.sprite");
-    press_start_sp = dfs_load_spritef("/gfx/sprites/misc/press_start.sprite", 12);
+    logo_sp = dfs_load_sprite("/gfx/sprites/ui/logo.sprite");
+    press_start_sp = dfs_load_spritef("/gfx/sprites/ui/press_start.sprite", 12);
 }
 
 void screen_title_unload()
@@ -161,12 +207,12 @@ bool screen_title_draw(display_context_t disp, input_t *input)
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
-    if (ticks % 40 > 19)
-        rdp_draw_sprite_with_texture(press_start_sp, __width / 2 - press_start_sp->width / 2, 200, 0);
-
     rdp_detach_display();
 
     graphics_draw_sprite(disp, __width / 2 - logo_sp->width / 2, 20, logo_sp);
+
+    if (ticks % 40 > 19)
+        graphics_draw_sprite(disp, __width / 2 - press_start_sp->width / 2, 180, press_start_sp);
 
     return (input->start);
 }

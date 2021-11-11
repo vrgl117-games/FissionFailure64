@@ -17,7 +17,7 @@
 #define MS20 20000
 #define MS50 50000
 
-screen_t screen = message;
+screen_t screen = title;
 
 int main()
 {
@@ -103,6 +103,13 @@ int main()
             {
                 stop_timer(game_timer);
                 game_timer = NULL;
+            }
+            break;
+        case credits:
+            if (screen_credits(disp, &input))
+            {
+                screen_title_load();
+                screen = title;
             }
             break;
         case game_over:
