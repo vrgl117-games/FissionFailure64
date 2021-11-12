@@ -6,10 +6,13 @@
 #include "control_panel.h"
 #include "dfs.h"
 #include "rdp.h"
+#include "sfx.h"
 
 extern uint32_t __width;
 extern uint32_t __height;
 extern uint32_t colors[];
+extern volume_t volume_sfx;
+extern volume_t volume_music;
 
 static volatile uint16_t xx = 0;
 static volatile bool direction = true;
@@ -189,6 +192,84 @@ bool screen_message_draw(display_context_t disp)
 
     anim++;
     return (anim >= 82);
+}
+
+// options screen
+bool screen_options(display_context_t disp, input_t *input)
+{
+    static uint8_t selected = 0;
+
+    if (input->up || input->down)
+        selected = (selected == 1 ? 0 : 1);
+
+    if (selected == 0 && (input->left || input->right))
+        sfx_switch_volume_music(input->left);
+
+    if (selected == 1 && (input->left || input->right))
+        sfx_switch_volume_sfx(input->left);
+
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+
+    rdp_detach_display();
+
+    sprite_t *options_sp = dfs_load_sprite("/gfx/sprites/ui/options_big.sprite");
+    graphics_draw_sprite(disp, __width / 2 - options_sp->width / 2, 10, options_sp);
+    free(options_sp);
+
+    sprite_t *music_sp = dfs_load_sprite("/gfx/sprites/ui/music.sprite");
+    graphics_draw_sprite(disp, __width / 2 - music_sp->width / 2, 80, music_sp);
+    free(music_sp);
+
+    sprite_t *sound_vol_sp = NULL;
+    switch (volume_music)
+    {
+    case VOL_100:
+        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/100_selected.sprite" : "/gfx/sprites/ui/100.sprite");
+        break;
+    case VOL_75:
+        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/75_selected.sprite" : "/gfx/sprites/ui/75.sprite");
+        break;
+    case VOL_50:
+        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/50_selected.sprite" : "/gfx/sprites/ui/50.sprite");
+        break;
+    case VOL_25:
+        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/25_selected.sprite" : "/gfx/sprites/ui/25.sprite");
+        break;
+    case VOL_0:
+        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/0_selected.sprite" : "/gfx/sprites/ui/0.sprite");
+        break;
+    }
+    graphics_draw_sprite(disp, __width / 2 - sound_vol_sp->width / 2, 110, sound_vol_sp);
+    free(sound_vol_sp);
+
+    sprite_t *sfx_sp = dfs_load_sprite("/gfx/sprites/ui/sfx.sprite");
+    graphics_draw_sprite(disp, __width / 2 - sfx_sp->width / 2, 140, sfx_sp);
+    free(sfx_sp);
+
+    switch (volume_sfx)
+    {
+    case VOL_100:
+        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/100_selected.sprite" : "/gfx/sprites/ui/100.sprite");
+        break;
+    case VOL_75:
+        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/75_selected.sprite" : "/gfx/sprites/ui/75.sprite");
+        break;
+    case VOL_50:
+        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/50_selected.sprite" : "/gfx/sprites/ui/50.sprite");
+        break;
+    case VOL_25:
+        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/25_selected.sprite" : "/gfx/sprites/ui/25.sprite");
+        break;
+    case VOL_0:
+        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/0_selected.sprite" : "/gfx/sprites/ui/0.sprite");
+        break;
+    }
+    graphics_draw_sprite(disp, __width / 2 - sound_vol_sp->width / 2, 170, sound_vol_sp);
+    free(sound_vol_sp);
+
+    return (input->A || input->start);
 }
 
 // pause menu

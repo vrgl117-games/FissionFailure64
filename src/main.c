@@ -126,7 +126,7 @@ int main()
             {
             case pause_options:
                 prev_screen = pause;
-                //screen = options;
+                screen = options;
                 break;
             case pause_resume:
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
@@ -146,6 +146,10 @@ int main()
             default:
                 break;
             }
+            break;
+        case options:
+            if (screen_options(disp, &input))
+                screen = prev_screen;
             break;
         case credits:
             if (screen_credits(disp, &input))

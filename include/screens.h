@@ -12,7 +12,7 @@ typedef enum screen
     game,
     game_over,
     message,
-    //options,
+    options,
     pause,
     title,
     //   vru,
@@ -36,6 +36,7 @@ void screen_load_title_resources();
 bool screen_message_draw(display_context_t disp);
 void screen_message_load();
 void screen_message_unload();
+bool screen_options(display_context_t disp, input_t *input);
 pause_selection_t screen_pause(display_context_t disp, input_t *input, bool reset);
 void screen_timer();
 bool screen_title_draw(display_context_t disp, input_t *input);

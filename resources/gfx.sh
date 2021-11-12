@@ -34,6 +34,20 @@ generate "#000000ff" "#ffff00ff" "$font" 18 "Credits" resources/gfx/sprites/ui/c
 generate "#000000ff" "#ffffffff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit.png
 generate "#000000ff" "#ffff00ff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit_selected.png
 
+# options screen
+generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Options" resources/gfx/sprites/ui/options_big.png
+generate "#000000ff" "#ffff00ff" "$font" 16 "< 100% >" resources/gfx/sprites/ui/100_selected.png
+generate "#000000ff" "#ffff00ff" "$font" 16 "< 75 \% >" resources/gfx/sprites/ui/75_selected.png
+generate "#000000ff" "#ffff00ff" "$font" 16 "< 50 \% >" resources/gfx/sprites/ui/50_selected.png
+generate "#000000ff" "#ffff00ff" "$font" 16 "< 25 \% >" resources/gfx/sprites/ui/25_selected.png
+generate "#000000ff" "#ffff00ff" "$font" 16 "< 0  \% >" resources/gfx/sprites/ui/0_selected.png
+generate "#000000ff" "#ffffffff" "$font" 16 "< 100% >" resources/gfx/sprites/ui/100.png
+generate "#000000ff" "#ffffffff" "$font" 16 "< 75 \% >" resources/gfx/sprites/ui/75.png
+generate "#000000ff" "#ffffffff" "$font" 16 "< 50 \% >" resources/gfx/sprites/ui/50.png
+generate "#000000ff" "#ffffffff" "$font" 16 "< 25 \% >" resources/gfx/sprites/ui/25.png
+generate "#000000ff" "#ffffffff" "$font" 16 "< 0  \% >" resources/gfx/sprites/ui/0.png
+generate "#000000ff" "#ffff00ff" "$font_uni" 16 "sfx" resources/gfx/sprites/ui/sfx.png
+
 # credits screen
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Credits" resources/gfx/sprites/ui/credits_big.png
 generate "#000000ff" "#ffff00ff" "$font_uni" 16 "programming" resources/gfx/sprites/ui/programming.png
