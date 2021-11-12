@@ -48,9 +48,9 @@ void sfx_set_next_music(const sfx_id_t sfx_id)
     }
 }
 
-void sfx_stop(const sfx_id_t sfx_id)
+void sfx_stop(const ch_id_t ch_id)
 {
-    mixer_ch_stop(sfx_id);
+    mixer_ch_stop(ch_id);
 }
 
 void sfx_update()

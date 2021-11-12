@@ -18,6 +18,7 @@
 #define MS50 50000
 
 screen_t screen = title;
+screen_t prev_screen; //used in credits to know where to go back to
 
 int main()
 {
@@ -98,18 +99,67 @@ int main()
             }
             break;
         case game: // actual game.
-            screen = screen_game(disp, &input);
-            if (screen != game && game_timer != NULL)
+            if (input.start)
             {
-                stop_timer(game_timer);
-                game_timer = NULL;
+                screen = pause;
+                sfx_stop(CH_MUSIC);
+                if (game_timer != NULL)
+                {
+                    stop_timer(game_timer);
+                    game_timer = NULL;
+                }
+                screen_pause(disp, &input, true);
+            }
+            else
+            {
+                screen = screen_game(disp, &input);
+                if (screen != game && game_timer != NULL)
+                {
+                    stop_timer(game_timer);
+                    game_timer = NULL;
+                }
+            }
+            break;
+
+        case pause: // pause menu.
+            switch (screen_pause(disp, &input, false))
+            {
+            case pause_options:
+                prev_screen = pause;
+                //screen = options;
+                break;
+            case pause_resume:
+                game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
+                screen = game;
+                break;
+            case pause_credits:
+                prev_screen = pause;
+                screen = credits;
+                break;
+            case pause_quit:
+                actions_reset();
+                control_panel_reset();
+                screen_title_load();
+                screen = title;
+                sfx_play(CH_MUSIC, SFX_THEME, true);
+                break;
+            default:
+                break;
             }
             break;
         case credits:
             if (screen_credits(disp, &input))
             {
-                screen_title_load();
-                screen = title;
+                if (prev_screen == win)
+                {
+                    actions_reset();
+                    control_panel_reset();
+                    screen_title_load();
+                    screen = title;
+                    sfx_play(CH_MUSIC, SFX_THEME, true);
+                }
+                else
+                    screen = prev_screen;
             }
             break;
         case game_over:
@@ -119,15 +169,14 @@ int main()
                 control_panel_reset();
                 screen_title_load();
                 screen = title;
+                sfx_play(CH_MUSIC, SFX_THEME, true);
             }
             break;
         case win:
             if (screen_win(disp, &input))
             {
-                actions_reset();
-                control_panel_reset();
-                screen_title_load();
-                screen = title;
+                prev_screen = win;
+                screen = credits;
             }
             break;
         }

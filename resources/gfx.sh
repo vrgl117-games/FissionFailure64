@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 font='resources/fonts/sh-pinscher/SHPinscher-Regular.otf'
+font_uni='resources/fonts/unibody/Unibody8Pro-RegularSmallCaps.otf'
+font_uni_b='resources/fonts/unibody/Unibody8Pro-Bold.otf'
 
 generate() {
     convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" /tmp/image.png
@@ -11,18 +13,36 @@ generate() {
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
 # title screen
-generate "#000000ff" "#ffff00ff" "$font" 34 "Fission Failure 64" resources/gfx/sprites/ui/logo.png
+generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
 generate "#000000ff" "#ffff00ff" "$font" 18 "PRESS START" resources/gfx/sprites/ui/press_start.png
 
-# credits
-generate "#000000ff" "#ffff00ff" "$font" 34 "Credits" resources/gfx/sprites/ui/credits_big.png
-generate "#000000ff" "#ffff00ff" "$font" 22 "Programming" resources/gfx/sprites/ui/programming.png
+# win / game over screens
+generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Well Done!" resources/gfx/sprites/ui/win.png
+generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Game Over..." resources/gfx/sprites/ui/gameover.png
+
+generate "#000000ff" "#ffff00ff" "$font" 18 "CONTINUE" resources/gfx/sprites/ui/continue.png
+
+
+# pause screen
+generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Pause" resources/gfx/sprites/ui/pause_big.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume_selected.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Options" resources/gfx/sprites/ui/options.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "Options" resources/gfx/sprites/ui/options_selected.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits_selected.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit_selected.png
+
+# credits screen
+generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Credits" resources/gfx/sprites/ui/credits_big.png
+generate "#000000ff" "#ffff00ff" "$font_uni" 16 "programming" resources/gfx/sprites/ui/programming.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Isabel Jimenez & Victor Vieux" resources/gfx/sprites/ui/isabel_victor.png
 generate "#000000ff" "#ffffffff" "$font" 18 "www.vrgl117.games" resources/gfx/sprites/ui/vrgl117games.png
-generate "#000000ff" "#ffff00ff" "$font" 22 "Art" resources/gfx/sprites/ui/art.png
+generate "#000000ff" "#ffff00ff" "$font_uni" 16 "art" resources/gfx/sprites/ui/art.png
 generate "#000000ff" "#ffffffff" "$font" 18 "jphosho" resources/gfx/sprites/ui/jphosho.png
-generate "#000000ff" "#ffffffff" "$font" 18 "www.jessphoa.com" resources/gfx/sprites/ui/jessphoacom.png
-generate "#000000ff" "#ffff00ff" "$font" 22 "Music" resources/gfx/sprites/ui/music.png
+generate "#000000ff" "#ffffffff" "$font" 18 "IG: @jphosho" resources/gfx/sprites/ui/atjphosho.png
+generate "#000000ff" "#ffff00ff" "$font_uni" 16 "music" resources/gfx/sprites/ui/music.png
 generate "#000000ff" "#ffffffff" "$font" 18 "manuhoz" resources/gfx/sprites/ui/manuhoz.png
 generate "#000000ff" "#ffffffff" "$font" 18 "IG/TT: @radiatorhymn" resources/gfx/sprites/ui/radiatorhymn.png
 
