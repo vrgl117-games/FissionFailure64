@@ -30,6 +30,8 @@ typedef enum pause_selection
 
 bool screen_credits(display_context_t disp, input_t *input);
 bool screen_intro(display_context_t disp);
+void screen_game_load();
+void screen_game_unload();
 screen_t screen_game(display_context_t disp, input_t *input);
 bool screen_game_over(display_context_t disp, input_t *input);
 void screen_load_title_resources();

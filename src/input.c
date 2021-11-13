@@ -31,7 +31,7 @@ input_t input_get()
         input.right = true;
         tick = 1;
     }
-
+#if DISPLAY_SAFE_AREAS
     if (pressed.L)
     {
         input.L = true;
@@ -40,7 +40,7 @@ input_t input_get()
     {
         input.R = true;
     }
-
+#endif
     return input;
 }
 /*

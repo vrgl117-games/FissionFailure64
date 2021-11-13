@@ -14,6 +14,8 @@
 #define VRU_WRITE_CONFIG 0x0C
 #define VRU_WRITE_INIT 0x0D
 
+#define DISPLAY_SAFE_AREAS 0
+
 typedef struct SI_condat input_t;
 
 input_t input_get();

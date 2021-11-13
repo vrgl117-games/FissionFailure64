@@ -110,6 +110,24 @@ bool screen_intro(display_context_t disp)
     return (anim >= 112);
 }
 
+static sprites_t *scientist_idle_sp = NULL;
+static sprites_t *scientist_stressed_sp = NULL;
+static sprites_t *scientist_hell_sp = NULL;
+
+void screen_game_load()
+{
+    scientist_idle_sp = dfs_load_sprites("/gfx/sprites/scientist/idle-%d.sprite");
+    scientist_stressed_sp = dfs_load_sprites("/gfx/sprites/scientist/stressed-%d.sprite");
+    scientist_hell_sp = dfs_load_sprites("/gfx/sprites/scientist/hell-%d.sprite");
+}
+
+void screen_game_unload()
+{
+    dfs_free_sprites(scientist_idle_sp);
+    dfs_free_sprites(scientist_stressed_sp);
+    dfs_free_sprites(scientist_hell_sp);
+}
+
 // main screen for the game
 screen_t screen_game(display_context_t disp, input_t *input)
 {
@@ -137,33 +155,27 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     if (control_panel.stress > HELL_THRESHOLD)
     {
-        sprite_t *bg = dfs_load_sprite((rand() % 100 >= 50) ? "/gfx/sprites/bg/window_hell_alt.sprite" : "/gfx/sprites/bg/window_hell.sprite");
-        graphics_draw_sprite(disp, 35, 20, bg);
-        free(bg);
+        sprite_t *window = dfs_load_sprite((rand() % 100 >= 50) ? "/gfx/sprites/window/hell_alt.sprite" : "/gfx/sprites/window/hell.sprite");
+        graphics_draw_sprite(disp, 35, 20, window);
+        free(window);
 
-        sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right_hell.sprite" : "/gfx/sprites/scientist/left_hell.sprite"));
-        graphics_draw_sprite_trans(disp, xx, 100, scientist);
-        free(scientist);
+        rdp_draw_sprites_with_texture(scientist_hell_sp, xx, 80, direction ? 0 : MIRROR_X);
     }
     else if (control_panel.stress > STRESS_THRESHOLD)
     {
-        sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/window_stressed.sprite");
-        graphics_draw_sprite(disp, 35, 20, bg);
-        free(bg);
+        sprite_t *window = dfs_load_sprite("/gfx/sprites/window/stressed.sprite");
+        graphics_draw_sprite(disp, 35, 20, window);
+        free(window);
 
-        sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right_stressed.sprite" : "/gfx/sprites/scientist/left_stressed.sprite"));
-        graphics_draw_sprite_trans(disp, xx, 100, scientist);
-        free(scientist);
+        rdp_draw_sprites_with_texture(scientist_stressed_sp, xx, 80, direction ? 0 : MIRROR_X);
     }
     else
     {
-        sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/window_idle.sprite");
-        graphics_draw_sprite(disp, 35, 20, bg);
-        free(bg);
+        sprite_t *window = dfs_load_sprite("/gfx/sprites/window/idle.sprite");
+        graphics_draw_sprite(disp, 35, 20, window);
+        free(window);
 
-        sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right.sprite" : "/gfx/sprites/scientist/left.sprite"));
-        graphics_draw_sprite_trans(disp, xx, 100, scientist);
-        free(scientist);
+        rdp_draw_sprites_with_texture(scientist_idle_sp, xx, 80, direction ? 0 : MIRROR_X);
     }
 
     control_panel_draw(disp);

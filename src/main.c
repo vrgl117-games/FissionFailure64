@@ -11,7 +11,6 @@
 #include "sfx.h"
 
 #define ENABLE_FPS 0
-#define DISPLAY_SAFE_AREAS 1
 
 #define MS500 500000
 #define S1 1000000
@@ -99,6 +98,7 @@ int main()
             if (screen_title_draw(disp, &input))
             {
                 screen_title_unload();
+                screen_game_load();
                 screen = game;
                 sfx_stop(CH_MUSIC);
                 control_panel_reset();
@@ -123,6 +123,7 @@ int main()
                 screen = screen_game(disp, &input);
                 if (screen != game)
                 {
+                    screen_game_unload();
                     sfx_set_pause(true);
                     sfx_stop(CH_MUSIC);
                     if (game_timer != NULL)

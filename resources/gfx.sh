@@ -9,6 +9,11 @@ generate() {
     convert /tmp/image.png -background $1 -extent  $(convert /tmp/image.png -format '%[fx:2*int((w+1)/2)]x%[fx:2*int((h+1)/2)]!' info:) $6
 }
 
+# scientist
+convert -strip resources/gfx/sprites/scientist/idle.png -crop 16 resources/gfx/sprites/scientist/idle-%d.png
+convert -strip resources/gfx/sprites/scientist/stressed.png -crop 16 resources/gfx/sprites/scientist/stressed-%d.png
+convert -strip resources/gfx/sprites/scientist/hell.png -crop 16 resources/gfx/sprites/scientist/hell-%d.png
+
 # message
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
@@ -19,9 +24,7 @@ generate "#000000ff" "#ffff00ff" "$font" 18 "PRESS START" resources/gfx/sprites/
 # win / game over screens
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Well Done!" resources/gfx/sprites/ui/win.png
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Game Over..." resources/gfx/sprites/ui/gameover.png
-
 generate "#000000ff" "#ffff00ff" "$font" 18 "CONTINUE" resources/gfx/sprites/ui/continue.png
-
 
 # pause screen
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Pause" resources/gfx/sprites/ui/pause_big.png

@@ -69,9 +69,12 @@ void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
 void rdp_draw_sprites_with_texture(sprites_t *sprites, int x, int y, mirror_t mirror)
 {
     int offset = 0;
+
     for (int i = 0; i < sprites->slices; i++)
     {
-        rdp_draw_sprite_with_texture(sprites->sprites[i], x + offset, y, mirror);
-        offset += sprites->sprites[i]->width;
+        int ii = (mirror == MIRROR_X ? sprites->slices - 1 - i : i);
+
+        rdp_draw_sprite_with_texture(sprites->sprites[ii], x + offset, y, mirror);
+        offset += sprites->sprites[ii]->width;
     }
 }
