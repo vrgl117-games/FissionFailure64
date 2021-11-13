@@ -31,6 +31,16 @@ input_t input_get()
         input.right = true;
         tick = 1;
     }
+
+    if (pressed.L)
+    {
+        input.L = true;
+    }
+    if (pressed.R)
+    {
+        input.R = true;
+    }
+
     return input;
 }
 /*

@@ -1,5 +1,6 @@
 #include "sfx.h"
 
+static bool paused = false;
 static wav64_t SFX_CACHE[SFX_ID_COUNT];
 static sfx_id_t sfx_id_next_music = SFX_ID_COUNT;
 
@@ -12,7 +13,6 @@ void sfx_init(void)
 
     wav64_open(&SFX_CACHE[SFX_THEME], "/sfx/01_Fission_Failure_64_Theme_mono.wav64");
     wav64_set_loop(&SFX_CACHE[SFX_THEME], true);
-    mixer_ch_set_vol(CH_MUSIC, 0.1f, 0.1f);
 
     wav64_open(&SFX_CACHE[SFX_IDLE], "/sfx/02_Fission_Failure_64_Idle_mono.wav64");
     wav64_set_loop(&SFX_CACHE[SFX_IDLE], true);
@@ -24,6 +24,20 @@ void sfx_init(void)
     wav64_set_loop(&SFX_CACHE[SFX_HELL], true);
 
     wav64_open(&SFX_CACHE[SFX_BUTTON], "/sfx/146718__leszek-szary__button.wav64");
+
+    mixer_ch_set_vol(CH_MUSIC, (float)volume_music / 100.0f, (float)volume_music / 100.0f);
+    mixer_ch_set_vol(CH_SFX, (float)volume_sfx / 100.0f, (float)volume_sfx / 100.0f);
+}
+
+void sfx_reset()
+{
+    sfx_id_next_music = SFX_ID_COUNT;
+    paused = false;
+}
+
+void sfx_set_pause(const bool pause)
+{
+    paused = pause;
 }
 
 void sfx_play(const ch_id_t ch_id, const sfx_id_t sfx_id, bool loop)
@@ -104,6 +118,8 @@ void sfx_switch_volume_sfx(bool left)
 
 void sfx_update()
 {
+    if (paused)
+        return;
 
     if (audio_can_write())
     {

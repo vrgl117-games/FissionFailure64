@@ -8,6 +8,9 @@
 #include "actions.h"
 #include "input.h"
 
+#define STRESS_THRESHOLD 28
+#define HELL_THRESHOLD 62
+
 #define NUM_STATIONS 3
 
 // hands on the left side (d-pad, joystick, Z and L)

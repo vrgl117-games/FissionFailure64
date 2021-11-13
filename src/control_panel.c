@@ -20,42 +20,63 @@ extern uint32_t colors[];
 
 static void instruments_draw(display_context_t disp)
 {
-    rdp_draw_filled_rectangle_with_border_size(211, 0, 108, 140, colors[COLOR_PANEL], colors[COLOR_BORDER]);
+    uint8_t x = 200;
+    uint8_t y = 0;
+    uint8_t width = __width - x;
+    uint8_t height = 140;
 
-    graphics_draw_textf_with_background(disp, __width - 105, 4, colors[COLOR_BROWN], "INSTRUMENTS");
+    rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
+    rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
 
-    uint32_t x = __width - 60;
-    uint32_t y = 26;
+    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "INSTRUMENTS");
 
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x, y, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
+    graphics_draw_textf_with_background(disp, x + 44, y + 30, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
     graphics_set_color(colors[COLOR_WHITE], 0);
-    graphics_draw_text(disp, x + 2, y + 16, "TEMP");
+    graphics_draw_text(disp, x + 46, y + 46, "TEMP");
 
-    y = 60;
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x, y, colors[COLOR_BLACK], "%.4dW", control_panel.power);
+    graphics_draw_textf_with_background(disp, x + 44, y + 30 + 37, colors[COLOR_BLACK], "%.4dW", control_panel.power);
     graphics_set_color(colors[COLOR_WHITE], 0);
-    graphics_draw_text(disp, x + 2, y + 16, "POWER");
+    graphics_draw_text(disp, x + 46, y + 46 + 37, "POWER");
 
-    y = 100;
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x, y, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
+    graphics_draw_textf_with_background(disp, x + 44, y + 30 + 37 + 37, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
     graphics_set_color(colors[COLOR_WHITE], 0);
-    graphics_draw_text(disp, x + 7, y + 16, "FREQ");
+    graphics_draw_text(disp, x + 46 + 4, y + 46 + 37 + 37, "FREQ");
 
-    rdp_draw_filled_rectangle_size(__width - 90, 26, 10, 108, colors[COLOR_BLACK]);
+    uint8_t gauge_height = 90;
+    rdp_draw_filled_rectangle_size(x + 20, 30, 10, gauge_height + 4 + 4, colors[COLOR_BLACK]);
 
-    rdp_draw_filled_rectangle_size(__width - 86, 30 + 100 - control_panel.stress, 2, control_panel.stress, colors[COLOR_RED]);
-    graphics_draw_text(disp, __width - 100, 56, "S\nT\nR\nE\nS\nS");
+    rdp_draw_filled_rectangle_size(x + 20 + 4, 34 + gauge_height - control_panel.stress * gauge_height / 100, 2, control_panel.stress * gauge_height / 100, colors[COLOR_RED]);
+    graphics_draw_text(disp, x + 10, 56, "S\nT\nR\nE\nS\nS");
 }
 
+static void instructions_draw(display_context_t disp)
+{
+    uint8_t x = 200;
+    uint8_t y = 138;
+    uint8_t width = __width - x;
+    uint8_t height = __height - y;
+
+    rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
+    rdp_draw_filled_rectangle_size(x + 2, y + 2, width - 2, height - 2, colors[COLOR_PANEL]);
+
+    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "INSTRUCTIONS");
+
+    rdp_draw_filled_rectangle_absolute(x + 8, y + 28, __width - 8, __height - 10, colors[COLOR_BLACK]);
+
+    graphics_set_color(colors[COLOR_YELLOW], 0);
+    graphics_draw_text(disp, x + 8 + 4, y + 28 + 4, actions_get_current()->text);
+    graphics_set_color(colors[COLOR_WHITE], 0);
+}
 void control_panel_draw(display_context_t disp)
 {
 
     instruments_draw(disp);
 
-    rdp_draw_filled_rectangle_with_border_size(0, 180, 212, 56, colors[COLOR_PANEL], colors[COLOR_BORDER]);
+    rdp_draw_filled_rectangle_absolute(0, 160, 200, __height, colors[COLOR_BORDER]);
+    rdp_draw_filled_rectangle_absolute(0, 162, __width - 120, __height, colors[COLOR_PANEL]);
     switch (control_panel.current_station)
     {
     case 0:
@@ -69,20 +90,12 @@ void control_panel_draw(display_context_t disp)
         break;
     }
 
-    rdp_draw_filled_rectangle_with_border_size(211, 138, 108, 98, colors[COLOR_PANEL], colors[COLOR_BORDER]);
-
-    graphics_draw_textf_with_background(disp, __width - 105, 142, colors[COLOR_BROWN], "INSTRUCTIONS");
-
-    rdp_draw_filled_rectangle_size(__width - 105, 164, 100, 62, colors[COLOR_BLACK]);
-
-    graphics_set_color(colors[COLOR_YELLOW], 0);
-    graphics_draw_text(disp, __width - 102, 168, actions_get_current()->text);
-    graphics_set_color(colors[COLOR_WHITE], 0);
+    instructions_draw(disp);
 
     if (control_panel.stress < 50)
-        rdp_draw_sprite_with_texture(tiles[12], 172, 20, 0);
+        rdp_draw_sprite_with_texture(tiles[12], 162, 30, 0);
     else
-        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 12 : 1)], 172, 20, 0);
+        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 12 : 1)], 162, 30, 0);
 }
 
 void control_panel_input(input_t *input)
@@ -167,9 +180,9 @@ void control_panel_reset()
 void control_panel_timer()
 {
     control_panel.stress++;
-    if (control_panel.stress <= 28)
+    if (control_panel.stress <= STRESS_THRESHOLD)
         sfx_set_next_music(SFX_IDLE);
-    else if (control_panel.stress <= 62)
+    else if (control_panel.stress <= HELL_THRESHOLD)
         sfx_set_next_music(SFX_STRESS);
     else
         sfx_set_next_music(SFX_HELL);
@@ -182,7 +195,7 @@ void control_panel_timer()
 
 void station_left_draw(display_context_t disp)
 {
-    graphics_draw_textf_with_background(disp, 4, 184, colors[COLOR_BROWN], "COMMUNICATIONS");
+    graphics_draw_textf_with_background(disp, 8, 168, colors[COLOR_BROWN], "COMMUNICATIONS");
 
     uint16_t x = 16;
     uint16_t y = 210;
@@ -213,7 +226,7 @@ void station_left_input(input_t *input)
 
 void station_center_draw(display_context_t disp)
 {
-    graphics_draw_textf_with_background(disp, 4, 184, colors[COLOR_BROWN], "FANS CONTROLS");
+    graphics_draw_textf_with_background(disp, 8, 168, colors[COLOR_BROWN], "FANS CONTROLS");
 
     uint16_t x = 32;
     uint16_t y = 210;
@@ -269,7 +282,7 @@ void station_center_input(input_t *input)
 
 void station_right_draw(display_context_t disp)
 {
-    graphics_draw_textf_with_background(disp, 4, 184, colors[COLOR_BROWN], "TURBINE CONTROLS");
+    graphics_draw_textf_with_background(disp, 18, 168, colors[COLOR_BROWN], "TURBINE CONTROLS");
 
     uint16_t x = 32;
     uint16_t y = 210;

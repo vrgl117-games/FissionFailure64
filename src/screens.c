@@ -13,6 +13,7 @@ extern uint32_t __height;
 extern uint32_t colors[];
 extern volume_t volume_sfx;
 extern volume_t volume_music;
+extern control_panel_t control_panel;
 
 static volatile uint16_t xx = 0;
 static volatile bool direction = true;
@@ -82,20 +83,20 @@ bool screen_intro(display_context_t disp)
     case 1 ... 9:
         intro = dfs_load_spritef("/gfx/sprites/intro/n64brew_jam_logo_%d.sprite", anim);
         break;
-    case 10 ... 30:
+    case 10 ... 50:
         intro = dfs_load_sprite("/gfx/sprites/intro/n64brew_jam_logo.sprite");
         break;
-    case 31 ... 40:
-        intro = dfs_load_spritef("/gfx/sprites/intro/n64brew_jam_logo_%d.sprite", 40 - anim);
+    case 51 ... 60:
+        intro = dfs_load_spritef("/gfx/sprites/intro/n64brew_jam_logo_%d.sprite", 60 - anim);
         break;
-    case 41 ... 49:
-        intro = dfs_load_spritef("/gfx/sprites/intro/vrgl117_logo_%d.sprite", anim - 40);
+    case 61 ... 69:
+        intro = dfs_load_spritef("/gfx/sprites/intro/vrgl117_logo_%d.sprite", anim - 60);
         break;
-    case 50 ... 70:
+    case 70 ... 100:
         intro = dfs_load_sprite("/gfx/sprites/intro/vrgl117_logo.sprite");
         break;
-    case 71 ... 79:
-        intro = dfs_load_spritef("/gfx/sprites/intro/vrgl117_logo_%d.sprite", 80 - anim);
+    case 101 ... 109:
+        intro = dfs_load_spritef("/gfx/sprites/intro/vrgl117_logo_%d.sprite", 110 - anim);
         break;
     }
 
@@ -106,7 +107,7 @@ bool screen_intro(display_context_t disp)
     }
 
     anim++;
-    return (anim >= 82);
+    return (anim >= 112);
 }
 
 // main screen for the game
@@ -130,17 +131,40 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     rdp_attach(disp);
 
-    rdp_draw_filled_rectangle_size(0, 0, 210, 180, colors[COLOR_BG]);
-
-    sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/window.sprite");
-    graphics_draw_sprite(disp, 45, 20, bg);
-    free(bg);
+    rdp_draw_filled_rectangle_size(0, 0, 200, 180, colors[COLOR_BG]);
 
     rdp_draw_filled_rectangle_size(0, 120, 210, 2, colors[COLOR_BLACK]);
 
-    sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right.sprite" : "/gfx/sprites/scientist/left.sprite"));
-    graphics_draw_sprite_trans(disp, xx, 100, scientist);
-    free(scientist);
+    if (control_panel.stress > HELL_THRESHOLD)
+    {
+        sprite_t *bg = dfs_load_sprite((rand() % 100 >= 50) ? "/gfx/sprites/bg/window_hell_alt.sprite" : "/gfx/sprites/bg/window_hell.sprite");
+        graphics_draw_sprite(disp, 35, 20, bg);
+        free(bg);
+
+        sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right_hell.sprite" : "/gfx/sprites/scientist/left_hell.sprite"));
+        graphics_draw_sprite_trans(disp, xx, 100, scientist);
+        free(scientist);
+    }
+    else if (control_panel.stress > STRESS_THRESHOLD)
+    {
+        sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/window_stressed.sprite");
+        graphics_draw_sprite(disp, 35, 20, bg);
+        free(bg);
+
+        sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right_stressed.sprite" : "/gfx/sprites/scientist/left_stressed.sprite"));
+        graphics_draw_sprite_trans(disp, xx, 100, scientist);
+        free(scientist);
+    }
+    else
+    {
+        sprite_t *bg = dfs_load_sprite("/gfx/sprites/bg/window_idle.sprite");
+        graphics_draw_sprite(disp, 35, 20, bg);
+        free(bg);
+
+        sprite_t *scientist = dfs_load_sprite((direction ? "/gfx/sprites/scientist/right.sprite" : "/gfx/sprites/scientist/left.sprite"));
+        graphics_draw_sprite_trans(disp, xx, 100, scientist);
+        free(scientist);
+    }
 
     control_panel_draw(disp);
 

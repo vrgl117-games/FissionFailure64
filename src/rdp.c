@@ -16,6 +16,18 @@ void rdp_draw_filled_fullscreen(uint32_t color)
     rdp_draw_filled_rectangle_size(0, 0, __width, __height, color);
 }
 
+void rdp_draw_filled_rectangle_absolute(int x, int y, int xx, int yy, uint32_t color)
+{
+    if (!filled)
+    {
+        rdp_enable_primitive_fill();
+        filled = true;
+    }
+    rdp_sync(SYNC_PIPE);
+    rdp_set_primitive_color(color);
+    rdp_draw_filled_rectangle(x, y, xx, yy);
+}
+
 void rdp_draw_filled_rectangle_size(int x, int y, int width, int height, uint32_t color)
 {
     if (!filled)
