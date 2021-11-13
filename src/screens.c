@@ -8,6 +8,9 @@
 #include "rdp.h"
 #include "sfx.h"
 
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+
 extern uint32_t __width;
 extern uint32_t __height;
 extern uint32_t colors[];
@@ -16,8 +19,11 @@ extern volume_t volume_music;
 extern control_panel_t control_panel;
 
 static volatile uint16_t xx = 0;
+static volatile uint16_t yy = 0;
 static volatile bool direction = true;
+static volatile bool vert = true;
 static volatile uint32_t ticks = 0;
+static volatile bool alt = false;
 
 // credits screen
 bool screen_credits(display_context_t disp, input_t *input)
@@ -147,40 +153,39 @@ screen_t screen_game(display_context_t disp, input_t *input)
         break;
     }
 
+    sprites_t *scientist;
+    sprite_t *window;
+    if (control_panel.stress > HELL_THRESHOLD)
+    {
+        scientist = scientist_hell_sp;
+        window = dfs_load_sprite(alt ? "/gfx/sprites/window/hell_alt.sprite" : "/gfx/sprites/window/hell.sprite");
+    }
+    else if (control_panel.stress > STRESS_THRESHOLD)
+    {
+        scientist = scientist_stressed_sp;
+        window = dfs_load_sprite("/gfx/sprites/window/stressed.sprite");
+    }
+    else
+    {
+        scientist = scientist_idle_sp;
+        window = dfs_load_sprite("/gfx/sprites/window/idle.sprite");
+    }
+
     rdp_attach(disp);
 
     rdp_draw_filled_rectangle_size(0, 0, 200, 180, colors[COLOR_BG]);
 
     rdp_draw_filled_rectangle_size(0, 120, 210, 2, colors[COLOR_BLACK]);
 
-    if (control_panel.stress > HELL_THRESHOLD)
-    {
-        sprite_t *window = dfs_load_sprite((rand() % 100 >= 50) ? "/gfx/sprites/window/hell_alt.sprite" : "/gfx/sprites/window/hell.sprite");
-        graphics_draw_sprite(disp, 35, 20, window);
-        free(window);
+    graphics_draw_sprite(disp, 35, 20, window);
+    free(window);
 
-        rdp_draw_sprites_with_texture(scientist_hell_sp, xx, 80, direction ? 0 : MIRROR_X);
-    }
-    else if (control_panel.stress > STRESS_THRESHOLD)
-    {
-        sprite_t *window = dfs_load_sprite("/gfx/sprites/window/stressed.sprite");
-        graphics_draw_sprite(disp, 35, 20, window);
-        free(window);
-
-        rdp_draw_sprites_with_texture(scientist_stressed_sp, xx, 80, direction ? 0 : MIRROR_X);
-    }
-    else
-    {
-        sprite_t *window = dfs_load_sprite("/gfx/sprites/window/idle.sprite");
-        graphics_draw_sprite(disp, 35, 20, window);
-        free(window);
-
-        rdp_draw_sprites_with_texture(scientist_idle_sp, xx, 80, direction ? 0 : MIRROR_X);
-    }
+    rdp_draw_sprites_with_texture(scientist, xx, 70 + MAX(yy, 8), direction ? 0 : MIRROR_X);
 
     control_panel_draw(disp);
 
     rdp_detach_display();
+
     return game;
 }
 
@@ -428,8 +433,21 @@ void screen_timer()
     else
         xx--;
 
+    if (vert)
+        yy++;
+    else
+        yy--;
+
     if (xx > 200)
         direction = !direction;
     if (xx <= 0)
         direction = !direction;
+
+    if (yy > 12)
+        vert = !vert;
+    if (yy <= 0)
+        vert = !vert;
+
+    if (ticks % 10 == 0)
+        alt = (rand() % 100 >= 80);
 }

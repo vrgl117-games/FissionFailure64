@@ -72,7 +72,6 @@ static void instructions_draw(display_context_t disp)
 }
 void control_panel_draw(display_context_t disp)
 {
-
     instruments_draw(disp);
 
     rdp_draw_filled_rectangle_absolute(0, 160, 200, __height, colors[COLOR_BORDER]);
@@ -198,10 +197,10 @@ void station_left_draw(display_context_t disp)
     graphics_draw_textf_with_background(disp, 8, 168, colors[COLOR_BROWN], "COMMUNICATIONS");
 
     uint16_t x = 16;
-    uint16_t y = 210;
+    uint16_t y = 200;
 
     for (int i = 0; i < 10; i++)
-        rdp_draw_sprite_with_texture(tiles[51 + i], x + i * 18, y, 0);
+        rdp_draw_sprite_with_texture(tiles[51 + i], x + i * 17, y, 0);
 }
 
 void station_left_input(input_t *input)
@@ -229,7 +228,7 @@ void station_center_draw(display_context_t disp)
     graphics_draw_textf_with_background(disp, 8, 168, colors[COLOR_BROWN], "FANS CONTROLS");
 
     uint16_t x = 32;
-    uint16_t y = 210;
+    uint16_t y = 200;
 
     station_center_t *station = &(control_panel.center);
 
@@ -237,7 +236,7 @@ void station_center_draw(display_context_t disp)
     rdp_draw_sprite_with_texture(tiles[(station->B ? 482 : 481)], x + 20, y, 0);
 
     x = 160;
-    y = 200;
+    y = 190;
     rdp_draw_sprite_with_texture(tiles[(station->C[0] ? 550 : 549)], x, y - 12, 0);
     rdp_draw_sprite_with_texture(tiles[(station->C[1] ? 550 : 549)], x - 12, y, 0);
     rdp_draw_sprite_with_texture(tiles[(station->C[1] ? 550 : 549)], x + 12, y, 0);
@@ -285,7 +284,7 @@ void station_right_draw(display_context_t disp)
     graphics_draw_textf_with_background(disp, 18, 168, colors[COLOR_BROWN], "TURBINE CONTROLS");
 
     uint16_t x = 32;
-    uint16_t y = 210;
+    uint16_t y = 200;
 
     station_right_t *station = &(control_panel.right);
 
