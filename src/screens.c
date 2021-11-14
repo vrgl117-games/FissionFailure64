@@ -386,24 +386,6 @@ bool screen_title_draw(display_context_t disp, input_t *input)
     return (input->start);
 }
 
-/*
-bool screen_vru(display_context_t disp, input_t *input)
-{
-    if (identify_accessory(3) == ACCESSORY_VRU)
-    {
-        uint8_t out[64];
-        uint8_t in[64];
-
-        // Initial sequence
-        out[0] = 0x00;
-        out[1] = 0x00;
-        execute_raw_command(3, VRU_READ_STATUS, 2, 3, out, in);
-        debugf("%02X%02X %02X%02X%02X\n", out[0], out[1], in[0], in[1], in[2]);
-    }
-    return true;
-}
-*/
-
 // end game screen
 bool screen_win(display_context_t disp, input_t *input)
 {

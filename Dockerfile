@@ -1,6 +1,6 @@
 FROM ghcr.io/dragonminded/libdragon
 
-ARG LIBDRAGON_COMMIT 679bc1e263012d5d67d3aa92b26a56ade5a9316e
+ARG LIBDRAGON_COMMIT trunk
 RUN apt-get update -yq
 RUN apt-get install -yq imagemagick
 

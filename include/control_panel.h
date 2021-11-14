@@ -30,6 +30,7 @@ typedef struct station_center
 {
     bool DPAD[4];
     bool A;
+    uint8_t A_presses;
     bool B;
     bool C[4];
 

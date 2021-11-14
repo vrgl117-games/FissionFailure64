@@ -232,6 +232,7 @@ void station_center_draw(display_context_t disp)
 
     station_center_t *station = &(control_panel.center);
 
+    graphics_draw_textf(disp, x + 3, y - 10, "%d\n", station->A_presses);
     rdp_draw_sprite_with_texture(tiles[(station->A ? 448 : 447)], x, y, 0);
     rdp_draw_sprite_with_texture(tiles[(station->B ? 482 : 481)], x + 20, y, 0);
 
@@ -270,13 +271,21 @@ void station_center_input(input_t *input)
     if (input->C_right)
         station->C[INPUT_RIGHT] = !station->C[INPUT_RIGHT];
 
-    if (input->A)
+    if (input_get_A_presses() > 0)
     {
-        station->A = !station->A;
+        station->A = true;
+        station->A_presses = input_get_A_presses();
+    }
+    else
+    {
+        station->A = false;
+    }
+
+    if (input->B)
+    {
+        station->B = !station->B;
         sfx_play(CH_SFX, SFX_BUTTON, false);
     }
-    if (input->B)
-        station->B = !station->B;
 }
 
 void station_right_draw(display_context_t disp)
