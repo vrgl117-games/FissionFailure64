@@ -5,14 +5,17 @@
 
 typedef enum
 {
-    COLOR_BG,
     COLOR_BLACK,
-    COLOR_WHITE,
     COLOR_RED,
+    COLOR_BLUE,
+    COLOR_BG,
+    COLOR_WHITE,
     COLOR_PANEL,
     COLOR_BORDER,
     COLOR_BROWN,
     COLOR_YELLOW,
+
+    COLOR_IDX,
 } colors_name_t;
 
 void colors_init();

@@ -173,14 +173,12 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     rdp_attach(disp);
 
-    rdp_draw_filled_rectangle_size(0, 0, 200, 180, colors[COLOR_BG]);
-
-    rdp_draw_filled_rectangle_size(0, 120, 210, 2, colors[COLOR_BLACK]);
+    rdp_draw_filled_rectangle_size(0, 0, 200, 120, colors[COLOR_BG]);
 
     graphics_draw_sprite(disp, 35, 20, window);
     free(window);
 
-    rdp_draw_sprites_with_texture(scientist, xx, 70 + MAX(yy, 8), direction ? 0 : MIRROR_X);
+    rdp_draw_sprites_with_texture(scientist, xx, 30 + MAX(yy, 8), direction ? 0 : MIRROR_X);
 
     control_panel_draw(disp);
 

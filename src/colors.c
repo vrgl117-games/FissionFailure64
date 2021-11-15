@@ -1,10 +1,11 @@
 #include "colors.h"
 
-uint32_t colors[8];
+uint32_t colors[COLOR_IDX];
 
 void colors_init()
 {
     colors[COLOR_BG] = graphics_make_color(0x80, 0x80, 0x80, 0xff);
+    colors[COLOR_BLUE] = graphics_make_color(0x00, 0x00, 0xff, 0xff);
     colors[COLOR_BLACK] = 0;
     colors[COLOR_WHITE] = graphics_make_color(0xff, 0xff, 0xff, 0xff);
     colors[COLOR_RED] = graphics_make_color(0xff, 0, 0, 0xff);

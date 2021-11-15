@@ -13,6 +13,8 @@
 
 #define NUM_STATIONS 3
 
+#define GRID_SIZE 4
+
 // hands on the left side (d-pad, joystick, Z and L)
 typedef struct station_left
 {
@@ -28,12 +30,12 @@ void station_left_input(input_t *input);
 // hands on both sides (d-pad, A, B, C(s))
 typedef struct station_center
 {
-    bool DPAD[4];
-    bool A;
-    uint8_t A_presses;
-    bool B;
-    bool C[4];
-
+    uint8_t grid[GRID_SIZE][GRID_SIZE];
+    uint8_t gridselector_x;
+    uint8_t gridselector_y;
+    uint8_t button_a_presses;
+    bool button_a;
+    bool button_b;
 } station_center_t;
 
 void station_center_draw(display_context_t disp);
