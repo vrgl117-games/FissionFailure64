@@ -18,53 +18,63 @@ extern uint32_t __height;
 
 extern uint32_t colors[];
 
-static void instruments_draw(display_context_t disp)
+static void danger_bar_draw(display_context_t disp)
 {
-    uint8_t x = 200;
+    uint8_t x = 0;
     uint8_t y = 0;
-    uint8_t width = __width - x;
-    uint8_t height = 140;
+    uint8_t width = 40;
+    uint8_t height = 120;
 
     rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
-    rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
+    rdp_draw_filled_rectangle_size(x, y, width - 2, height, colors[COLOR_PANEL]);
 
-    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "INSTRUMENTS");
+    rdp_draw_filled_rectangle_size(x + 8, 8, 10, 104, colors[COLOR_BLACK]);
 
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 44, y + 30, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
-    graphics_set_color(colors[COLOR_WHITE], 0);
-    graphics_draw_text(disp, x + 46, y + 46, "TEMP");
-
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 44, y + 30 + 37, colors[COLOR_BLACK], "%.4dW", control_panel.power);
-    graphics_set_color(colors[COLOR_WHITE], 0);
-    graphics_draw_text(disp, x + 46, y + 46 + 37, "POWER");
-
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 44, y + 30 + 37 + 37, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
-    graphics_set_color(colors[COLOR_WHITE], 0);
-    graphics_draw_text(disp, x + 46 + 4, y + 46 + 37 + 37, "FREQ");
-
-    uint8_t gauge_height = 90;
-    rdp_draw_filled_rectangle_size(x + 20, 30, 10, gauge_height + 4 + 4, colors[COLOR_BLACK]);
-
-    rdp_draw_filled_rectangle_size(x + 20 + 4, 34 + gauge_height - control_panel.stress * gauge_height / 100, 2, control_panel.stress * gauge_height / 100, colors[COLOR_RED]);
-    graphics_draw_text(disp, x + 10, 56, "S\nT\nR\nE\nS\nS");
+    rdp_draw_filled_rectangle_size(x + 10, 10 + 100 - control_panel.stress, 6, control_panel.stress, colors[COLOR_RED]);
+    graphics_draw_text(disp, x + 24, 16, "D\nA\nN\nG\nE\nR\n\nZ\nO\nN\nE");
 }
 
-static void instructions_draw(display_context_t disp)
+static void instruments_draw(display_context_t disp)
 {
-    uint8_t x = 200;
-    uint8_t y = 138;
+    uint8_t x = 220;
+    uint8_t y = 130;
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
     rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
-    rdp_draw_filled_rectangle_size(x + 2, y + 2, width - 2, height - 2, colors[COLOR_PANEL]);
+    rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
 
-    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "INSTRUCTIONS");
+    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "INDICATORS");
 
-    rdp_draw_filled_rectangle_absolute(x + 8, y + 28, __width - 8, __height - 10, colors[COLOR_BLACK]);
+    graphics_set_color(colors[COLOR_RED], 0);
+    graphics_draw_textf_with_background(disp, x + 54, y + 30, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
+    graphics_set_color(colors[COLOR_WHITE], 0);
+    graphics_draw_text(disp, x + 8, y + 32, "TEMP");
+
+    graphics_set_color(colors[COLOR_RED], 0);
+    graphics_draw_textf_with_background(disp, x + 54, y + 30 + 24, colors[COLOR_BLACK], "%.03dW", control_panel.power);
+    graphics_set_color(colors[COLOR_WHITE], 0);
+    graphics_draw_text(disp, x + 8, y + 32 + 24, "POWER");
+
+    graphics_set_color(colors[COLOR_RED], 0);
+    graphics_draw_textf_with_background(disp, x + 46, y + 30 + 24 + 24, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
+    graphics_set_color(colors[COLOR_WHITE], 0);
+    graphics_draw_text(disp, x + 8, y + 32 + 24 + 24, "FREQ");
+}
+
+static void instructions_draw(display_context_t disp)
+{
+    uint8_t x = 220;
+    uint8_t y = 0;
+    uint8_t width = __width - x;
+    uint8_t height = 130;
+
+    rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
+    rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
+
+    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "GUIDANCE");
+
+    rdp_draw_filled_rectangle_size(x + 8, y + 28, width - 16, 94, colors[COLOR_BLACK]);
 
     graphics_set_color(colors[COLOR_YELLOW], 0);
     graphics_draw_text(disp, x + 8 + 4, y + 28 + 4, actions_get_current()->text);
@@ -72,10 +82,13 @@ static void instructions_draw(display_context_t disp)
 }
 void control_panel_draw(display_context_t disp)
 {
+    danger_bar_draw(disp);
+    instructions_draw(disp);
+
     instruments_draw(disp);
 
-    rdp_draw_filled_rectangle_absolute(0, 120, 200, __height, colors[COLOR_BORDER]);
-    rdp_draw_filled_rectangle_absolute(0, 122, __width - 120, __height, colors[COLOR_PANEL]);
+    rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_BORDER]);
+    rdp_draw_filled_rectangle_absolute(0, 122, __width - 100, __height, colors[COLOR_PANEL]);
     switch (control_panel.current_station)
     {
     case 0:
@@ -89,12 +102,16 @@ void control_panel_draw(display_context_t disp)
         break;
     }
 
-    instructions_draw(disp);
-
     if (control_panel.stress < 50)
-        rdp_draw_sprite_with_texture(tiles[12], 162, 30, 0);
+    {
+        rdp_draw_sprite_with_texture(tiles[12], 48, 10, 0);
+        rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
+    }
     else
-        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 12 : 1)], 162, 30, 0);
+    {
+        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 1 : 12)], 48, 10, 0);
+        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 12 : 1)], 198, 10, 0);
+    }
 }
 
 void control_panel_input(input_t *input)
@@ -125,19 +142,23 @@ control_panel_status_t control_panel_check_status(action_t *action)
         case STATION_LEFT:
             break;
         case STATION_CENTER:
-            break;
-        case STATION_RIGHT:
             switch (action->buttons[i].label)
             {
+            case LABEL_GRID:
+                if (control_panel.center.grid[action->buttons[i].expected[0]][action->buttons[i].expected[1]] == 0)
+                    return INCORRECT;
+                break;
             case LABEL_A:
-                if (control_panel.right.A != action->buttons[i].expected)
+                if (control_panel.center.button_a || control_panel.center.button_a_presses != action->buttons[i].expected[0])
                     return INCORRECT;
                 break;
             case LABEL_B:
-                if (control_panel.right.B != action->buttons[i].expected)
+                if (control_panel.center.button_b != action->buttons[i].expected[0])
                     return INCORRECT;
                 break;
             }
+            break;
+        case STATION_RIGHT:
             break;
         }
     }
@@ -177,7 +198,7 @@ void control_panel_timer()
     else
         sfx_set_next_music(SFX_HELL);
     control_panel.freq = 10 + (rand() % 230);
-    control_panel.power = 1000 + (rand() % 7777);
+    control_panel.power = 100 + (rand() % 777);
     control_panel.temp = (rand() % 100) - 40;
     if (control_panel.freq < 100)
         control_panel.freq = -control_panel.freq;
@@ -220,14 +241,17 @@ void station_center_draw(display_context_t disp)
     uint16_t y = 130;
 
     station_center_t *station = &(control_panel.center);
+
     // Button B
-    graphics_draw_textf_with_background(disp, x + 80, y, colors[COLOR_BROWN], "DECONTAMINATE");
-    rdp_draw_sprite_with_texture(tiles[(station->button_b ? 448 : 447)], x + 120, y + 15, 0);
+    graphics_draw_textf_with_background(disp, x + 90, y, colors[COLOR_BROWN], "DECONTAMINATE");
+    rdp_draw_sprite_with_texture(tiles[(station->button_b ? 448 : 447)], x + 130, y + 15, 0);
 
     // Button A
-    graphics_draw_textf_with_background(disp, x + 80, y + 45, colors[COLOR_BROWN], "ROD TENSION");
-    rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 120, y + 60, 0);
-    graphics_draw_textf(disp, x + 127, y + 65, "%d\n", station->button_a_presses);
+    graphics_draw_textf_with_background(disp, x + 100, y + 45, colors[COLOR_BROWN], "ROD TENSION");
+    rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 130, y + 60, 0);
+    graphics_set_color(colors[COLOR_BLACK], 0);
+    graphics_draw_textf(disp, x + 138, y + 66, "%d\n", station->button_a_presses);
+    graphics_set_color(colors[COLOR_WHITE], 0);
 
     // Grid
     graphics_draw_textf_with_background(disp, 10, 210, colors[COLOR_BROWN], "ROD CONTROLS");

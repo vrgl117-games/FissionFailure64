@@ -6,7 +6,7 @@ font_uni_b='resources/fonts/unibody/Unibody8Pro-Bold.otf'
 
 generate() {
     convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" /tmp/image.png
-    convert /tmp/image.png -background $1 -extent  $(convert /tmp/image.png -format '%[fx:2*int((w+1)/2)]x%[fx:2*int((h+1)/2)]!' info:) $6
+    convert /tmp/image.png -background $1 -extent $(convert /tmp/image.png -format '%[fx:2*int((w+1)/2)]x%[fx:2*int((h+1)/2)]!' info:) $6
 }
 
 # scientist

@@ -173,9 +173,9 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     rdp_attach(disp);
 
-    rdp_draw_filled_rectangle_size(0, 0, 200, 120, colors[COLOR_BG]);
+    rdp_draw_filled_rectangle_size(0, 0, 220, 120, colors[COLOR_BG]);
 
-    graphics_draw_sprite(disp, 35, 20, window);
+    graphics_draw_sprite(disp, 70, 20, window);
     free(window);
 
     rdp_draw_sprites_with_texture(scientist, xx, 30 + MAX(yy, 8), direction ? 0 : MIRROR_X);
@@ -418,7 +418,7 @@ void screen_timer()
     else
         yy--;
 
-    if (xx > 200)
+    if (xx > 220)
         direction = !direction;
     if (xx <= 0)
         direction = !direction;

@@ -12,42 +12,36 @@ void actions_init()
         .buttons = {
             {
                 .station = STATION_CENTER,
-                .label = LABEL_A,
-                .expected = true,
+                .label = LABEL_GRID,
+                .expected = {1, 1},
             },
         },
         .num_buttons = 1,
-        .text = "TURN ON\n\nGREEN FAN",
+        .text = "TURN ON\n\nRED ROD\n\nB 2",
     };
 
     action_t action1 = {
         .buttons = {
             {
                 .station = STATION_CENTER,
-                .label = LABEL_A,
-                .expected = false,
+                .label = LABEL_GRID,
+                .expected = {2, 2},
             },
         },
         .num_buttons = 1,
-        .text = "TURN GREEN\n\nFAN BACK OFF",
-
+        .text = "TURN ON\n\nBLUE ROD\n\nC 3",
     };
 
     action_t action2 = {
         .buttons = {
             {
                 .station = STATION_CENTER,
-                .label = LABEL_B,
-                .expected = true,
-            },
-            {
-                .station = STATION_RIGHT,
                 .label = LABEL_A,
-                .expected = true,
+                .expected = {3},
             },
         },
-        .num_buttons = 2,
-        .text = "TURN ON BLUE\n\nFAN AND\n\nENGAGE GREEN\n\nTURBINE",
+        .num_buttons = 1,
+        .text = "SET\n\nTENSION\n\nROD TO\n\n3",
 
     };
 
@@ -56,24 +50,24 @@ void actions_init()
             {
                 .station = STATION_CENTER,
                 .label = LABEL_B,
-                .expected = false,
+                .expected = {1},
             },
         },
         .num_buttons = 1,
-        .text = "TURN OFF\n\nBLUE FAN",
+        .text = "START\n\nDECONTA\n\nMINATION",
 
     };
 
     action_t action4 = {
         .buttons = {
             {
-                .station = STATION_RIGHT,
-                .label = LABEL_A,
-                .expected = false,
+                .station = STATION_CENTER,
+                .label = LABEL_B,
+                .expected = {0},
             },
         },
         .num_buttons = 1,
-        .text = "DISENGAGE\n\nGREEN\n\nTURBINE",
+        .text = "END\n\nDECONTA\n\nMINATION",
 
     };
 

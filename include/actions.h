@@ -9,6 +9,7 @@
 #define LABEL_A 0
 #define LABEL_B 1
 #define LABEL_Z 2
+#define LABEL_GRID 3
 
 #define STATION_LEFT 0
 #define STATION_CENTER 1
@@ -18,7 +19,7 @@ typedef struct button
 {
     uint8_t station;
     uint8_t label;
-    bool expected;
+    uint8_t expected[2];
 
 } button_t;
 
