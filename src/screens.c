@@ -6,10 +6,8 @@
 #include "control_panel.h"
 #include "dfs.h"
 #include "rdp.h"
+#include "scientist.h"
 #include "sfx.h"
-
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 extern uint32_t __width;
 extern uint32_t __height;
@@ -18,10 +16,6 @@ extern volume_t volume_sfx;
 extern volume_t volume_music;
 extern control_panel_t control_panel;
 
-static volatile uint16_t xx = 0;
-static volatile uint16_t yy = 0;
-static volatile bool direction = true;
-static volatile bool vert = true;
 static volatile uint32_t ticks = 0;
 static volatile bool alt = false;
 
@@ -115,23 +109,24 @@ bool screen_intro(display_context_t disp)
     anim++;
     return (anim >= 112);
 }
-
-static sprites_t *scientist_idle_sp = NULL;
-static sprites_t *scientist_stressed_sp = NULL;
-static sprites_t *scientist_hell_sp = NULL;
-
+static sprite_t *window_idle_sp = NULL;
+static sprite_t *window_stressed_sp = NULL;
+static sprite_t *window_hell_sp = NULL;
+static sprite_t *window_hell_alt_sp = NULL;
 void screen_game_load()
 {
-    scientist_idle_sp = dfs_load_sprites("/gfx/sprites/scientist/idle-%d.sprite");
-    scientist_stressed_sp = dfs_load_sprites("/gfx/sprites/scientist/stressed-%d.sprite");
-    scientist_hell_sp = dfs_load_sprites("/gfx/sprites/scientist/hell-%d.sprite");
+    window_idle_sp = dfs_load_sprite("/gfx/sprites/window/idle.sprite");
+    window_stressed_sp = dfs_load_sprite("/gfx/sprites/window/stressed.sprite");
+    window_hell_sp = dfs_load_sprite("/gfx/sprites/window/hell.sprite");
+    window_hell_alt_sp = dfs_load_sprite("/gfx/sprites/window/hell_alt.sprite");
 }
 
 void screen_game_unload()
 {
-    dfs_free_sprites(scientist_idle_sp);
-    dfs_free_sprites(scientist_stressed_sp);
-    dfs_free_sprites(scientist_hell_sp);
+    free(window_idle_sp);
+    free(window_stressed_sp);
+    free(window_hell_sp);
+    free(window_hell_alt_sp);
 }
 
 // main screen for the game
@@ -153,22 +148,22 @@ screen_t screen_game(display_context_t disp, input_t *input)
         break;
     }
 
-    sprites_t *scientist;
     sprite_t *window;
+    uint8_t mode;
     if (control_panel.stress > HELL_THRESHOLD)
     {
-        scientist = scientist_hell_sp;
-        window = dfs_load_sprite(alt ? "/gfx/sprites/window/hell_alt.sprite" : "/gfx/sprites/window/hell.sprite");
+        mode = 2;
+        window = (alt ? window_hell_alt_sp : window_hell_sp);
     }
     else if (control_panel.stress > STRESS_THRESHOLD)
     {
-        scientist = scientist_stressed_sp;
-        window = dfs_load_sprite("/gfx/sprites/window/stressed.sprite");
+        mode = 1;
+        window = window_stressed_sp;
     }
     else
     {
-        scientist = scientist_idle_sp;
-        window = dfs_load_sprite("/gfx/sprites/window/idle.sprite");
+        mode = 0;
+        window = window_idle_sp;
     }
 
     rdp_attach(disp);
@@ -176,9 +171,8 @@ screen_t screen_game(display_context_t disp, input_t *input)
     rdp_draw_filled_rectangle_size(0, 0, 220, 120, colors[COLOR_BG]);
 
     graphics_draw_sprite(disp, 70, 20, window);
-    free(window);
 
-    rdp_draw_sprites_with_texture(scientist, xx, 30 + MAX(yy, 8), direction ? 0 : MIRROR_X);
+    scientist_draw(mode);
 
     control_panel_draw(disp);
 
@@ -504,26 +498,6 @@ bool screen_win(display_context_t disp, input_t *input)
 void screen_timer()
 {
     ticks++;
-
-    if (direction)
-        xx++;
-    else
-        xx--;
-
-    if (vert)
-        yy++;
-    else
-        yy--;
-
-    if (xx > 220)
-        direction = !direction;
-    if (xx <= 0)
-        direction = !direction;
-
-    if (yy > 12)
-        vert = !vert;
-    if (yy <= 0)
-        vert = !vert;
 
     if (ticks % 10 == 0)
         alt = (rand() % 100 >= 80);

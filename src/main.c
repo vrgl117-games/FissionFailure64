@@ -8,6 +8,7 @@
 #include "fps.h"
 #include "input.h"
 #include "rdp.h"
+#include "scientist.h"
 #include "screens.h"
 #include "sfx.h"
 
@@ -25,7 +26,7 @@ extern uint32_t __height;
 extern uint32_t colors[];
 #endif
 
-screen_t screen = intro;
+screen_t screen = title;
 screen_t prev_screen; //used in credits to know where to go back to
 
 #if ENABLE_VRU
@@ -191,6 +192,7 @@ int main()
     timer_init();
     input_init();
     debug_init_isviewer();
+    scientist_init();
     actions_init();
     colors_init();
 
@@ -202,8 +204,11 @@ int main()
     new_timer(TIMER_TICKS(S1), TF_CONTINUOUS, fps_timer);
 #endif
 
-    // blinking "press start" and scientist position
+    // blinking "press start" and window
     new_timer(TIMER_TICKS(MS20), TF_CONTINUOUS, screen_timer);
+
+    // scientists position
+    new_timer(TIMER_TICKS(MS20), TF_CONTINUOUS, scientist_timer);
 
     timer_link_t *game_timer = NULL;
     display_context_t disp = 0;
