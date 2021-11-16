@@ -25,7 +25,7 @@ extern uint32_t __height;
 extern uint32_t colors[];
 #endif
 
-screen_t screen = title;
+screen_t screen = intro;
 screen_t prev_screen; //used in credits to know where to go back to
 
 #if ENABLE_VRU
@@ -241,14 +241,25 @@ int main()
             }
             break;
         case title:
-            if (screen_title_draw(disp, &input))
+            switch (screen_title_draw(disp, &input))
             {
+            case pause_resume:
                 screen_title_unload();
                 screen_game_load();
+                input_timer(); // reset pressed to 0
                 screen = game;
                 sfx_stop(CH_MUSIC);
                 control_panel_reset();
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
+                break;
+            case pause_tutorial:
+                prev_screen = title;
+                screen = tutorial;
+                memset(&input, 0, sizeof(input));
+                screen_tutorial(disp, &input, true);
+                break;
+            default:
+                break;
             }
             break;
         case game: // actual game.
@@ -290,8 +301,15 @@ int main()
                 break;
             case pause_resume:
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
+                input_timer(); // reset pressed to 0
                 screen = game;
                 sfx_set_pause(false);
+                break;
+            case pause_tutorial:
+                prev_screen = pause;
+                screen = tutorial;
+                memset(&input, 0, sizeof(input));
+                screen_tutorial(disp, &input, true);
                 break;
             case pause_credits:
                 prev_screen = pause;
@@ -311,6 +329,10 @@ int main()
             break;
         case options:
             if (screen_options(disp, &input))
+                screen = prev_screen;
+            break;
+        case tutorial:
+            if (screen_tutorial(disp, &input, false))
                 screen = prev_screen;
             break;
         case credits:

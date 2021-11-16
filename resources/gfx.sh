@@ -17,9 +17,20 @@ convert -strip resources/gfx/sprites/scientist/hell.png -crop 16 resources/gfx/s
 # message
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
+# tutorial
+generate "#000000ff" "#ffff00ff" "$font" 24 'How to man the stations' resources/gfx/sprites/ui/how_to.png
+generate "#000000ff" "#ffff00ff" "$font" 18 'LEFT' resources/gfx/sprites/ui/left.png
+generate "#000000ff" "#ffff00ff" "$font" 18 'CENTER' resources/gfx/sprites/ui/center.png
+generate "#000000ff" "#ffff00ff" "$font" 18 'RIGHT' resources/gfx/sprites/ui/right.png
+generate "#000000ff" "#ffff00ff" "$font" 18 'Use L and R to change station' resources/gfx/sprites/ui/use_l_r.png
+
+
 # title screen
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
-generate "#000000ff" "#ffff00ff" "$font" 18 "PRESS START" resources/gfx/sprites/ui/press_start.png
+generate "#000000ff" "#ffffffff" "$font" 18 "START" resources/gfx/sprites/ui/caps_start.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "START" resources/gfx/sprites/ui/caps_start_selected.png
+generate "#000000ff" "#ffffffff" "$font" 18 "TUTORIAL" resources/gfx/sprites/ui/caps_tutorial.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "TUTORIAL" resources/gfx/sprites/ui/caps_tutorial_selected.png
 
 # win / game over screens
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Well Done!" resources/gfx/sprites/ui/win.png
@@ -32,6 +43,8 @@ generate "#000000ff" "#ffffffff" "$font" 18 "Resume" resources/gfx/sprites/ui/re
 generate "#000000ff" "#ffff00ff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume_selected.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Options" resources/gfx/sprites/ui/options.png
 generate "#000000ff" "#ffff00ff" "$font" 18 "Options" resources/gfx/sprites/ui/options_selected.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial_selected.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits.png
 generate "#000000ff" "#ffff00ff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits_selected.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit.png

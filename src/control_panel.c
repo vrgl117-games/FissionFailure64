@@ -44,7 +44,7 @@ static void instruments_draw(display_context_t disp)
     rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
     rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
 
-    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "INDICATORS");
+    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "STATUS");
 
     graphics_set_color(colors[COLOR_RED], 0);
     graphics_draw_textf_with_background(disp, x + 54, y + 30, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
@@ -72,7 +72,7 @@ static void instructions_draw(display_context_t disp)
     rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
     rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
 
-    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "GUIDANCE");
+    graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "COMMANDS");
 
     rdp_draw_filled_rectangle_size(x + 8, y + 28, width - 16, 94, colors[COLOR_BLACK]);
 
@@ -103,15 +103,9 @@ void control_panel_draw(display_context_t disp)
     }
 
     if (control_panel.stress < 50)
-    {
-        rdp_draw_sprite_with_texture(tiles[12], 48, 10, 0);
         rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
-    }
     else
-    {
         rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 1 : 12)], 48, 10, 0);
-        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 12 : 1)], 198, 10, 0);
-    }
 }
 
 void control_panel_input(input_t *input)
