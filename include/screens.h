@@ -19,15 +19,15 @@ typedef enum screen
     win,
 } screen_t;
 
-typedef enum pause_selection
+typedef enum screen_selection
 {
-    pause_none = -1,
-    pause_resume = 0,
-    pause_options = 1,
-    pause_tutorial = 2,
-    pause_credits = 3,
-    pause_quit = 4,
-} pause_selection_t;
+    screen_selection_none = -1,
+    screen_selection_resume = 0,
+    screen_selection_options = 1,
+    screen_selection_tutorial = 2,
+    screen_selection_credits = 3,
+    screen_selection_quit = 4,
+} screen_selection_t;
 
 bool screen_credits(display_context_t disp, input_t *input);
 bool screen_intro(display_context_t disp);
@@ -40,9 +40,9 @@ bool screen_message_draw(display_context_t disp);
 void screen_message_load();
 void screen_message_unload();
 bool screen_options(display_context_t disp, input_t *input);
-pause_selection_t screen_pause(display_context_t disp, input_t *input, bool reset);
+screen_selection_t screen_pause(display_context_t disp, input_t *input, bool reset);
 void screen_timer();
-pause_selection_t screen_title_draw(display_context_t disp, input_t *input);
+screen_selection_t screen_title_draw(display_context_t disp, input_t *input);
 void screen_title_load();
 void screen_title_unload();
 bool screen_tutorial(display_context_t disp, input_t *input, bool reset);

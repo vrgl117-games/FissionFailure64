@@ -102,7 +102,7 @@ void control_panel_draw(display_context_t disp)
         break;
     }
 
-    if (control_panel.stress < 50)
+    if (control_panel.mode == IDLE)
         rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
     else
         rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 1 : 12)], 48, 10, 0);
@@ -176,7 +176,6 @@ void control_panel_init()
 void control_panel_reset()
 {
     memset(&control_panel, 0, sizeof(control_panel));
-    control_panel.stress = 0;
     control_panel.current_station = 1;
     control_panel.center.grid[2][1] = 1;
     control_panel.center.grid[3][3] = 2;
@@ -186,11 +185,20 @@ void control_panel_timer()
 {
     control_panel.stress++;
     if (control_panel.stress <= STRESS_THRESHOLD)
+    {
+        control_panel.mode = IDLE;
         sfx_set_next_music(SFX_IDLE);
+    }
     else if (control_panel.stress <= HELL_THRESHOLD)
+    {
+        control_panel.mode = STRESSED;
         sfx_set_next_music(SFX_STRESS);
+    }
     else
+    {
+        control_panel.mode = HELL;
         sfx_set_next_music(SFX_HELL);
+    }
     control_panel.freq = 10 + (rand() % 230);
     control_panel.power = 100 + (rand() % 777);
     control_panel.temp = (rand() % 100) - 40;

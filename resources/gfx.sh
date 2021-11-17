@@ -10,15 +10,15 @@ generate() {
 }
 
 # scientist
-convert -strip resources/gfx/sprites/scientist/idle.png -crop 16 resources/gfx/sprites/scientist/idle-%d.png
-convert -strip resources/gfx/sprites/scientist/stressed.png -crop 16 resources/gfx/sprites/scientist/stressed-%d.png
-convert -strip resources/gfx/sprites/scientist/hell.png -crop 16 resources/gfx/sprites/scientist/hell-%d.png
-convert -strip resources/gfx/sprites/scientist/idle2.png -crop 16 resources/gfx/sprites/scientist/idle2-%d.png
-convert -strip resources/gfx/sprites/scientist/stressed2.png -crop 16 resources/gfx/sprites/scientist/stressed2-%d.png
-convert -strip resources/gfx/sprites/scientist/hell2.png -crop 16 resources/gfx/sprites/scientist/hell2-%d.png
-convert -strip resources/gfx/sprites/scientist/idle3.png -crop 16 resources/gfx/sprites/scientist/idle3-%d.png
-convert -strip resources/gfx/sprites/scientist/stressed3.png -crop 16 resources/gfx/sprites/scientist/stressed3-%d.png
-convert -strip resources/gfx/sprites/scientist/hell3.png -crop 16 resources/gfx/sprites/scientist/hell3-%d.png
+convert -strip resources/gfx/sprites/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
+convert -strip resources/gfx/sprites/scientists/stressed0.png -crop 16 resources/gfx/sprites/scientists/stressed0-%d.png
+convert -strip resources/gfx/sprites/scientists/hell0.png -crop 16 resources/gfx/sprites/scientists/hell0-%d.png
+convert -strip resources/gfx/sprites/scientists/idle1.png -crop 16 resources/gfx/sprites/scientists/idle1-%d.png
+convert -strip resources/gfx/sprites/scientists/stressed1.png -crop 16 resources/gfx/sprites/scientists/stressed1-%d.png
+convert -strip resources/gfx/sprites/scientists/hell1.png -crop 16 resources/gfx/sprites/scientists/hell1-%d.png
+convert -strip resources/gfx/sprites/scientists/idle2.png -crop 16 resources/gfx/sprites/scientists/idle2-%d.png
+convert -strip resources/gfx/sprites/scientists/stressed2.png -crop 16 resources/gfx/sprites/scientists/stressed2-%d.png
+convert -strip resources/gfx/sprites/scientists/hell2.png -crop 16 resources/gfx/sprites/scientists/hell2-%d.png
 # message
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 

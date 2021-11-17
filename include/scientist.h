@@ -4,9 +4,11 @@
 
 #include "dfs.h"
 
-#define MAX_X 220
+#define MIN_X -100
+#define MAX_X 320
+#define MAX_VISIBLE_X 220
 #define MAX_Y 12
-
+#define NUM_SCIENTIST 5
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
@@ -15,14 +17,15 @@ typedef struct scientist
     uint8_t mode; //0 -> idle, 1 -> stressed, 2 -> hell
     sprites_t *sprites[3];
 
-    uint8_t x;
+    int16_t x;
     uint8_t y;
+    uint8_t y_offset;
 
     bool h_direction;
     bool v_direction;
 } scientist_t;
 
-void scientist_draw(uint8_t mode);
+void scientist_draw();
 void scientist_init();
 void scientist_timer();
 

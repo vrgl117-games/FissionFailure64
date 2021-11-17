@@ -248,7 +248,7 @@ int main()
         case title:
             switch (screen_title_draw(disp, &input))
             {
-            case pause_resume:
+            case screen_selection_resume:
                 screen_title_unload();
                 screen_game_load();
                 input_timer(); // reset pressed to 0
@@ -257,7 +257,7 @@ int main()
                 control_panel_reset();
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 break;
-            case pause_tutorial:
+            case screen_selection_tutorial:
                 prev_screen = title;
                 screen = tutorial;
                 memset(&input, 0, sizeof(input));
@@ -300,27 +300,27 @@ int main()
         case pause: // pause menu.
             switch (screen_pause(disp, &input, false))
             {
-            case pause_options:
+            case screen_selection_options:
                 prev_screen = pause;
                 screen = options;
                 break;
-            case pause_resume:
+            case screen_selection_resume:
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 input_timer(); // reset pressed to 0
                 screen = game;
                 sfx_set_pause(false);
                 break;
-            case pause_tutorial:
+            case screen_selection_tutorial:
                 prev_screen = pause;
                 screen = tutorial;
                 memset(&input, 0, sizeof(input));
                 screen_tutorial(disp, &input, true);
                 break;
-            case pause_credits:
+            case screen_selection_credits:
                 prev_screen = pause;
                 screen = credits;
                 break;
-            case pause_quit:
+            case screen_selection_quit:
                 actions_reset();
                 control_panel_reset();
                 screen_title_load();

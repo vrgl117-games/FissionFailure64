@@ -1,48 +1,66 @@
 #include "scientist.h"
 
+#include <stdlib.h>
+
+#include "control_panel.h"
 #include "rdp.h"
 
-static scientist_t scientists[3];
+extern control_panel_t control_panel;
 
-void scientist_draw(uint8_t mode)
+static scientist_t scientists[NUM_SCIENTIST];
+
+void scientist_draw()
 {
-    for (uint8_t i = 0; i < 3; i++)
-        rdp_draw_sprites_with_texture(scientists[i].sprites[mode], scientists[i].x, 28 + (i * 2) + MAX(scientists[i].y, 8), scientists[i].h_direction);
+    for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
+    {
+        if (scientists[i].x >= 0 && scientists[i].x < MAX_VISIBLE_X)
+            rdp_draw_sprites_with_texture(scientists[i].sprites[control_panel.mode], scientists[i].x, scientists[i].y_offset + MAX(scientists[i].y, 8), scientists[i].h_direction);
+    }
 }
 
 void scientist_init()
 {
-    scientists[0].h_direction = false;
-    scientists[0].v_direction = true;
-    scientists[0].sprites[0] = dfs_load_sprites("/gfx/sprites/scientist/idle-%d.sprite");
-    scientists[0].sprites[1] = dfs_load_sprites("/gfx/sprites/scientist/stressed-%d.sprite");
-    scientists[0].sprites[2] = dfs_load_sprites("/gfx/sprites/scientist/hell-%d.sprite");
+    sprites_t *scientists_sp[3][3] = {
+        {
+            dfs_load_sprites("/gfx/sprites/scientists/idle0-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/stressed0-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/hell0-%d.sprite"),
+        },
+        {
+            dfs_load_sprites("/gfx/sprites/scientists/idle1-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/stressed1-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
+        },
+        {
+            dfs_load_sprites("/gfx/sprites/scientists/idle2-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/stressed2-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
+        },
+    };
 
-    scientists[1].h_direction = true;
-    scientists[1].v_direction = true;
-    scientists[1].x = 50;
-    scientists[1].y = MAX_Y;
-    scientists[1].sprites[0] = dfs_load_sprites("/gfx/sprites/scientist/idle2-%d.sprite");
-    scientists[1].sprites[1] = dfs_load_sprites("/gfx/sprites/scientist/stressed2-%d.sprite");
-    scientists[1].sprites[2] = dfs_load_sprites("/gfx/sprites/scientist/hell2-%d.sprite");
+    for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
+    {
+        scientists[i].h_direction = (rand() % 2);
+        scientists[i].v_direction = (rand() % 2);
+        scientists[i].x = (rand() % (MAX_X - MIN_X)) + MIN_X;
+        scientists[i].y = 1 + (rand() % 7);
+        scientists[i].y_offset = 28 + (rand() % 3 * 2);
 
-    scientists[2].h_direction = false;
-    scientists[2].v_direction = false;
-    scientists[2].x = 180;
-    scientists[2].y = 6;
-    scientists[2].sprites[0] = dfs_load_sprites("/gfx/sprites/scientist/idle3-%d.sprite");
-    scientists[2].sprites[1] = dfs_load_sprites("/gfx/sprites/scientist/stressed3-%d.sprite");
-    scientists[2].sprites[2] = dfs_load_sprites("/gfx/sprites/scientist/hell3-%d.sprite");
+        uint8_t num = (rand() % 3);
+        scientists[i].sprites[0] = scientists_sp[num][0];
+        scientists[i].sprites[1] = scientists_sp[num][1];
+        scientists[i].sprites[2] = scientists_sp[num][2];
+    }
 }
 
 void scientist_timer()
 {
-    for (uint8_t i = 0; i < 3; i++)
+    for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
     {
         if (!scientists[i].h_direction)
-            scientists[i].x++;
+            scientists[i].x += (control_panel.mode + 1);
         else
-            scientists[i].x--;
+            scientists[i].x -= (control_panel.mode + 1);
 
         if (scientists[i].v_direction)
             scientists[i].y++;
@@ -51,7 +69,7 @@ void scientist_timer()
 
         if (scientists[i].x > MAX_X)
             scientists[i].h_direction = !scientists[i].h_direction;
-        if (scientists[i].x <= 0)
+        if (scientists[i].x <= MIN_X)
             scientists[i].h_direction = !scientists[i].h_direction;
 
         if (scientists[i].y > MAX_Y)

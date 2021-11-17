@@ -148,22 +148,17 @@ screen_t screen_game(display_context_t disp, input_t *input)
         break;
     }
 
-    sprite_t *window;
-    uint8_t mode;
-    if (control_panel.stress > HELL_THRESHOLD)
+    sprite_t *window = window_idle_sp;
+    switch (control_panel.mode)
     {
-        mode = 2;
-        window = (alt ? window_hell_alt_sp : window_hell_sp);
-    }
-    else if (control_panel.stress > STRESS_THRESHOLD)
-    {
-        mode = 1;
+    case STRESSED:
         window = window_stressed_sp;
-    }
-    else
-    {
-        mode = 0;
-        window = window_idle_sp;
+        break;
+    case HELL:
+        window = (alt ? window_hell_alt_sp : window_hell_sp);
+        break;
+    default:
+        break;
     }
 
     rdp_attach(disp);
@@ -172,7 +167,7 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     graphics_draw_sprite(disp, 70, 20, window);
 
-    scientist_draw(mode);
+    scientist_draw();
 
     control_panel_draw(disp);
 
@@ -306,7 +301,7 @@ bool screen_options(display_context_t disp, input_t *input)
 }
 
 // pause menu
-pause_selection_t screen_pause(display_context_t disp, input_t *input, bool reset)
+screen_selection_t screen_pause(display_context_t disp, input_t *input, bool reset)
 {
     static uint8_t selected = 0;
 
@@ -347,8 +342,8 @@ pause_selection_t screen_pause(display_context_t disp, input_t *input, bool rese
     if (input->A)
         return selected;
     if (input->start)
-        return pause_resume;
-    return pause_none;
+        return screen_selection_resume;
+    return screen_selection_none;
 }
 
 static sprite_t *logo_sp = NULL;
@@ -374,7 +369,7 @@ void screen_title_unload()
     free(tutorial_selected_sp);
 }
 
-pause_selection_t screen_title_draw(display_context_t disp, input_t *input)
+screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
 {
     static uint8_t selected = 0;
 
@@ -401,11 +396,9 @@ pause_selection_t screen_title_draw(display_context_t disp, input_t *input)
     else if (ticks % 40 > 19)
         graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_selected_sp);
 
-    if (input->A)
-        return selected;
-    if (input->start)
-        return pause_resume;
-    return pause_none;
+    if (input->A || input->start)
+        return screen_selection_resume;
+    return screen_selection_none;
 }
 
 // tutorial screen

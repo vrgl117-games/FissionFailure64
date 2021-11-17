@@ -55,6 +55,13 @@ typedef struct station_right
 void station_right_draw(display_context_t disp);
 void station_right_input(input_t *input);
 
+typedef enum control_panel_mode
+{
+    IDLE = 0,
+    STRESSED = 1,
+    HELL = 2,
+} control_panel_mode_t;
+
 typedef struct control_panel
 {
     int8_t temp;
@@ -65,6 +72,7 @@ typedef struct control_panel
     station_center_t center;
     station_right_t right;
 
+    control_panel_mode_t mode;
     uint8_t current_station;
 } control_panel_t;
 
