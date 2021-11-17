@@ -163,7 +163,10 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     rdp_attach(disp);
 
-    rdp_draw_filled_rectangle_size(0, 0, 220, 120, colors[COLOR_BG]);
+    if (!control_panel.lights_off)
+        rdp_draw_filled_rectangle_size(0, 0, 220, 120, colors[COLOR_BG]);
+    else
+        rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
     graphics_draw_sprite(disp, 70, 20, window);
 

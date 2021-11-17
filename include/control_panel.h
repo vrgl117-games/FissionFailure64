@@ -74,6 +74,7 @@ typedef struct control_panel
 
     control_panel_mode_t mode;
     uint8_t current_station;
+    bool lights_off;
 } control_panel_t;
 
 typedef enum control_panel_status

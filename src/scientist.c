@@ -8,18 +8,21 @@
 extern control_panel_t control_panel;
 
 static scientist_t scientists[NUM_SCIENTIST];
+static sprites_t *dark;
 
 void scientist_draw()
 {
     for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
     {
         if (scientists[i].x >= 0 && scientists[i].x < MAX_VISIBLE_X)
-            rdp_draw_sprites_with_texture(scientists[i].sprites[control_panel.mode], scientists[i].x, scientists[i].y_offset + MAX(scientists[i].y, 8), scientists[i].h_direction);
+            rdp_draw_sprites_with_texture((control_panel.lights_off ? dark : scientists[i].sprites[control_panel.mode]), scientists[i].x, scientists[i].y_offset + MAX(scientists[i].y, 8), scientists[i].h_direction);
     }
 }
 
 void scientist_init()
 {
+    dark = dfs_load_sprites("/gfx/sprites/scientists/dark-%d.sprite");
+
     sprites_t *scientists_sp[3][3] = {
         {
             dfs_load_sprites("/gfx/sprites/scientists/idle0-%d.sprite"),
