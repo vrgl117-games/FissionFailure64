@@ -400,7 +400,7 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
         graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_selected_sp);
 
     if (input->A || input->start)
-        return screen_selection_resume;
+        return selected;
     return screen_selection_none;
 }
 

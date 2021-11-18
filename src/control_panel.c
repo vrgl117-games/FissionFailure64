@@ -90,6 +90,7 @@ static void instructions_draw(display_context_t disp)
     graphics_draw_text(disp, x + 8 + 4, y + 28 + 4, actions_get_current()->text);
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
+
 void control_panel_draw(display_context_t disp)
 {
     danger_bar_draw(disp);
@@ -190,8 +191,23 @@ void control_panel_reset()
 {
     memset(&control_panel, 0, sizeof(control_panel));
     control_panel.current_station = 1;
-    control_panel.center.grid[2][1] = 1;
-    control_panel.center.grid[3][3] = 2;
+
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        uint8_t x = rand() % GRID_SIZE;
+        uint8_t y = rand() % GRID_SIZE;
+        if (control_panel.center.grid[y][x] != 0)
+        {
+            i--;
+            continue;
+        }
+        control_panel.center.grid[y][x] = i + 1;
+    }
+
+    for (uint8_t i = 0; i < NUM_SLIDERS; i++)
+        control_panel.left.sliders[i] = 1 + rand() % 3;
+
+    control_panel.freq = 200 + (100 * control_panel.left.sliders[0]) + (-33 * control_panel.left.sliders[1]) + (17 * control_panel.left.sliders[2]);
 }
 
 void control_panel_timer()
@@ -212,22 +228,80 @@ void control_panel_timer()
         control_panel.mode = HELL;
         sfx_set_next_music(SFX_HELL);
     }
-    control_panel.freq = 10 + (rand() % 230);
     control_panel.power = 100 + (rand() % 777);
     control_panel.temp = (rand() % 100) - 40;
-    if (control_panel.freq < 100)
-        control_panel.freq = -control_panel.freq;
 }
 
 void station_left_draw(display_context_t disp)
 {
-    graphics_draw_textf_with_background(disp, 8, 168, colors[COLOR_BROWN], "COMMUNICATIONS");
-
     uint16_t x = 16;
-    uint16_t y = 200;
+    uint16_t y = 152;
 
-    for (int i = 0; i < 10; i++)
-        rdp_draw_sprite_with_texture(tiles[51 + i], x + i * 17, y, 0);
+    station_left_t *station = &(control_panel.left);
+
+    //rdp_draw_filled_rectangle_size(x, y - 20, 124, 14, colors[COLOR_BG]);
+    //rdp_draw_filled_rectangle_size(x + 2, y - 18, 120, 10, colors[COLOR_WHITE]);
+    //for (uint8_t i = 0; i < 11; i++)
+    //rdp_draw_filled_rectangle_size(x + 11 + i * 10, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
+
+    if (!control_panel.lights_off)
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BROWN], "RADIO");
+
+    rdp_draw_filled_rectangle_size(x + 50, y - 20, 74, 14, colors[COLOR_BG]);
+    rdp_draw_filled_rectangle_size(x + 52, y - 18, 70, 10, colors[COLOR_WHITE]);
+    for (uint8_t i = 0; i < 6; i++)
+        rdp_draw_filled_rectangle_size(x + 61 + i * 10, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
+
+    //rdp_draw_filled_rectangle_size(x + 2 + control_panel.freq * 12 / 100, y - 17, 1, 8, colors[COLOR_ORANGE]);
+
+    rdp_draw_filled_rectangle_size(x + 52 + control_panel.freq * 12 / 100, y - 17, 1, 8, colors[COLOR_ORANGE]);
+    if (!control_panel.lights_off)
+    {
+        for (uint8_t i = 0; i < NUM_SLIDERS; i++)
+        {
+            rdp_draw_filled_rectangle_size(x, y + 10 + 18 * i, 124, 2, colors[COLOR_BLACK]);
+            rdp_draw_filled_rectangle_size(x + station->sliders[i] * 25, (y + 18 * i) + 4, 24, 12, (i == station->selected_slider) ? colors[COLOR_YELLOW] : colors_dark[i + 1]);
+            rdp_draw_filled_rectangle_size(x + 2 + station->sliders[i] * 25, (y + 18 * i) + 6, 20, 8, colors[i + 1]);
+            rdp_draw_filled_rectangle_size(x + 5 + station->sliders[i] * 25, (y + 18 * i) + 8, 2, 4, colors_dark[i + 1]);
+            rdp_draw_filled_rectangle_size(x + 11 + station->sliders[i] * 25, (y + 18 * i) + 8, 2, 4, colors_dark[i + 1]);
+            rdp_draw_filled_rectangle_size(x + 17 + station->sliders[i] * 25, (y + 18 * i) + 8, 2, 4, colors_dark[i + 1]);
+        }
+    }
+
+    x = x + 160;
+    y = 152;
+
+    if (!control_panel.lights_off)
+    {
+        graphics_draw_textf_with_background(disp, x - 20, y - 20, colors[COLOR_BROWN], "LIGHTS");
+
+        rdp_draw_filled_rectangle_size(x, y, 32, 16, colors[COLOR_BG]);
+    }
+    if (!station->button_z)
+    {
+        rdp_draw_filled_rectangle_size(x + 2, y + 2, 12, 12, colors_dark[COLOR_GREEN]);
+        rdp_draw_filled_rectangle_size(x + 4, y + 4, 8, 8, colors[COLOR_GREEN]);
+        rdp_draw_filled_rectangle_size(x + 7, y + 7, 2, 2, colors_dark[COLOR_GREEN]);
+    }
+    else
+    {
+        rdp_draw_filled_rectangle_size(x + 16 + 2, y + 2, 12, 12, colors_dark[COLOR_RED]);
+        rdp_draw_filled_rectangle_size(x + 16 + 4, y + 4, 8, 8, colors[COLOR_RED]);
+        rdp_draw_filled_rectangle_size(x + 16 + 7, y + 7, 2, 2, colors_dark[COLOR_RED]);
+    }
+
+    x = x + 8;
+    y = y + 42;
+
+    if (!control_panel.lights_off)
+    {
+        graphics_draw_textf_with_background(disp, x - 22, y, colors[COLOR_BROWN], "PUMPS");
+
+        rdp_draw_filled_rectangle_size(16, 214, 190, 12, colors[COLOR_BG]);
+        rdp_draw_filled_rectangle_size(18, 216, 186, 8, colors[COLOR_WHITE]);
+    }
+    uint8_t width = 2 + (station->rotations * 20);
+    rdp_draw_filled_rectangle_size(20, 218, width, 4, colors[COLOR_RED]);
 }
 
 void station_left_input(input_t *input)
@@ -238,16 +312,68 @@ void station_left_input(input_t *input)
     station_left_t *station = &(control_panel.left);
 
     if (input->up)
-        station->DPAD[INPUT_UP] = !station->DPAD[INPUT_UP];
+        if (station->selected_slider > 0)
+            station->selected_slider--;
     if (input->down)
-        station->DPAD[INPUT_DOWN] = !station->DPAD[INPUT_DOWN];
+        if (station->selected_slider < NUM_SLIDERS - 1)
+            station->selected_slider++;
     if (input->left)
-        station->DPAD[INPUT_LEFT] = !station->DPAD[INPUT_LEFT];
+        if (station->sliders[station->selected_slider] > 0)
+            station->sliders[station->selected_slider]--;
     if (input->right)
-        station->DPAD[INPUT_RIGHT] = !station->DPAD[INPUT_RIGHT];
+        if (station->sliders[station->selected_slider] < SLIDER_POSITONS - 1)
+            station->sliders[station->selected_slider]++;
+
+    control_panel.freq = 200 + (100 * station->sliders[0]) + (-33 * station->sliders[1]) + (17 * station->sliders[2]);
 
     if (input->Z)
-        station->Z = !station->Z;
+    {
+        station->button_z = !station->button_z;
+        control_panel.lights_off = station->button_z;
+    }
+
+    uint8_t joystick = 0;
+    if (input->y > 90)
+    {
+        if (input->x < -90)
+            joystick = 1;
+        else if (input->x > 90)
+            joystick = 3;
+        else
+            joystick = 2;
+    }
+    else if (input->y < -90)
+    {
+        if (input->x < -90)
+            joystick = 7;
+        else if (input->x > 90)
+            joystick = 5;
+        else
+            joystick = 6;
+    }
+    else
+    {
+        if (input->x < -90)
+            joystick = 8;
+        else if (input->x > 90)
+            joystick = 4;
+    }
+
+    if (joystick > station->joystick)
+    {
+        if (joystick == 8)
+        {
+            joystick = 0;
+            if (station->rotations != 9)
+                station->rotations++;
+        }
+        station->joystick = joystick;
+    }
+    else if (joystick != 0 && station->rotations != 9)
+    {
+        station->joystick = 0;
+        station->rotations = 0;
+    }
 }
 
 void station_center_draw(display_context_t disp)
@@ -306,20 +432,17 @@ void station_center_input(input_t *input)
         if (station->gridselector_y > 0)
             station->gridselector_y--;
     if (input->down)
-        if (station->gridselector_y < 3)
+        if (station->gridselector_y < GRID_SIZE - 1)
             station->gridselector_y++;
     if (input->left)
         if (station->gridselector_x > 0)
             station->gridselector_x--;
     if (input->right)
-        if (station->gridselector_x < 3)
+        if (station->gridselector_x < GRID_SIZE - 1)
             station->gridselector_x++;
 
     if (input->B)
-    {
         station->button_b = !station->button_b;
-        control_panel.lights_off = station->button_b;
-    }
 
     if (input_get_A_presses())
     {
@@ -339,7 +462,7 @@ void station_center_input(input_t *input)
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
             station->gridselector_y--;
         }
-        if (input->C_down && station->gridselector_y < 3 && (station->grid[station->gridselector_y + 1][station->gridselector_x] == 0))
+        if (input->C_down && station->gridselector_y < GRID_SIZE - 1 && (station->grid[station->gridselector_y + 1][station->gridselector_x] == 0))
         {
             station->grid[station->gridselector_y + 1][station->gridselector_x] = station->grid[station->gridselector_y][station->gridselector_x];
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
@@ -351,7 +474,7 @@ void station_center_input(input_t *input)
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
             station->gridselector_x--;
         }
-        if (input->C_right && station->gridselector_x < 3 && (station->grid[station->gridselector_y][station->gridselector_x + 1] == 0))
+        if (input->C_right && station->gridselector_x < GRID_SIZE - 1 && (station->grid[station->gridselector_y][station->gridselector_x + 1] == 0))
         {
             station->grid[station->gridselector_y][station->gridselector_x + 1] = station->grid[station->gridselector_y][station->gridselector_x];
             station->grid[station->gridselector_y][station->gridselector_x] = 0;

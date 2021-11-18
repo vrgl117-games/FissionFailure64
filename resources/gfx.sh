@@ -24,7 +24,7 @@ convert -strip resources/gfx/sprites/scientists/hell2.png -crop 16 resources/gfx
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
 # tutorial
-generate "#000000ff" "#ffff00ff" "$font" 24 'How to man the stations' resources/gfx/sprites/ui/how_to.png
+generate "#000000ff" "#ffff00ff" "$font" 24 'How to manage the stations' resources/gfx/sprites/ui/how_to.png
 generate "#000000ff" "#ffff00ff" "$font" 18 'LEFT' resources/gfx/sprites/ui/left.png
 generate "#000000ff" "#ffff00ff" "$font" 18 'CENTER' resources/gfx/sprites/ui/center.png
 generate "#000000ff" "#ffff00ff" "$font" 18 'RIGHT' resources/gfx/sprites/ui/right.png
