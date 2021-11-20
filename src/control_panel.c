@@ -190,9 +190,17 @@ void control_panel_init()
 void control_panel_reset()
 {
     memset(&control_panel, 0, sizeof(control_panel));
+
+    // select center station
     control_panel.current_station = 1;
 
-    for (uint8_t i = 0; i < 3; i++)
+    // reset sliders
+    for (uint8_t i = 0; i < NUM_SLIDERS; i++)
+        control_panel.left.sliders[i] = 1 + rand() % 3;
+    control_panel.freq = 200 + (100 * control_panel.left.sliders[0]) + (-33 * control_panel.left.sliders[1]) + (17 * control_panel.left.sliders[2]);
+
+    // reset grid
+    for (uint8_t i = 0; i < GRID_SIZE - 1; i++)
     {
         uint8_t x = rand() % GRID_SIZE;
         uint8_t y = rand() % GRID_SIZE;
@@ -204,10 +212,17 @@ void control_panel_reset()
         control_panel.center.grid[y][x] = i + 1;
     }
 
-    for (uint8_t i = 0; i < NUM_SLIDERS; i++)
-        control_panel.left.sliders[i] = 1 + rand() % 3;
-
-    control_panel.freq = 200 + (100 * control_panel.left.sliders[0]) + (-33 * control_panel.left.sliders[1]) + (17 * control_panel.left.sliders[2]);
+    // reset keypad
+    control_panel.right.keypad[0][0] = 1;
+    control_panel.right.keypad[0][1] = 2;
+    control_panel.right.keypad[0][2] = 3;
+    control_panel.right.keypad[1][0] = 4;
+    control_panel.right.keypad[1][1] = 5;
+    control_panel.right.keypad[1][2] = 6;
+    control_panel.right.keypad[2][0] = 7;
+    control_panel.right.keypad[2][1] = 8;
+    control_panel.right.keypad[2][2] = 9;
+    control_panel.right.keypad[3][1] = 0;
 }
 
 void control_panel_timer()
@@ -290,18 +305,22 @@ void station_left_draw(display_context_t disp)
         rdp_draw_filled_rectangle_size(x + 16 + 7, y + 7, 2, 2, colors_dark[COLOR_RED]);
     }
 
-    x = x + 8;
-    y = y + 42;
+    x -= 4;
+    y += 34;
 
-    if (!control_panel.lights_off)
+    uint8_t cell_size = 9;
+    uint8_t border = 2;
+
+    rdp_draw_filled_rectangle_size(x, y, (MINIGRID_SIZE * cell_size) + ((MINIGRID_SIZE + 1) * border), (MINIGRID_SIZE * cell_size) + ((MINIGRID_SIZE + 1) * border), colors[COLOR_BG]);
+
+    for (uint8_t yy = 0; yy < MINIGRID_SIZE; yy++)
     {
-        graphics_draw_textf_with_background(disp, x - 22, y, colors[COLOR_BROWN], "PUMPS");
-
-        rdp_draw_filled_rectangle_size(16, 214, 190, 12, colors[COLOR_BG]);
-        rdp_draw_filled_rectangle_size(18, 216, 186, 8, colors[COLOR_WHITE]);
+        for (uint8_t xx = 0; xx < MINIGRID_SIZE; xx++)
+        {
+            if ((xx + yy * MINIGRID_SIZE + 1 == station->joystick) || (xx + yy * MINIGRID_SIZE + 1 == 5 && station->joystick == 0))
+                rdp_draw_filled_rectangle_size(x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)), cell_size, cell_size, colors[COLOR_YELLOW]);
+        }
     }
-    uint8_t width = 2 + (station->rotations * 20);
-    rdp_draw_filled_rectangle_size(20, 218, width, 4, colors[COLOR_RED]);
 }
 
 void station_left_input(input_t *input)
@@ -324,7 +343,7 @@ void station_left_input(input_t *input)
         if (station->sliders[station->selected_slider] < SLIDER_POSITONS - 1)
             station->sliders[station->selected_slider]++;
 
-    control_panel.freq = 200 + (100 * station->sliders[0]) + (-33 * station->sliders[1]) + (17 * station->sliders[2]);
+    control_panel.freq = 180 + (79 * station->sliders[0]) + (-33 * station->sliders[1]) + (17 * station->sliders[2]) + (-7 * station->sliders[3]);
 
     if (input->Z)
     {
@@ -332,47 +351,30 @@ void station_left_input(input_t *input)
         control_panel.lights_off = station->button_z;
     }
 
-    uint8_t joystick = 0;
     if (input->y > 90)
     {
         if (input->x < -90)
-            joystick = 1;
+            station->joystick = 1;
         else if (input->x > 90)
-            joystick = 3;
+            station->joystick = 3;
         else
-            joystick = 2;
+            station->joystick = 2;
     }
     else if (input->y < -90)
     {
         if (input->x < -90)
-            joystick = 7;
+            station->joystick = 7;
         else if (input->x > 90)
-            joystick = 5;
+            station->joystick = 9;
         else
-            joystick = 6;
+            station->joystick = 8;
     }
     else
     {
         if (input->x < -90)
-            joystick = 8;
+            station->joystick = 4;
         else if (input->x > 90)
-            joystick = 4;
-    }
-
-    if (joystick > station->joystick)
-    {
-        if (joystick == 8)
-        {
-            joystick = 0;
-            if (station->rotations != 9)
-                station->rotations++;
-        }
-        station->joystick = joystick;
-    }
-    else if (joystick != 0 && station->rotations != 9)
-    {
-        station->joystick = 0;
-        station->rotations = 0;
+            station->joystick = 6;
     }
 }
 
@@ -485,15 +487,51 @@ void station_center_input(input_t *input)
 
 void station_right_draw(display_context_t disp)
 {
-    graphics_draw_textf_with_background(disp, 18, 168, colors[COLOR_BROWN], "TURBINE CONTROLS");
-
-    uint16_t x = 32;
-    uint16_t y = 200;
+    uint16_t x = 16;
+    uint16_t y = 152;
 
     station_right_t *station = &(control_panel.right);
 
-    rdp_draw_sprite_with_texture(tiles[(station->A ? 444 : 446)], x, y, 0);
-    rdp_draw_sprite_with_texture(tiles[(station->B ? 478 : 480)], x + 20, y, 0);
+    if (!control_panel.lights_off)
+    {
+        graphics_draw_textf_with_background(disp, 16, 190, colors[COLOR_BROWN], "PUMPS");
+
+        rdp_draw_filled_rectangle_size(16, 210, 118, 12, colors[COLOR_BG]);
+        rdp_draw_filled_rectangle_size(18, 212, 114, 8, colors[COLOR_WHITE]);
+    }
+    uint8_t width = 2 + (station->rotations * 12);
+    rdp_draw_filled_rectangle_size(20, 214, width, 4, colors[COLOR_RED]);
+
+    x += 126;
+    graphics_set_color(colors[COLOR_YELLOW], 0);
+    if (station->cursor == 0)
+    {
+        if (control_panel.stress % 2 == 0)
+            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "        ", station->screen);
+        else
+        {
+            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "       _", station->screen);
+        }
+    }
+    else
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "% 8s", station->screen);
+    graphics_set_color(colors[COLOR_WHITE], 0);
+
+    x += 8;
+    rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
+
+    rdp_draw_sprite_with_texture(tiles[51], x, y, 0);
+    rdp_draw_sprite_with_texture(tiles[52], x + 18, y, 0);
+    rdp_draw_sprite_with_texture(tiles[53], x + 36, y, 0);
+    rdp_draw_sprite_with_texture(tiles[54], x, y + 18, 0);
+    rdp_draw_sprite_with_texture(tiles[55], x + 18, y + 18, 0);
+    rdp_draw_sprite_with_texture(tiles[56], x + 36, y + 18, 0);
+    rdp_draw_sprite_with_texture(tiles[57], x, y + 36, 0);
+    rdp_draw_sprite_with_texture(tiles[58], x + 18, y + 36, 0);
+    rdp_draw_sprite_with_texture(tiles[59], x + 36, y + 36, 0);
+    rdp_draw_sprite_with_texture(tiles[293], x, y + 54, 0);
+    rdp_draw_sprite_with_texture(tiles[60], x + 18, y + 54, 0);
+    rdp_draw_sprite_with_texture(tiles[292], x + 36, y + 54, 0);
 }
 
 void station_right_input(input_t *input)
@@ -504,20 +542,89 @@ void station_right_input(input_t *input)
     station_right_t *station = &(control_panel.right);
 
     if (input->C_up)
-        station->C[0] = !station->C[0];
+        if (station->keypadselector_y > 0)
+            station->keypadselector_y--;
     if (input->C_down)
-        station->C[1] = !station->C[1];
+        if (station->keypadselector_y < KEYPAD_H - 1)
+            station->keypadselector_y++;
     if (input->C_left)
-        station->C[2] = !station->C[2];
+        if (station->keypadselector_x > 0)
+            station->keypadselector_x--;
     if (input->C_right)
-        station->C[3] = !station->C[3];
+        if (station->keypadselector_x < KEYPAD_W - 1)
+            station->keypadselector_x++;
 
     if (input->A)
-        station->A = !station->A;
+    {
+        if (station->keypadselector_x == 2 && station->keypadselector_y == 3)
+        {
+            station->validate = true;
+        }
+        else if (station->keypadselector_x == 0 && station->keypadselector_y == 3)
+        {
+            if (station->cursor != 0)
+            {
+                station->cursor--;
+                station->screen[station->cursor] = 0;
+            }
+        }
+        else
+        {
+            station->validate = false;
+            if (station->cursor < CURSOR_MAX)
+            {
+                station->screen[station->cursor] = '0' + station->keypad[station->keypadselector_y][station->keypadselector_x];
+                station->cursor++;
+            }
+        }
+    }
+
     if (input->B)
-        station->B = !station->B;
-    if (input->Z)
-        station->Z = !station->Z;
-    if (input->R)
-        station->R = !station->R;
+    {
+        memset(station->screen, 0, sizeof(station->screen));
+        station->cursor = 0;
+    }
+
+    uint8_t joystick = 0;
+    if (input->y > 90)
+    {
+        if (input->x < -90)
+            joystick = 1;
+        else if (input->x > 90)
+            joystick = 3;
+        else
+            joystick = 2;
+    }
+    else if (input->y < -90)
+    {
+        if (input->x < -90)
+            joystick = 7;
+        else if (input->x > 90)
+            joystick = 5;
+        else
+            joystick = 6;
+    }
+    else
+    {
+        if (input->x < -90)
+            joystick = 8;
+        else if (input->x > 90)
+            joystick = 4;
+    }
+
+    if (joystick > station->joystick)
+    {
+        if (joystick == 8)
+        {
+            joystick = 0;
+            if (station->rotations != 9)
+                station->rotations++;
+        }
+        station->joystick = joystick;
+    }
+    else if (joystick != 0 && station->rotations != 9)
+    {
+        station->joystick = 0;
+        station->rotations = 0;
+    }
 }

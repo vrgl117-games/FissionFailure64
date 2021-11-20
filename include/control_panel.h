@@ -13,8 +13,9 @@
 
 #define NUM_STATIONS 3
 
-#define NUM_SLIDERS 3
+#define NUM_SLIDERS 4
 #define SLIDER_POSITONS 5
+#define MINIGRID_SIZE 3
 // hands on the left side (d-pad, joystick, Z and L)
 typedef struct station_left
 {
@@ -22,7 +23,6 @@ typedef struct station_left
     uint8_t selected_slider;
 
     uint8_t joystick;
-    uint8_t rotations;
     bool button_z;
 
 } station_left_t;
@@ -45,14 +45,22 @@ typedef struct station_center
 void station_center_draw(display_context_t disp);
 void station_center_input(input_t *input);
 
+#define KEYPAD_H 4
+#define KEYPAD_W 3
+#define CURSOR_MAX 8
+
 // hands on the right side (joystick, Z, A, B, C(s) and R)
 typedef struct station_right
 {
-    bool Z;
-    bool A;
-    bool B;
-    bool C[4];
-    bool R;
+    uint8_t keypad[KEYPAD_H][KEYPAD_W];
+    uint8_t keypadselector_x;
+    uint8_t keypadselector_y;
+    char screen[CURSOR_MAX + 1];
+    uint8_t cursor;
+    bool validate;
+
+    uint8_t joystick;
+    uint8_t rotations;
 
 } station_right_t;
 
