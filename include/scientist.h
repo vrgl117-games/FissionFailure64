@@ -4,11 +4,11 @@
 
 #include "dfs.h"
 
-#define MIN_X -100
-#define MAX_X 320
+#define MIN_X -200
+#define MAX_X 420
 #define MAX_VISIBLE_X 220
 #define MAX_Y 12
-#define NUM_SCIENTIST 5
+#define NUM_SCIENTIST 7
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 

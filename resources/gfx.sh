@@ -20,6 +20,9 @@ convert -strip resources/gfx/sprites/scientists/hell1.png -crop 16 resources/gfx
 convert -strip resources/gfx/sprites/scientists/idle2.png -crop 16 resources/gfx/sprites/scientists/idle2-%d.png
 convert -strip resources/gfx/sprites/scientists/stressed2.png -crop 16 resources/gfx/sprites/scientists/stressed2-%d.png
 convert -strip resources/gfx/sprites/scientists/hell2.png -crop 16 resources/gfx/sprites/scientists/hell2-%d.png
+convert -strip resources/gfx/sprites/scientists/idle3.png -crop 16 resources/gfx/sprites/scientists/idle3-%d.png
+convert -strip resources/gfx/sprites/scientists/stressed3.png -crop 16 resources/gfx/sprites/scientists/stressed3-%d.png
+convert -strip resources/gfx/sprites/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
 # message
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 

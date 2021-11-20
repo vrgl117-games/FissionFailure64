@@ -23,7 +23,7 @@ void scientist_init()
 {
     dark = dfs_load_sprites("/gfx/sprites/scientists/dark-%d.sprite");
 
-    sprites_t *scientists_sp[3][3] = {
+    sprites_t *scientists_sp[4][3] = {
         {
             dfs_load_sprites("/gfx/sprites/scientists/idle0-%d.sprite"),
             dfs_load_sprites("/gfx/sprites/scientists/stressed0-%d.sprite"),
@@ -39,6 +39,11 @@ void scientist_init()
             dfs_load_sprites("/gfx/sprites/scientists/stressed2-%d.sprite"),
             dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
         },
+        {
+            dfs_load_sprites("/gfx/sprites/scientists/idle3-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/stressed3-%d.sprite"),
+            dfs_load_sprites("/gfx/sprites/scientists/hell3-%d.sprite"),
+        },
     };
 
     for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
@@ -49,7 +54,10 @@ void scientist_init()
         scientists[i].y = 1 + (rand() % 7);
         scientists[i].y_offset = 28 + (rand() % 3 * 2);
 
-        uint8_t num = (rand() % 3);
+        uint8_t num = i;
+        if (i > 3)
+            num = rand() % 4;
+
         scientists[i].sprites[0] = scientists_sp[num][0];
         scientists[i].sprites[1] = scientists_sp[num][1];
         scientists[i].sprites[2] = scientists_sp[num][2];
