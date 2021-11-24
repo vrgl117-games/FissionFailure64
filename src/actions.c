@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+#include "colors.h"
+#include "dfs.h"
+
 action_t actions[NUM_ACTIONS];
 static uint8_t current = 0;
 
@@ -13,11 +16,11 @@ void actions_init()
             {
                 .station = STATION_CENTER,
                 .label = LABEL_GRID,
-                .expected = {1, 1},
+                .expected = {COLOR_RED, 2, 1},
             },
         },
         .num_buttons = 1,
-        .text = "TURN ON\n\nRED ROD\n\nB 2",
+        .text = dfs_load_sprites("/gfx/sprites/actions/rod_r_b3-%d.sprite"),
     };
 
     action_t action1 = {
@@ -25,23 +28,23 @@ void actions_init()
             {
                 .station = STATION_CENTER,
                 .label = LABEL_GRID,
-                .expected = {2, 2},
+                .expected = {COLOR_BLUE, 2, 1},
             },
         },
         .num_buttons = 1,
-        .text = "TURN ON\n\nBLUE ROD\n\nC 3",
+        .text = dfs_load_sprites("/gfx/sprites/actions/rod_b_b3-%d.sprite"),
     };
 
     action_t action2 = {
         .buttons = {
             {
                 .station = STATION_CENTER,
-                .label = LABEL_A,
-                .expected = {3},
+                .label = LABEL_GRID,
+                .expected = {COLOR_RED, 1, 2},
             },
         },
         .num_buttons = 1,
-        .text = "SET\n\nTENSION\n\nROD TO\n\n3",
+        .text = dfs_load_sprites("/gfx/sprites/actions/rod_r_c2-%d.sprite"),
 
     };
 
@@ -49,25 +52,12 @@ void actions_init()
         .buttons = {
             {
                 .station = STATION_CENTER,
-                .label = LABEL_B,
-                .expected = {1},
+                .label = LABEL_GRID,
+                .expected = {COLOR_BLUE, 1, 2},
             },
         },
         .num_buttons = 1,
-        .text = "START\n\nDECONTA\n\nMINATION",
-
-    };
-
-    action_t action4 = {
-        .buttons = {
-            {
-                .station = STATION_CENTER,
-                .label = LABEL_B,
-                .expected = {0},
-            },
-        },
-        .num_buttons = 1,
-        .text = "END\n\nDECONTA\n\nMINATION",
+        .text = dfs_load_sprites("/gfx/sprites/actions/rod_b_c2-%d.sprite"),
 
     };
 
@@ -75,7 +65,6 @@ void actions_init()
     actions[1] = action1;
     actions[2] = action2;
     actions[3] = action3;
-    actions[4] = action4;
 
     actions_reset();
 }

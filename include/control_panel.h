@@ -11,6 +11,22 @@
 #define STRESS_THRESHOLD 28
 #define HELL_THRESHOLD 62
 
+typedef enum
+{
+    LABEL_INSTRUCTIONS,
+    LABEL_LIGHTS,
+    LABEL_STATUS,
+    LABEL_RADIO,
+    LABEL_TURBINES,
+    LABEL_PUMPS,
+    LABEL_CONTROL_RODS,
+    LABEL_AZ_5,
+    LABEL_PRESSURIZER,
+    LABEL_DANGER,
+
+    LABEL_IDX
+} label_t;
+
 #define NUM_STATIONS 3
 
 #define NUM_SLIDERS 4
@@ -27,7 +43,7 @@ typedef struct station_left
 
 } station_left_t;
 
-void station_left_draw(display_context_t disp);
+void station_left_draw();
 void station_left_input(input_t *input);
 
 #define GRID_SIZE 4
@@ -42,13 +58,13 @@ typedef struct station_center
     bool button_b;
 } station_center_t;
 
-void station_center_draw(display_context_t disp);
+void station_center_draw();
 void station_center_input(input_t *input);
 
 #define KEYPAD_H 4
 #define KEYPAD_W 3
 #define CURSOR_MAX 8
-
+#define NUM_LEVERS 4
 // hands on the right side (joystick, Z, A, B, C(s) and R)
 typedef struct station_right
 {
@@ -59,12 +75,22 @@ typedef struct station_right
     uint8_t cursor;
     bool validate;
 
+    bool levers[NUM_LEVERS];
+    uint8_t lever_selector;
+
+    enum
+    {
+        MODE_LEVERS,
+        MODE_KEYPAD,
+    } mode;
+
     uint8_t joystick;
     uint8_t rotations;
 
 } station_right_t;
 
-void station_right_draw(display_context_t disp);
+void station_right_draw();
+void station_right_draw_graphics(display_context_t disp);
 void station_right_input(input_t *input);
 
 typedef enum control_panel_mode

@@ -174,8 +174,6 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     control_panel_draw(disp);
 
-    rdp_detach_display();
-
     return game;
 }
 

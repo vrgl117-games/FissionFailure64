@@ -9,6 +9,16 @@ generate() {
     convert /tmp/image.png -background $1 -extent $(convert /tmp/image.png -format '%[fx:2*int((w+1)/2)]x%[fx:2*int((h+1)/2)]!' info:) $6
 }
 
+
+
+generate_action() {
+    convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -crop 16 -gravity West label:"$5" $6
+}
+
+generate_label() {
+    convert -strip -background "#665544ff" -bordercolor "#665544ff"  -border 2x  -fill "#ffffffff"  -font "$font_uni" -pointsize 8 -interline-spacing -5 -gravity Center label:"$1" $2
+}
+
 # scientist
 convert -strip resources/gfx/sprites/scientists/dark.png -crop 16 resources/gfx/sprites/scientists/dark-%d.png
 convert -strip resources/gfx/sprites/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
@@ -25,6 +35,26 @@ convert -strip resources/gfx/sprites/scientists/stressed3.png -crop 16 resources
 convert -strip resources/gfx/sprites/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
 # message
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
+
+
+# labels
+generate_label  'INSTRUCTIONS' resources/gfx/sprites/ui/label_instructions.png
+generate_label  'POWER' resources/gfx/sprites/ui/label_lights.png
+generate_label  'STATUS' resources/gfx/sprites/ui/label_status.png
+generate_label  'RADIO' resources/gfx/sprites/ui/label_radio.png
+generate_label  'TURBINES' resources/gfx/sprites/ui/label_turbines.png
+generate_label  'PUMPS' resources/gfx/sprites/ui/label_pumps.png
+generate_label  'CONTROL RODS' resources/gfx/sprites/ui/label_control_rods.png
+generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
+generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
+# edited by hand
+#generate_label  'D\nA\nN\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
+
+# actions
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set blue\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_b_b3-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set red\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_r_b3-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set blue\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_b_c2-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set red\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_r_c2-%d.png
 
 # tutorial
 generate "#000000ff" "#ffff00ff" "$font" 24 'How to manage the stations' resources/gfx/sprites/ui/how_to.png

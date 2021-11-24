@@ -4,7 +4,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define NUM_ACTIONS 5
+#include <libdragon.h>
+
+#include "dfs.h"
+
+#define NUM_ACTIONS 4
 
 #define LABEL_A 0
 #define LABEL_B 1
@@ -19,7 +23,7 @@ typedef struct button
 {
     uint8_t station;
     uint8_t label;
-    uint8_t expected[2];
+    uint8_t expected[3];
 
 } button_t;
 
@@ -27,7 +31,7 @@ typedef struct action
 {
     button_t buttons[4];
     uint8_t num_buttons;
-    char *text;
+    sprites_t *text;
 
 } action_t;
 

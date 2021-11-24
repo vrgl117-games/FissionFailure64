@@ -12,6 +12,7 @@
 
 control_panel_t control_panel;
 static sprite_t *tiles[816] = {0};
+static sprite_t *labels[LABEL_IDX] = {0};
 
 extern uint32_t __width;
 extern uint32_t __height;
@@ -19,7 +20,7 @@ extern uint32_t __height;
 extern uint32_t colors[];
 extern uint32_t colors_dark[];
 
-static void danger_bar_draw(display_context_t disp)
+static void danger_bar_draw()
 {
     uint8_t x = 0;
     uint8_t y = 0;
@@ -31,7 +32,8 @@ static void danger_bar_draw(display_context_t disp)
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
         rdp_draw_filled_rectangle_size(x, y, width - 2, height, colors[COLOR_PANEL]);
         rdp_draw_filled_rectangle_size(x + 8, 8, 10, 104, colors[COLOR_BLACK]);
-        graphics_draw_text(disp, x + 24, 12, "D\nA\nN\nG\nE\nR\n\nL\nE\nV\nE\nL");
+
+        rdp_draw_sprite_with_texture(labels[LABEL_DANGER], x + 24, 8, 0);
     }
 
     rdp_draw_filled_rectangle_size(x + 12, 10, 2, 100, colors[COLOR_WHITE]);
@@ -50,11 +52,16 @@ static void instruments_draw(display_context_t disp)
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
         rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
 
-        graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "STATUS");
+        rdp_draw_sprite_with_texture(labels[LABEL_STATUS], x + 8, y + 8, 0);
+
+        rdp_detach_display();
+
         graphics_draw_text(disp, x + 8, y + 32, "TEMP");
         graphics_draw_text(disp, x + 8, y + 32 + 24, "POWER");
         graphics_draw_text(disp, x + 8, y + 32 + 24 + 24, "FREQ");
     }
+    else
+        rdp_detach_display();
 
     graphics_set_color(colors[COLOR_RED], 0);
     graphics_draw_textf_with_background(disp, x + 54, y + 30, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
@@ -69,7 +76,7 @@ static void instruments_draw(display_context_t disp)
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
 
-static void instructions_draw(display_context_t disp)
+static void instructions_draw()
 {
     uint8_t x = 220;
     uint8_t y = 0;
@@ -81,22 +88,18 @@ static void instructions_draw(display_context_t disp)
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
         rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
 
-        graphics_draw_textf_with_background(disp, x + 8, y + 8, colors[COLOR_BROWN], "COMMANDS");
+        rdp_draw_sprite_with_texture(labels[LABEL_INSTRUCTIONS], x + 8, y + 8, 0);
 
         rdp_draw_filled_rectangle_size(x + 8, y + 28, width - 16, 94, colors[COLOR_BLACK]);
     }
 
-    graphics_set_color(colors[COLOR_YELLOW], 0);
-    graphics_draw_text(disp, x + 8 + 4, y + 28 + 4, actions_get_current()->text);
-    graphics_set_color(colors[COLOR_WHITE], 0);
+    rdp_draw_sprites_with_texture(actions_get_current()->text, x + 8 + 4, y + 28 + 4, 0);
 }
 
 void control_panel_draw(display_context_t disp)
 {
-    danger_bar_draw(disp);
-    instructions_draw(disp);
-
-    instruments_draw(disp);
+    danger_bar_draw();
+    instructions_draw();
 
     if (!control_panel.lights_off)
     {
@@ -120,6 +123,10 @@ void control_panel_draw(display_context_t disp)
         rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
     else
         rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 1 : 12)], 198, 10, 0);
+
+    if (control_panel.current_station == 2)
+        station_right_draw_graphics(disp);
+    instruments_draw(disp);
 }
 
 void control_panel_input(input_t *input)
@@ -153,7 +160,7 @@ control_panel_status_t control_panel_check_status(action_t *action)
             switch (action->buttons[i].label)
             {
             case LABEL_GRID:
-                if (control_panel.center.grid[action->buttons[i].expected[0]][action->buttons[i].expected[1]] == 0)
+                if (control_panel.center.grid[action->buttons[i].expected[1]][action->buttons[i].expected[2]] != action->buttons[i].expected[0])
                     return INCORRECT;
                 break;
             case LABEL_A:
@@ -183,6 +190,17 @@ void control_panel_init()
 {
     for (int i = 0; i < 816; i++)
         tiles[i] = dfs_load_spritef("/gfx/sprites/stations/tile_%04d.sprite", i);
+
+    labels[LABEL_LIGHTS] = dfs_load_sprite("/gfx/sprites/ui/label_lights.sprite");
+    labels[LABEL_INSTRUCTIONS] = dfs_load_sprite("/gfx/sprites/ui/label_instructions.sprite");
+    labels[LABEL_STATUS] = dfs_load_sprite("/gfx/sprites/ui/label_status.sprite");
+    labels[LABEL_RADIO] = dfs_load_sprite("/gfx/sprites/ui/label_radio.sprite");
+    labels[LABEL_TURBINES] = dfs_load_sprite("/gfx/sprites/ui/label_turbines.sprite");
+    labels[LABEL_PUMPS] = dfs_load_sprite("/gfx/sprites/ui/label_pumps.sprite");
+    labels[LABEL_CONTROL_RODS] = dfs_load_sprite("/gfx/sprites/ui/label_control_rods.sprite");
+    labels[LABEL_AZ_5] = dfs_load_sprite("/gfx/sprites/ui/label_az_5.sprite");
+    labels[LABEL_PRESSURIZER] = dfs_load_sprite("/gfx/sprites/ui/label_pressurizer.sprite");
+    labels[LABEL_DANGER] = dfs_load_sprite("/gfx/sprites/ui/label_danger.sprite");
 
     control_panel_reset();
 }
@@ -247,27 +265,20 @@ void control_panel_timer()
     control_panel.temp = (rand() % 100) - 40;
 }
 
-void station_left_draw(display_context_t disp)
+void station_left_draw()
 {
     uint16_t x = 16;
     uint16_t y = 152;
 
     station_left_t *station = &(control_panel.left);
 
-    //rdp_draw_filled_rectangle_size(x, y - 20, 124, 14, colors[COLOR_BG]);
-    //rdp_draw_filled_rectangle_size(x + 2, y - 18, 120, 10, colors[COLOR_WHITE]);
-    //for (uint8_t i = 0; i < 11; i++)
-    //rdp_draw_filled_rectangle_size(x + 11 + i * 10, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
-
     if (!control_panel.lights_off)
-        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BROWN], "RADIO");
+        rdp_draw_sprite_with_texture(labels[LABEL_RADIO], x, y - 20, 0);
 
     rdp_draw_filled_rectangle_size(x + 50, y - 20, 74, 14, colors[COLOR_BG]);
     rdp_draw_filled_rectangle_size(x + 52, y - 18, 70, 10, colors[COLOR_WHITE]);
     for (uint8_t i = 0; i < 6; i++)
         rdp_draw_filled_rectangle_size(x + 61 + i * 10, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
-
-    //rdp_draw_filled_rectangle_size(x + 2 + control_panel.freq * 12 / 100, y - 17, 1, 8, colors[COLOR_ORANGE]);
 
     rdp_draw_filled_rectangle_size(x + 52 + control_panel.freq * 12 / 100, y - 17, 1, 8, colors[COLOR_ORANGE]);
     if (!control_panel.lights_off)
@@ -288,7 +299,7 @@ void station_left_draw(display_context_t disp)
 
     if (!control_panel.lights_off)
     {
-        graphics_draw_textf_with_background(disp, x - 20, y - 20, colors[COLOR_BROWN], "LIGHTS");
+        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x - 20, y - 20, 0);
 
         rdp_draw_filled_rectangle_size(x, y, 32, 16, colors[COLOR_BG]);
     }
@@ -345,12 +356,6 @@ void station_left_input(input_t *input)
 
     control_panel.freq = 180 + (79 * station->sliders[0]) + (-33 * station->sliders[1]) + (17 * station->sliders[2]) + (-7 * station->sliders[3]);
 
-    if (input->Z)
-    {
-        station->button_z = !station->button_z;
-        control_panel.lights_off = station->button_z;
-    }
-
     if (input->y > 90)
     {
         if (input->x < -90)
@@ -378,7 +383,7 @@ void station_left_input(input_t *input)
     }
 }
 
-void station_center_draw(display_context_t disp)
+void station_center_draw()
 {
     uint16_t x = 10;
     uint16_t y = 130;
@@ -392,18 +397,18 @@ void station_center_draw(display_context_t disp)
     if (!control_panel.lights_off)
     {
         // Button B
-        graphics_draw_textf_with_background(disp, x + 90, y, colors[COLOR_BROWN], "LIGHTS");
-        rdp_draw_sprite_with_texture(tiles[(station->button_b ? 448 : 447)], x + 130, y + 15, 0);
+        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 90, y, 0);
+        rdp_draw_sprite_with_texture(tiles[502], x + 130, y + 15, (station->button_b ? MIRROR_Y : 0));
 
         // Button A
-        graphics_draw_textf_with_background(disp, x + 100, y + 45, colors[COLOR_BROWN], "ROD TENSION");
-        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 130, y + 60, 0);
-        graphics_set_color(colors[COLOR_BLACK], 0);
-        graphics_draw_textf(disp, x + 138, y + 66, "%d\n", station->button_a_presses);
-        graphics_set_color(colors[COLOR_WHITE], 0);
+        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 100, y + 50, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 130, y + 65, 0);
+        // TODO ADD BACK graphics_set_color(colors[COLOR_BLACK], 0);
+        // TODO ADD BACK graphics_draw_textf(disp, x + 138, y + 71, "%d\n", station->button_a_presses);
+        // TODO ADD BACK graphics_set_color(colors[COLOR_WHITE], 0);
 
         // Grid
-        graphics_draw_textf_with_background(disp, 10, 210, colors[COLOR_BROWN], "ROD CONTROLS");
+        rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 10, 210, 0);
         rdp_draw_filled_rectangle_size(x, y, (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), colors[COLOR_BG]);
     }
 
@@ -443,6 +448,7 @@ void station_center_input(input_t *input)
         if (station->gridselector_x < GRID_SIZE - 1)
             station->gridselector_x++;
 
+    control_panel.lights_off = station->button_b;
     if (input->B)
         station->button_b = !station->button_b;
 
@@ -485,24 +491,15 @@ void station_center_input(input_t *input)
     }
 }
 
-void station_right_draw(display_context_t disp)
+void station_right_draw_graphics(display_context_t disp)
 {
     uint16_t x = 16;
     uint16_t y = 152;
 
     station_right_t *station = &(control_panel.right);
 
-    if (!control_panel.lights_off)
-    {
-        graphics_draw_textf_with_background(disp, 16, 190, colors[COLOR_BROWN], "PUMPS");
-
-        rdp_draw_filled_rectangle_size(16, 210, 118, 12, colors[COLOR_BG]);
-        rdp_draw_filled_rectangle_size(18, 212, 114, 8, colors[COLOR_WHITE]);
-    }
-    uint8_t width = 2 + (station->rotations * 12);
-    rdp_draw_filled_rectangle_size(20, 214, width, 4, colors[COLOR_RED]);
-
     x += 126;
+
     graphics_set_color(colors[COLOR_YELLOW], 0);
     if (station->cursor == 0)
     {
@@ -516,9 +513,41 @@ void station_right_draw(display_context_t disp)
     else
         graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "% 8s", station->screen);
     graphics_set_color(colors[COLOR_WHITE], 0);
+}
+
+void station_right_draw()
+{
+    uint16_t x = 16;
+    uint16_t y = 152;
+
+    station_right_t *station = &(control_panel.right);
+
+    if (!control_panel.lights_off)
+        rdp_draw_sprite_with_texture(labels[LABEL_TURBINES], 16, y - 20, 0);
+
+    if (station->mode == MODE_LEVERS)
+        rdp_draw_filled_rectangle_size(x + station->lever_selector * 20 + 8, y - 1, 15, 33, colors[COLOR_YELLOW]);
+
+    rdp_draw_sprite_with_texture(tiles[500], x, y, station->levers[0] ? 0 : MIRROR_Y);
+    rdp_draw_sprite_with_texture(tiles[504], x + 20, y, station->levers[1] ? 0 : MIRROR_Y);
+    rdp_draw_sprite_with_texture(tiles[505], x + 40, y, station->levers[2] ? 0 : MIRROR_Y);
+    rdp_draw_sprite_with_texture(tiles[506], x + 60, y, station->levers[3] ? 0 : MIRROR_Y);
+
+    if (!control_panel.lights_off)
+    {
+        rdp_draw_sprite_with_texture(labels[LABEL_PUMPS], 16, 190, 0);
+
+        rdp_draw_filled_rectangle_size(16, 210, 118, 12, colors[COLOR_BG]);
+        rdp_draw_filled_rectangle_size(18, 212, 114, 8, colors[COLOR_WHITE]);
+    }
+    uint8_t width = 2 + (station->rotations * 12);
+    rdp_draw_filled_rectangle_size(20, 214, width, 4, colors[COLOR_RED]);
+
+    x += 126;
 
     x += 8;
-    rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
+    if (station->mode == MODE_KEYPAD)
+        rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
 
     rdp_draw_sprite_with_texture(tiles[51], x, y, 0);
     rdp_draw_sprite_with_texture(tiles[52], x + 18, y, 0);
@@ -541,49 +570,67 @@ void station_right_input(input_t *input)
 
     station_right_t *station = &(control_panel.right);
 
-    if (input->C_up)
-        if (station->keypadselector_y > 0)
-            station->keypadselector_y--;
-    if (input->C_down)
-        if (station->keypadselector_y < KEYPAD_H - 1)
-            station->keypadselector_y++;
-    if (input->C_left)
-        if (station->keypadselector_x > 0)
-            station->keypadselector_x--;
-    if (input->C_right)
-        if (station->keypadselector_x < KEYPAD_W - 1)
-            station->keypadselector_x++;
-
-    if (input->A)
+    if (station->mode == MODE_KEYPAD)
     {
-        if (station->keypadselector_x == 2 && station->keypadselector_y == 3)
+        if (input->C_up)
+            if (station->keypadselector_y > 0)
+                station->keypadselector_y--;
+        if (input->C_down)
+            if (station->keypadselector_y < KEYPAD_H - 1)
+                station->keypadselector_y++;
+        if (input->C_left)
+            if (station->keypadselector_x > 0)
+                station->keypadselector_x--;
+        if (input->C_right)
+            if (station->keypadselector_x < KEYPAD_W - 1)
+                station->keypadselector_x++;
+
+        if (input->A)
         {
-            station->validate = true;
-        }
-        else if (station->keypadselector_x == 0 && station->keypadselector_y == 3)
-        {
-            if (station->cursor != 0)
+            if (station->keypadselector_x == 2 && station->keypadselector_y == 3)
             {
-                station->cursor--;
-                station->screen[station->cursor] = 0;
+                station->validate = true;
+            }
+            else if (station->keypadselector_x == 0 && station->keypadselector_y == 3)
+            {
+                if (station->cursor != 0)
+                {
+                    station->cursor--;
+                    station->screen[station->cursor] = 0;
+                }
+            }
+            else
+            {
+                station->validate = false;
+                if (station->cursor < CURSOR_MAX)
+                {
+                    station->screen[station->cursor] = '0' + station->keypad[station->keypadselector_y][station->keypadselector_x];
+                    station->cursor++;
+                }
             }
         }
-        else
+
+        if (input->B)
         {
-            station->validate = false;
-            if (station->cursor < CURSOR_MAX)
-            {
-                station->screen[station->cursor] = '0' + station->keypad[station->keypadselector_y][station->keypadselector_x];
-                station->cursor++;
-            }
+            memset(station->screen, 0, sizeof(station->screen));
+            station->cursor = 0;
         }
     }
-
-    if (input->B)
+    else
     {
-        memset(station->screen, 0, sizeof(station->screen));
-        station->cursor = 0;
+        if (input->C_left)
+            if (station->lever_selector > 0)
+                station->lever_selector--;
+        if (input->C_right)
+            if (station->lever_selector < NUM_LEVERS - 1)
+                station->lever_selector++;
+
+        if (input->A)
+            station->levers[station->lever_selector] = !station->levers[station->lever_selector];
     }
+
+    if (input->Z)
+        station->mode = (station->mode == MODE_KEYPAD ? MODE_LEVERS : MODE_KEYPAD);
 
     uint8_t joystick = 0;
     if (input->y > 90)
