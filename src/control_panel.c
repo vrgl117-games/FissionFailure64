@@ -299,23 +299,9 @@ void station_left_draw()
 
     if (!control_panel.lights_off)
     {
-        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x - 20, y - 20, 0);
-
-        rdp_draw_filled_rectangle_size(x, y, 32, 16, colors[COLOR_BG]);
+        rdp_draw_sprite_with_texture(labels[LABEL_AZ_5], x, y - 20, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_z ? 516 : 515)], x + 8, y - 2, 0);
     }
-    if (!station->button_z)
-    {
-        rdp_draw_filled_rectangle_size(x + 2, y + 2, 12, 12, colors_dark[COLOR_GREEN]);
-        rdp_draw_filled_rectangle_size(x + 4, y + 4, 8, 8, colors[COLOR_GREEN]);
-        rdp_draw_filled_rectangle_size(x + 7, y + 7, 2, 2, colors_dark[COLOR_GREEN]);
-    }
-    else
-    {
-        rdp_draw_filled_rectangle_size(x + 16 + 2, y + 2, 12, 12, colors_dark[COLOR_RED]);
-        rdp_draw_filled_rectangle_size(x + 16 + 4, y + 4, 8, 8, colors[COLOR_RED]);
-        rdp_draw_filled_rectangle_size(x + 16 + 7, y + 7, 2, 2, colors_dark[COLOR_RED]);
-    }
-
     x -= 4;
     y += 34;
 
@@ -355,6 +341,13 @@ void station_left_input(input_t *input)
             station->sliders[station->selected_slider]++;
 
     control_panel.freq = 180 + (79 * station->sliders[0]) + (-33 * station->sliders[1]) + (17 * station->sliders[2]) + (-7 * station->sliders[3]);
+
+    if (input->Z)
+    {
+        station->button_z = !station->button_z;
+        if (station->button_z)
+            control_panel.stress = (control_panel.stress < 90) ? 90 : 100;
+    }
 
     if (input->y > 90)
     {
@@ -523,15 +516,17 @@ void station_right_draw()
     station_right_t *station = &(control_panel.right);
 
     if (!control_panel.lights_off)
+    {
         rdp_draw_sprite_with_texture(labels[LABEL_TURBINES], 16, y - 20, 0);
 
-    if (station->mode == MODE_LEVERS)
-        rdp_draw_filled_rectangle_size(x + station->lever_selector * 20 + 8, y - 1, 15, 33, colors[COLOR_YELLOW]);
+        if (station->mode == MODE_LEVERS)
+            rdp_draw_filled_rectangle_size(x + station->lever_selector * 20 + 8, y - 1, 15, 33, colors[COLOR_YELLOW]);
 
-    rdp_draw_sprite_with_texture(tiles[500], x, y, station->levers[0] ? 0 : MIRROR_Y);
-    rdp_draw_sprite_with_texture(tiles[504], x + 20, y, station->levers[1] ? 0 : MIRROR_Y);
-    rdp_draw_sprite_with_texture(tiles[505], x + 40, y, station->levers[2] ? 0 : MIRROR_Y);
-    rdp_draw_sprite_with_texture(tiles[506], x + 60, y, station->levers[3] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[500], x, y, station->levers[0] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[504], x + 20, y, station->levers[1] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[505], x + 40, y, station->levers[2] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[506], x + 60, y, station->levers[3] ? 0 : MIRROR_Y);
+    }
 
     if (!control_panel.lights_off)
     {
@@ -543,24 +538,26 @@ void station_right_draw()
     uint8_t width = 2 + (station->rotations * 12);
     rdp_draw_filled_rectangle_size(20, 214, width, 4, colors[COLOR_RED]);
 
-    x += 126;
+    x += 134;
 
-    x += 8;
-    if (station->mode == MODE_KEYPAD)
-        rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
+    if (!control_panel.lights_off)
+    {
+        if (station->mode == MODE_KEYPAD)
+            rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
 
-    rdp_draw_sprite_with_texture(tiles[51], x, y, 0);
-    rdp_draw_sprite_with_texture(tiles[52], x + 18, y, 0);
-    rdp_draw_sprite_with_texture(tiles[53], x + 36, y, 0);
-    rdp_draw_sprite_with_texture(tiles[54], x, y + 18, 0);
-    rdp_draw_sprite_with_texture(tiles[55], x + 18, y + 18, 0);
-    rdp_draw_sprite_with_texture(tiles[56], x + 36, y + 18, 0);
-    rdp_draw_sprite_with_texture(tiles[57], x, y + 36, 0);
-    rdp_draw_sprite_with_texture(tiles[58], x + 18, y + 36, 0);
-    rdp_draw_sprite_with_texture(tiles[59], x + 36, y + 36, 0);
-    rdp_draw_sprite_with_texture(tiles[293], x, y + 54, 0);
-    rdp_draw_sprite_with_texture(tiles[60], x + 18, y + 54, 0);
-    rdp_draw_sprite_with_texture(tiles[292], x + 36, y + 54, 0);
+        rdp_draw_sprite_with_texture(tiles[51], x, y, 0);
+        rdp_draw_sprite_with_texture(tiles[52], x + 18, y, 0);
+        rdp_draw_sprite_with_texture(tiles[53], x + 36, y, 0);
+        rdp_draw_sprite_with_texture(tiles[54], x, y + 18, 0);
+        rdp_draw_sprite_with_texture(tiles[55], x + 18, y + 18, 0);
+        rdp_draw_sprite_with_texture(tiles[56], x + 36, y + 18, 0);
+        rdp_draw_sprite_with_texture(tiles[57], x, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[58], x + 18, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[59], x + 36, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[293], x, y + 54, 0);
+        rdp_draw_sprite_with_texture(tiles[60], x + 18, y + 54, 0);
+        rdp_draw_sprite_with_texture(tiles[292], x + 36, y + 54, 0);
+    }
 }
 
 void station_right_input(input_t *input)

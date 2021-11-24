@@ -5,14 +5,12 @@
 #include "colors.h"
 #include "control_panel.h"
 #include "debug.h"
-#include "fps.h"
 #include "input.h"
 #include "rdp.h"
 #include "scientist.h"
 #include "screens.h"
 #include "sfx.h"
 
-#define ENABLE_FPS 0
 #define ENABLE_VRU 0
 
 #define MS500 500000
@@ -200,10 +198,6 @@ int main()
 
     srand(timer_ticks() & 0x7FFFFFFF);
 
-#if ENABLE_FPS
-    new_timer(TIMER_TICKS(S1), TF_CONTINUOUS, fps_timer);
-#endif
-
     // blinking "press start" and window
     new_timer(TIMER_TICKS(MS20), TF_CONTINUOUS, screen_timer);
 
@@ -375,14 +369,6 @@ int main()
             }
             break;
         }
-
-#if ENABLE_FPS
-        // increment fps counter
-        fps_frame();
-
-        // display fps
-        fps_draw(disp);
-#endif
 
 #if DISPLAY_SAFE_AREAS
         if (input.L && input.R)

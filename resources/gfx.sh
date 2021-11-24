@@ -19,6 +19,10 @@ generate_label() {
     convert -strip -background "#665544ff" -bordercolor "#665544ff"  -border 2x  -fill "#ffffffff"  -font "$font_uni" -pointsize 8 -interline-spacing -5 -gravity Center label:"$1" $2
 }
 
+generate_text() {
+    convert -strip -background "#336655ff" -fill "#ffffffff"  -font "$font_uni" -pointsize 8 -gravity Center label:"$1" $2
+}
+
 # scientist
 convert -strip resources/gfx/sprites/scientists/dark.png -crop 16 resources/gfx/sprites/scientists/dark-%d.png
 convert -strip resources/gfx/sprites/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
@@ -45,7 +49,8 @@ generate_label  'RADIO' resources/gfx/sprites/ui/label_radio.png
 generate_label  'TURBINES' resources/gfx/sprites/ui/label_turbines.png
 generate_label  'PUMPS' resources/gfx/sprites/ui/label_pumps.png
 generate_label  'CONTROL RODS' resources/gfx/sprites/ui/label_control_rods.png
-generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
+# edited by hand
+#generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
 generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
 # edited by hand
 #generate_label  'D\nA\nN\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
