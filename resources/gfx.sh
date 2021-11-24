@@ -5,8 +5,7 @@ font_uni='resources/fonts/unibody/Unibody8Pro-RegularSmallCaps.otf'
 font_uni_b='resources/fonts/unibody/Unibody8Pro-Bold.otf'
 
 generate() {
-    convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" /tmp/image.png
-    convert /tmp/image.png -background $1 -extent $(convert /tmp/image.png -format '%[fx:2*int((w+1)/2)]x%[fx:2*int((h+1)/2)]!' info:) $6
+    convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" $6
 }
 
 
@@ -60,6 +59,10 @@ generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set blue\nControl\nRod
 generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set red\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_r_b3-%d.png
 generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set blue\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_b_c2-%d.png
 generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set red\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_r_c2-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Turn\nOFF the\npower' resources/gfx/sprites/actions/power_off-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Turn the\npower\nback ON' resources/gfx/sprites/actions/power_on-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Set freq\nto\n242Hz' resources/gfx/sprites/actions/freq-242-%d.png
+generate_action "#000000ff" "#ffff00ff" "$font_uni_b" 12 'Call\nSpare\nParts' resources/gfx/sprites/actions/call-spare-%d.png
 
 # tutorial
 generate "#000000ff" "#ffff00ff" "$font" 24 'How to manage the stations' resources/gfx/sprites/ui/how_to.png
@@ -85,6 +88,8 @@ generate "#000000ff" "#ffff00ff" "$font" 18 "CONTINUE" resources/gfx/sprites/ui/
 generate "#000000ff" "#ffff00ff" "$font_uni_b" 24 "Pause" resources/gfx/sprites/ui/pause_big.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume.png
 generate "#000000ff" "#ffff00ff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume_selected.png
+generate "#000000ff" "#ffffffff" "$font" 18 "Phonebook" resources/gfx/sprites/ui/phonebook.png
+generate "#000000ff" "#ffff00ff" "$font" 18 "Phonebook" resources/gfx/sprites/ui/phonebook_selected.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Options" resources/gfx/sprites/ui/options.png
 generate "#000000ff" "#ffff00ff" "$font" 18 "Options" resources/gfx/sprites/ui/options_selected.png
 generate "#000000ff" "#ffffffff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial.png
@@ -119,6 +124,9 @@ generate "#000000ff" "#ffffffff" "$font" 18 "IG: @jphosho" resources/gfx/sprites
 generate "#000000ff" "#ffff00ff" "$font_uni" 16 "music" resources/gfx/sprites/ui/music.png
 generate "#000000ff" "#ffffffff" "$font" 18 "manuhoz" resources/gfx/sprites/ui/manuhoz.png
 generate "#000000ff" "#ffffffff" "$font" 18 "IG/TT: @radiatorhymn" resources/gfx/sprites/ui/radiatorhymn.png
+
+# phonebook
+convert -strip -background "#ffffffff" -bordercolor "#ffffffff"  -border 2x  -fill "#000000ff"  -font "$font_uni" -pointsize 12 -interline-spacing -5 -gravity Center label:"Commissioner............0598-4627\nEmergency Services............911\nFuel Procurement......5294-2647\nIncident Response.....4676-4729\nNuclear Safety..........5733-4738\nPresident..................2982-2941\nPublic Affairs..........1029-4859\nReactor Supervisor..7268-2638\nSpare Parts...............3905-1273\nTreasury...................3648-3957" resources/gfx/sprites/phonebook.png
 
 # studio logo
 convert -strip -brightness-contrast -10 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_9.png

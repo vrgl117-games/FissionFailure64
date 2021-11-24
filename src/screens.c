@@ -310,9 +310,9 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
         selected = 0;
 
     if (input->up)
-        selected = (selected == 0 ? 4 : selected - 1);
+        selected = (selected == 0 ? 5 : selected - 1);
     else if (input->down)
-        selected = (selected == 4 ? 0 : selected + 1);
+        selected = (selected == 5 ? 0 : selected + 1);
 
     rdp_attach(disp);
 
@@ -325,18 +325,21 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
     free(pause_sp);
 
     sprite_t *resume_sp = dfs_load_sprite((selected == 0 ? "/gfx/sprites/ui/resume_selected.sprite" : "/gfx/sprites/ui/resume.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 90, resume_sp);
+    graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 65, resume_sp);
     free(resume_sp);
-    sprite_t *options_sp = dfs_load_sprite((selected == 1 ? "/gfx/sprites/ui/options_selected.sprite" : "/gfx/sprites/ui/options.sprite"));
+    sprite_t *phonebook_sp = dfs_load_sprite((selected == 1 ? "/gfx/sprites/ui/phonebook_selected.sprite" : "/gfx/sprites/ui/phonebook.sprite"));
+    graphics_draw_sprite(disp, __width / 2 - phonebook_sp->width / 2, 90, phonebook_sp);
+    free(phonebook_sp);
+    sprite_t *options_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/options_selected.sprite" : "/gfx/sprites/ui/options.sprite"));
     graphics_draw_sprite(disp, __width / 2 - options_sp->width / 2, 115, options_sp);
     free(options_sp);
-    sprite_t *tutorial_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/tutorial_selected.sprite" : "/gfx/sprites/ui/tutorial.sprite"));
+    sprite_t *tutorial_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/tutorial_selected.sprite" : "/gfx/sprites/ui/tutorial.sprite"));
     graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 140, tutorial_sp);
     free(tutorial_sp);
-    sprite_t *credits_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
+    sprite_t *credits_sp = dfs_load_sprite((selected == 4 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
     graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 165, credits_sp);
     free(credits_sp);
-    sprite_t *quit_sp = dfs_load_sprite((selected == 4 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
+    sprite_t *quit_sp = dfs_load_sprite((selected == 5 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
     graphics_draw_sprite(disp, __width / 2 - quit_sp->width / 2, 190, quit_sp);
     free(quit_sp);
 
@@ -345,6 +348,22 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
     if (input->start)
         return screen_selection_resume;
     return screen_selection_none;
+}
+
+//phonebook menu
+bool screen_phonebook(display_context_t disp, input_t *input)
+{
+    rdp_attach(disp);
+
+    rdp_draw_filled_fullscreen(colors[COLOR_WHITE]);
+
+    rdp_detach_display();
+
+    sprite_t *sp = dfs_load_sprite("/gfx/sprites/phonebook.sprite");
+    graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
+    free(sp);
+
+    return (input->A || input->start);
 }
 
 static sprite_t *logo_sp = NULL;

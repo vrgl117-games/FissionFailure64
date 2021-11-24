@@ -8,29 +8,32 @@
 
 #include "dfs.h"
 
-#define NUM_ACTIONS 4
-
-#define LABEL_A 0
-#define LABEL_B 1
-#define LABEL_Z 2
-#define LABEL_GRID 3
-
-#define STATION_LEFT 0
-#define STATION_CENTER 1
-#define STATION_RIGHT 2
-
-typedef struct button
+typedef struct state
 {
-    uint8_t station;
-    uint8_t label;
-    uint8_t expected[3];
+    enum
+    {
+        STATION_LEFT,
+        STATION_CENTER,
+        STATION_RIGHT
+    } station;
 
-} button_t;
+    enum
+    {
+        ELEMENT_GRID,
+        ELEMENT_RADIO,
+        ELEMENT_KEYPAD,
+        ELEMENT_A,
+        ELEMENT_B,
+    } element;
+
+    uint8_t expected[8];
+
+} state_t;
 
 typedef struct action
 {
-    button_t buttons[4];
-    uint8_t num_buttons;
+    state_t states[4];
+    uint8_t num_states;
     sprites_t *text;
 
 } action_t;

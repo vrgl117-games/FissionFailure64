@@ -73,7 +73,7 @@ typedef struct station_right
     uint8_t keypadselector_y;
     char screen[CURSOR_MAX + 1];
     uint8_t cursor;
-    bool validate;
+    bool calling;
 
     bool levers[NUM_LEVERS];
     uint8_t lever_selector;

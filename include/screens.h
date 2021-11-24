@@ -14,6 +14,7 @@ typedef enum screen
     message,
     options,
     pause,
+    phonebook,
     title,
     tutorial,
     win,
@@ -23,10 +24,11 @@ typedef enum screen_selection
 {
     screen_selection_none = -1,
     screen_selection_resume = 0,
-    screen_selection_options = 1,
-    screen_selection_tutorial = 2,
-    screen_selection_credits = 3,
-    screen_selection_quit = 4,
+    screen_selection_phonebook = 1,
+    screen_selection_options = 2,
+    screen_selection_tutorial = 3,
+    screen_selection_credits = 4,
+    screen_selection_quit = 5,
 } screen_selection_t;
 
 bool screen_credits(display_context_t disp, input_t *input);
@@ -41,6 +43,7 @@ void screen_message_load();
 void screen_message_unload();
 bool screen_options(display_context_t disp, input_t *input);
 screen_selection_t screen_pause(display_context_t disp, input_t *input, bool reset);
+bool screen_phonebook(display_context_t disp, input_t *input);
 void screen_timer();
 screen_selection_t screen_title_draw(display_context_t disp, input_t *input);
 void screen_title_load();

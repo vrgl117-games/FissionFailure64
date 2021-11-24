@@ -150,30 +150,61 @@ control_panel_status_t control_panel_check_status(action_t *action)
     if (control_panel.stress == 100)
         return DEAD;
 
-    for (int i = 0; i < action->num_buttons; ++i)
+    for (int i = 0; i < action->num_states; ++i)
     {
-        switch (action->buttons[i].station)
+        switch (action->states[i].station)
         {
         case STATION_LEFT:
+            switch (action->states[i].element)
+            {
+            case ELEMENT_RADIO:
+                if (control_panel.freq != action->states[i].expected[0])
+                    return INCORRECT;
+            default:
+                break;
+            }
             break;
         case STATION_CENTER:
-            switch (action->buttons[i].label)
+            switch (action->states[i].element)
             {
-            case LABEL_GRID:
-                if (control_panel.center.grid[action->buttons[i].expected[1]][action->buttons[i].expected[2]] != action->buttons[i].expected[0])
+            case ELEMENT_GRID:
+                if (control_panel.center.grid[action->states[i].expected[1]][action->states[i].expected[2]] != action->states[i].expected[0])
                     return INCORRECT;
                 break;
-            case LABEL_A:
-                if (control_panel.center.button_a || control_panel.center.button_a_presses != action->buttons[i].expected[0])
+            case ELEMENT_A:
+                if (control_panel.center.button_a || control_panel.center.button_a_presses != action->states[i].expected[0])
                     return INCORRECT;
                 break;
-            case LABEL_B:
-                if (control_panel.center.button_b != action->buttons[i].expected[0])
+            case ELEMENT_B:
+                if (control_panel.center.button_b != action->states[i].expected[0])
                     return INCORRECT;
+                break;
+            default:
                 break;
             }
             break;
         case STATION_RIGHT:
+            switch (action->states[i].element)
+            {
+            case ELEMENT_KEYPAD:
+                if (control_panel.right.calling == false ||
+                    control_panel.right.screen[0] != '0' + action->states[i].expected[0] ||
+                    control_panel.right.screen[1] != '0' + action->states[i].expected[1] ||
+                    control_panel.right.screen[2] != '0' + action->states[i].expected[2] ||
+                    control_panel.right.screen[3] != '0' + action->states[i].expected[3] ||
+                    control_panel.right.screen[4] != '0' + action->states[i].expected[4] ||
+                    control_panel.right.screen[5] != '0' + action->states[i].expected[5] ||
+                    control_panel.right.screen[6] != '0' + action->states[i].expected[6] ||
+                    control_panel.right.screen[7] != '0' + action->states[i].expected[7])
+                    return INCORRECT;
+
+                memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
+                control_panel.right.cursor = 0;
+                control_panel.right.calling = false;
+                break;
+            default:
+                break;
+            }
             break;
         }
     }
@@ -510,7 +541,14 @@ void station_right_draw_graphics(display_context_t disp)
     x += 126;
 
     graphics_set_color(colors[COLOR_YELLOW], 0);
-    if (station->cursor == 0)
+    if (station->calling)
+    {
+        if (control_panel.stress % 2 == 0)
+            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "CALLING.", station->screen);
+        else
+            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "CALLING ", station->screen);
+    }
+    else if (station->cursor == 0)
     {
         if (control_panel.stress % 2 == 0)
             graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "        ", station->screen);
@@ -602,19 +640,20 @@ void station_right_input(input_t *input)
         {
             if (station->keypadselector_x == 2 && station->keypadselector_y == 3)
             {
-                station->validate = true;
+                if (station->cursor > 0)
+                    station->calling = true;
             }
             else if (station->keypadselector_x == 0 && station->keypadselector_y == 3)
             {
-                if (station->cursor != 0)
+                if (station->cursor > 0 && station->calling)
                 {
-                    station->cursor--;
-                    station->screen[station->cursor] = 0;
+                    memset(station->screen, 0, sizeof(station->screen));
+                    station->cursor = 0;
                 }
+                station->calling = false;
             }
             else
             {
-                station->validate = false;
                 if (station->cursor < CURSOR_MAX)
                 {
                     station->screen[station->cursor] = '0' + station->keypad[station->keypadselector_y][station->keypadselector_x];

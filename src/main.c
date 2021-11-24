@@ -304,6 +304,10 @@ int main()
                 screen = game;
                 sfx_set_pause(false);
                 break;
+            case screen_selection_phonebook:
+                prev_screen = pause;
+                screen = phonebook;
+                break;
             case screen_selection_tutorial:
                 prev_screen = pause;
                 screen = tutorial;
@@ -332,6 +336,10 @@ int main()
             break;
         case tutorial:
             if (screen_tutorial(disp, &input, false))
+                screen = prev_screen;
+            break;
+        case phonebook:
+            if (screen_phonebook(disp, &input))
                 screen = prev_screen;
             break;
         case credits:
