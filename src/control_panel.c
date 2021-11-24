@@ -421,6 +421,7 @@ void station_center_draw()
 
 void station_center_input(input_t *input)
 {
+    static uint8_t off_timer = 0;
     if (input->L)
         control_panel.current_station--;
     else if (input->R)
@@ -441,9 +442,24 @@ void station_center_input(input_t *input)
         if (station->gridselector_x < GRID_SIZE - 1)
             station->gridselector_x++;
 
-    control_panel.lights_off = station->button_b;
     if (input->B)
+    {
         station->button_b = !station->button_b;
+        if (station->button_b)
+            off_timer = 0;
+        else
+            off_timer = 16;
+    }
+
+    if (station->button_b)
+        off_timer++;
+    else if (off_timer > 0)
+        off_timer--;
+
+    if (off_timer == 1 || off_timer == 2 || (off_timer > 6 && off_timer < 10) || off_timer > 16)
+        control_panel.lights_off = true;
+    else
+        control_panel.lights_off = false;
 
     if (input_get_A_presses())
     {
