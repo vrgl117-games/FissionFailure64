@@ -14,9 +14,10 @@ typedef enum
 
     COLOR_BG,
     COLOR_PANEL,
-    COLOR_BORDER,
     COLOR_BROWN,
     COLOR_YELLOW,
+
+    COLOR_DARK,
 
     COLOR_IDX,
 } colors_name_t;

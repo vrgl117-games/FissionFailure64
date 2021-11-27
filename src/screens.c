@@ -73,7 +73,7 @@ bool screen_intro(display_context_t disp)
 
     rdp_attach(disp);
 
-    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+    rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
 
     rdp_detach_display();
     sprite_t *intro = NULL;
@@ -166,7 +166,7 @@ screen_t screen_game(display_context_t disp, input_t *input)
     if (!control_panel.lights_off)
         rdp_draw_filled_rectangle_size(0, 0, 220, 120, colors[COLOR_BG]);
     else
-        rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+        rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
 
     graphics_draw_sprite(disp, 70, 20, window);
 
@@ -394,9 +394,9 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
     static uint8_t selected = 0;
 
     if (input->up)
-        selected = (selected == 0 ? 2 : 0);
+        selected = (selected == 0 ? 3 : 0);
     else if (input->down)
-        selected = (selected == 2 ? 0 : 2);
+        selected = (selected == 3 ? 0 : 3);
 
     rdp_attach(disp);
 
@@ -406,7 +406,7 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
 
     graphics_draw_sprite(disp, __width / 2 - logo_sp->width / 2, 20, logo_sp);
 
-    if (selected == 2)
+    if (selected == 3)
         graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_sp);
     else if (ticks % 40 > 19)
         graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_selected_sp);

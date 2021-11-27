@@ -24,6 +24,15 @@ typedef enum
     LABEL_PRESSURIZER,
     LABEL_DANGER,
 
+    TEXT_A,
+    TEXT_B,
+    TEXT_C,
+    TEXT_D,
+    TEXT_1,
+    TEXT_2,
+    TEXT_3,
+    TEXT_4,
+
     LABEL_IDX
 } label_t;
 
@@ -113,6 +122,7 @@ typedef struct control_panel
     control_panel_mode_t mode;
     uint8_t current_station;
     bool lights_off;
+    uint8_t off_timer;
 } control_panel_t;
 
 typedef enum control_panel_status

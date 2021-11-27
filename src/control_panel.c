@@ -29,8 +29,7 @@ static void danger_bar_draw()
 
     if (!control_panel.lights_off)
     {
-        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
-        rdp_draw_filled_rectangle_size(x, y, width - 2, height, colors[COLOR_PANEL]);
+        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
         rdp_draw_filled_rectangle_size(x + 8, 8, 10, 104, colors[COLOR_BLACK]);
 
         rdp_draw_sprite_with_texture(labels[LABEL_DANGER], x + 24, 8, 0);
@@ -49,8 +48,7 @@ static void instruments_draw(display_context_t disp)
 
     if (!control_panel.lights_off)
     {
-        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
-        rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
+        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
 
         rdp_draw_sprite_with_texture(labels[LABEL_STATUS], x + 8, y + 8, 0);
 
@@ -85,14 +83,11 @@ static void instructions_draw()
 
     if (!control_panel.lights_off)
     {
-        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_BORDER]);
-        rdp_draw_filled_rectangle_size(x + 2, y, width - 2, height - 2, colors[COLOR_PANEL]);
+        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
 
         rdp_draw_sprite_with_texture(labels[LABEL_INSTRUCTIONS], x + 8, y + 8, 0);
-
-        rdp_draw_filled_rectangle_size(x + 8, y + 28, width - 16, 94, colors[COLOR_BLACK]);
     }
-
+    rdp_draw_filled_rectangle_size(x + 8, y + 28, width - 16, 94, colors[COLOR_BLACK]);
     rdp_draw_sprites_with_texture(actions_get_current()->text, x + 8 + 4, y + 28 + 4, 0);
 }
 
@@ -103,8 +98,7 @@ void control_panel_draw(display_context_t disp)
 
     if (!control_panel.lights_off)
     {
-        rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_BORDER]);
-        rdp_draw_filled_rectangle_absolute(0, 122, __width - 100, __height, colors[COLOR_PANEL]);
+        rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
     }
     switch (control_panel.current_station)
     {
@@ -233,6 +227,15 @@ void control_panel_init()
     labels[LABEL_PRESSURIZER] = dfs_load_sprite("/gfx/sprites/ui/label_pressurizer.sprite");
     labels[LABEL_DANGER] = dfs_load_sprite("/gfx/sprites/ui/label_danger.sprite");
 
+    labels[TEXT_A] = dfs_load_sprite("/gfx/sprites/ui/a.sprite");
+    labels[TEXT_B] = dfs_load_sprite("/gfx/sprites/ui/b.sprite");
+    labels[TEXT_C] = dfs_load_sprite("/gfx/sprites/ui/c.sprite");
+    labels[TEXT_D] = dfs_load_sprite("/gfx/sprites/ui/d.sprite");
+    labels[TEXT_1] = dfs_load_sprite("/gfx/sprites/ui/1.sprite");
+    labels[TEXT_2] = dfs_load_sprite("/gfx/sprites/ui/2.sprite");
+    labels[TEXT_3] = dfs_load_sprite("/gfx/sprites/ui/3.sprite");
+    labels[TEXT_4] = dfs_load_sprite("/gfx/sprites/ui/4.sprite");
+
     control_panel_reset();
 }
 
@@ -272,6 +275,11 @@ void control_panel_reset()
     control_panel.right.keypad[2][1] = 8;
     control_panel.right.keypad[2][2] = 9;
     control_panel.right.keypad[3][1] = 0;
+
+    // reset levers
+    control_panel.right.levers[0] = true;
+    control_panel.right.levers[2] = true;
+    control_panel.power = 125 * control_panel.right.levers[0] + 125 * control_panel.right.levers[1] + 125 * control_panel.right.levers[2] + 125 * control_panel.right.levers[3];
 }
 
 void control_panel_timer()
@@ -292,7 +300,6 @@ void control_panel_timer()
         control_panel.mode = HELL;
         sfx_set_next_music(SFX_HELL);
     }
-    control_panel.power = 100 + (rand() % 777);
     control_panel.temp = (rand() % 100) - 40;
 }
 
@@ -421,8 +428,8 @@ void station_center_draw()
     if (!control_panel.lights_off)
     {
         // Button B
-        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 90, y, 0);
-        rdp_draw_sprite_with_texture(tiles[502], x + 130, y + 15, (station->button_b ? MIRROR_Y : 0));
+        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 100, y, 0);
+        rdp_draw_sprite_with_texture(tiles[502], x + 150, y + 15, (station->button_b ? MIRROR_Y : 0));
 
         // Button A
         rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 100, y + 50, 0);
@@ -433,8 +440,20 @@ void station_center_draw()
 
         // Grid
         rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 10, 210, 0);
-        rdp_draw_filled_rectangle_size(x, y, (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), colors[COLOR_BG]);
+        rdp_draw_filled_rectangle_size(x, y + 6, (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), colors[COLOR_BG]);
+
+        rdp_draw_sprite_with_texture(labels[TEXT_A], x + 6, y - 6, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_B], x + 6 + cell_size + 2, y - 6, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_C], x + 6 + cell_size + 2 + cell_size + 2, y - 6, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_D], x + 6 + cell_size + 2 + cell_size + 2 + cell_size + 2, y - 6, 0);
+
+        rdp_draw_sprite_with_texture(labels[TEXT_1], x + 74, y + 10, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_2], x + 74, y + 10 + cell_size + 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_3], x + 74, y + 10 + cell_size + 2 + cell_size + 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_4], x + 74, y + 10 + cell_size + 2 + cell_size + 2 + cell_size + 2, 0);
     }
+
+    y += 6;
 
     for (uint8_t yy = 0; yy < GRID_SIZE; yy++)
     {
@@ -452,7 +471,6 @@ void station_center_draw()
 
 void station_center_input(input_t *input)
 {
-    static uint8_t off_timer = 0;
     if (input->L)
         control_panel.current_station--;
     else if (input->R)
@@ -477,17 +495,20 @@ void station_center_input(input_t *input)
     {
         station->button_b = !station->button_b;
         if (station->button_b)
-            off_timer = 0;
+            control_panel.off_timer = 0;
         else
-            off_timer = 16;
+            control_panel.off_timer = 16;
     }
 
     if (station->button_b)
-        off_timer++;
-    else if (off_timer > 0)
-        off_timer--;
+    {
+        if (control_panel.off_timer <= 16)
+            control_panel.off_timer++;
+    }
+    else if (control_panel.off_timer > 0)
+        control_panel.off_timer--;
 
-    if (off_timer == 1 || off_timer == 2 || (off_timer > 6 && off_timer < 10) || off_timer > 16)
+    if (control_panel.off_timer == 1 || control_panel.off_timer == 2 || (control_panel.off_timer > 6 && control_panel.off_timer < 10) || control_panel.off_timer > 16)
         control_panel.lights_off = true;
     else
         control_panel.lights_off = false;
@@ -726,4 +747,6 @@ void station_right_input(input_t *input)
         station->joystick = 0;
         station->rotations = 0;
     }
+
+    control_panel.power = 125 * station->levers[0] + 125 * station->levers[1] + 125 * station->levers[2] + 125 * station->levers[3];
 }
