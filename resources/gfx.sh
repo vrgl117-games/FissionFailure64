@@ -9,7 +9,7 @@ generate() {
 }
 
 generate_action() {
-    convert -strip -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 12 -crop 16 -gravity West label:"$1" $2
+    convert -strip -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 10 -crop 16 -gravity West label:"$1" $2
 }
 
 generate_label() {
@@ -40,7 +40,7 @@ generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using th
 
 # labels
 generate_label  'INSTRUCTIONS' resources/gfx/sprites/ui/label_instructions.png
-generate_label  'POWER' resources/gfx/sprites/ui/label_lights.png
+generate_label  'LIGHTS' resources/gfx/sprites/ui/label_lights.png
 generate_label  'STATUS' resources/gfx/sprites/ui/label_status.png
 generate_label  'RADIO' resources/gfx/sprites/ui/label_radio.png
 generate_label  'TURBINES' resources/gfx/sprites/ui/label_turbines.png
@@ -52,24 +52,25 @@ generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
 # edited by hand
 #generate_label  'D\nA\nN\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
 
-generate_text 'a'  resources/gfx/sprites/ui/a.png
-generate_text 'b'  resources/gfx/sprites/ui/b.png
-generate_text 'c'  resources/gfx/sprites/ui/c.png
-generate_text 'd'  resources/gfx/sprites/ui/d.png
-generate_text '1'  resources/gfx/sprites/ui/1.png
-generate_text '2'  resources/gfx/sprites/ui/2.png
-generate_text '3'  resources/gfx/sprites/ui/3.png
-generate_text '4'  resources/gfx/sprites/ui/4.png
+generate_text 'a'  resources/gfx/sprites/ui/text_a.png
+generate_text 'b'  resources/gfx/sprites/ui/text_b.png
+generate_text 'c'  resources/gfx/sprites/ui/text_c.png
+generate_text 'd'  resources/gfx/sprites/ui/text_d.png
+generate_text '0'  resources/gfx/sprites/ui/text_0.png
+generate_text '1'  resources/gfx/sprites/ui/text_1.png
+generate_text '2'  resources/gfx/sprites/ui/text_2.png
+generate_text '3'  resources/gfx/sprites/ui/text_3.png
+generate_text '4'  resources/gfx/sprites/ui/text_4.png
 
 # actions
 generate_action 'Set blue\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_b_b3-%d.png
 generate_action 'Set red\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_r_b3-%d.png
 generate_action 'Set blue\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_b_c2-%d.png
 generate_action 'Set red\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_r_c2-%d.png
-generate_action 'Turn\nOFF the\npower' resources/gfx/sprites/actions/power_off-%d.png
-generate_action 'Turn the\npower\nback ON' resources/gfx/sprites/actions/power_on-%d.png
+generate_action 'Turn\nOFF the\lights' resources/gfx/sprites/actions/power_off-%d.png
+generate_action 'Turn the\lights\nback ON' resources/gfx/sprites/actions/power_on-%d.png
 generate_action 'Set freq\nto\n242Hz' resources/gfx/sprites/actions/freq-242-%d.png
-generate_action 'Call\nSpare\nParts' resources/gfx/sprites/actions/call-spare-%d.png
+generate_action 'Call\nSpare\nParts\n(Phonebook\nin menu)' resources/gfx/sprites/actions/call-spare-%d.png
 
 # tutorial
 generate "#1f2029ff" "#f9d72fff" "$font" 24 'How to manage the stations' resources/gfx/sprites/ui/how_to.png

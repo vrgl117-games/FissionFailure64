@@ -42,7 +42,7 @@ static void danger_bar_draw()
 static void instruments_draw(display_context_t disp)
 {
     uint8_t x = 220;
-    uint8_t y = 130;
+    uint8_t y = 150;
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
@@ -50,27 +50,25 @@ static void instruments_draw(display_context_t disp)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
 
-        rdp_draw_sprite_with_texture(labels[LABEL_STATUS], x + 8, y + 8, 0);
-
         rdp_detach_display();
 
-        graphics_draw_text(disp, x + 8, y + 32, "TEMP");
-        graphics_draw_text(disp, x + 8, y + 32 + 24, "POWER");
-        graphics_draw_text(disp, x + 8, y + 32 + 24 + 24, "FREQ");
+        graphics_draw_text(disp, x + 8, y + 12, "TEMP");
+        graphics_draw_text(disp, x + 8, y + 12 + 24, "POWER");
+        graphics_draw_text(disp, x + 8, y + 12 + 24 + 24, "FREQ");
     }
     else
         rdp_detach_display();
 
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 54, y + 30, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
+    graphics_draw_textf_with_background(disp, x + 54, y + 10, colors[COLOR_BLACK], (control_panel.temp < 0 ? "%.2dC" : " %.2dC"), control_panel.temp);
     graphics_set_color(colors[COLOR_WHITE], 0);
 
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 54, y + 30 + 24, colors[COLOR_BLACK], "%.03dW", control_panel.power);
+    graphics_draw_textf_with_background(disp, x + 54, y + 10 + 24, colors[COLOR_BLACK], "%.03dW", control_panel.power);
     graphics_set_color(colors[COLOR_WHITE], 0);
 
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 46, y + 30 + 24 + 24, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
+    graphics_draw_textf_with_background(disp, x + 46, y + 10 + 24 + 24, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
 
@@ -79,16 +77,14 @@ static void instructions_draw()
     uint8_t x = 220;
     uint8_t y = 0;
     uint8_t width = __width - x;
-    uint8_t height = 130;
+    uint8_t height = 170;
 
     if (!control_panel.lights_off)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
-
-        rdp_draw_sprite_with_texture(labels[LABEL_INSTRUCTIONS], x + 8, y + 8, 0);
     }
-    rdp_draw_filled_rectangle_size(x + 8, y + 28, width - 16, 94, colors[COLOR_BLACK]);
-    rdp_draw_sprites_with_texture(actions_get_current()->text, x + 8 + 4, y + 28 + 4, 0);
+    rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 138, colors[COLOR_BLACK]);
+    rdp_draw_sprites_with_texture(actions_get_current()->text, x + 8 + 4, y + 8 + 4, 0);
 }
 
 void control_panel_draw(display_context_t disp)
@@ -227,14 +223,15 @@ void control_panel_init()
     labels[LABEL_PRESSURIZER] = dfs_load_sprite("/gfx/sprites/ui/label_pressurizer.sprite");
     labels[LABEL_DANGER] = dfs_load_sprite("/gfx/sprites/ui/label_danger.sprite");
 
-    labels[TEXT_A] = dfs_load_sprite("/gfx/sprites/ui/a.sprite");
-    labels[TEXT_B] = dfs_load_sprite("/gfx/sprites/ui/b.sprite");
-    labels[TEXT_C] = dfs_load_sprite("/gfx/sprites/ui/c.sprite");
-    labels[TEXT_D] = dfs_load_sprite("/gfx/sprites/ui/d.sprite");
-    labels[TEXT_1] = dfs_load_sprite("/gfx/sprites/ui/1.sprite");
-    labels[TEXT_2] = dfs_load_sprite("/gfx/sprites/ui/2.sprite");
-    labels[TEXT_3] = dfs_load_sprite("/gfx/sprites/ui/3.sprite");
-    labels[TEXT_4] = dfs_load_sprite("/gfx/sprites/ui/4.sprite");
+    labels[TEXT_A] = dfs_load_sprite("/gfx/sprites/ui/text_a.sprite");
+    labels[TEXT_B] = dfs_load_sprite("/gfx/sprites/ui/text_b.sprite");
+    labels[TEXT_C] = dfs_load_sprite("/gfx/sprites/ui/text_c.sprite");
+    labels[TEXT_D] = dfs_load_sprite("/gfx/sprites/ui/text_d.sprite");
+    labels[TEXT_0] = dfs_load_sprite("/gfx/sprites/ui/text_0.sprite");
+    labels[TEXT_1] = dfs_load_sprite("/gfx/sprites/ui/text_1.sprite");
+    labels[TEXT_2] = dfs_load_sprite("/gfx/sprites/ui/text_2.sprite");
+    labels[TEXT_3] = dfs_load_sprite("/gfx/sprites/ui/text_3.sprite");
+    labels[TEXT_4] = dfs_load_sprite("/gfx/sprites/ui/text_4.sprite");
 
     control_panel_reset();
 }
@@ -429,14 +426,13 @@ void station_center_draw()
     {
         // Button B
         rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 100, y, 0);
-        rdp_draw_sprite_with_texture(tiles[502], x + 150, y + 15, (station->button_b ? MIRROR_Y : 0));
+        rdp_draw_sprite_with_texture(tiles[502], x + 127, y + 18, (station->button_b ? MIRROR_Y : 0));
 
         // Button A
-        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 100, y + 50, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 130, y + 65, 0);
-        // TODO ADD BACK graphics_set_color(colors[COLOR_BLACK], 0);
-        // TODO ADD BACK graphics_draw_textf(disp, x + 138, y + 71, "%d\n", station->button_a_presses);
-        // TODO ADD BACK graphics_set_color(colors[COLOR_WHITE], 0);
+        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 100, y + 60, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 130, y + 75, 0);
+
+        rdp_draw_sprite_with_texture(labels[TEXT_0 + station->button_a_presses], x + 155, y + 81, 0);
 
         // Grid
         rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 10, 210, 0);

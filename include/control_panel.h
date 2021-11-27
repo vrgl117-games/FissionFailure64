@@ -28,6 +28,7 @@ typedef enum
     TEXT_B,
     TEXT_C,
     TEXT_D,
+    TEXT_0,
     TEXT_1,
     TEXT_2,
     TEXT_3,
