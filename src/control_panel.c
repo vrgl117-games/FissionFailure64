@@ -205,6 +205,7 @@ control_panel_status_t control_panel_check_status(action_t *action)
     else
         control_panel.stress -= 10;
 
+    sfx_play(CH_SFX, SFX_ACTION, false);
     return CORRECT;
 }
 

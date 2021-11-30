@@ -4,9 +4,6 @@ static bool paused = false;
 static wav64_t SFX_CACHE[SFX_ID_COUNT];
 static sfx_id_t sfx_id_next_music = SFX_ID_COUNT;
 
-volume_t volume_sfx = VOL_75;
-volume_t volume_music = VOL_50;
-
 void sfx_init(void)
 {
     mixer_init(CH_ID_COUNT);
@@ -23,10 +20,11 @@ void sfx_init(void)
     wav64_open(&SFX_CACHE[SFX_HELL], "/sfx/04_Fission_Failure_64_Hell_mono.wav64");
     wav64_set_loop(&SFX_CACHE[SFX_HELL], true);
 
-    wav64_open(&SFX_CACHE[SFX_BUTTON], "/sfx/146718__leszek-szary__button.wav64");
+    wav64_open(&SFX_CACHE[SFX_ACTION], "/sfx/274183__littlerobotsoundfactory__jingle-win-synth-04.wav64");
+    wav64_open(&SFX_CACHE[SFX_GAME_OVER], "/sfx/265459__gowlermusic__atomic-explosion-and-sub-rumble.wav64");
 
-    mixer_ch_set_vol(CH_MUSIC, (float)volume_music / 100.0f, (float)volume_music / 100.0f);
-    mixer_ch_set_vol(CH_SFX, (float)volume_sfx / 100.0f, (float)volume_sfx / 100.0f);
+    mixer_ch_set_vol(CH_MUSIC, 0.5f, 0.5f);
+    mixer_ch_set_vol(CH_SFX, 0.75f, 0.75f);
 }
 
 void sfx_reset()
@@ -68,52 +66,6 @@ void sfx_set_next_music(const sfx_id_t sfx_id)
 void sfx_stop(const ch_id_t ch_id)
 {
     mixer_ch_stop(ch_id);
-}
-
-void sfx_switch_volume_music(bool left)
-{
-    switch (volume_music)
-    {
-    case VOL_100:
-        volume_music = (left ? VOL_75 : VOL_0);
-        break;
-    case VOL_75:
-        volume_music = (left ? VOL_50 : VOL_100);
-        break;
-    case VOL_50:
-        volume_music = (left ? VOL_25 : VOL_75);
-        break;
-    case VOL_25:
-        volume_music = (left ? VOL_0 : VOL_50);
-        break;
-    case VOL_0:
-        volume_music = (left ? VOL_100 : VOL_25);
-        break;
-    }
-    mixer_ch_set_vol(CH_MUSIC, (float)volume_music / 100.0f, (float)volume_music / 100.0f);
-}
-
-void sfx_switch_volume_sfx(bool left)
-{
-    switch (volume_sfx)
-    {
-    case VOL_100:
-        volume_sfx = (left ? VOL_75 : VOL_0);
-        break;
-    case VOL_75:
-        volume_sfx = (left ? VOL_50 : VOL_100);
-        break;
-    case VOL_50:
-        volume_sfx = (left ? VOL_25 : VOL_75);
-        break;
-    case VOL_25:
-        volume_sfx = (left ? VOL_0 : VOL_50);
-        break;
-    case VOL_0:
-        volume_sfx = (left ? VOL_100 : VOL_25);
-        break;
-    }
-    mixer_ch_set_vol(CH_SFX, (float)volume_sfx / 100.0f, (float)volume_sfx / 100.0f);
 }
 
 void sfx_update()

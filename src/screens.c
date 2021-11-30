@@ -12,8 +12,6 @@
 extern uint32_t __width;
 extern uint32_t __height;
 extern uint32_t colors[];
-extern volume_t volume_sfx;
-extern volume_t volume_music;
 extern control_panel_t control_panel;
 
 static volatile uint32_t ticks = 0;
@@ -189,8 +187,12 @@ bool screen_game_over(display_context_t disp, input_t *input)
 
     rdp_detach_display();
 
+    sprite_t *boom_sp = dfs_load_sprite("/gfx/sprites/window/boom.sprite");
+    graphics_draw_sprite_trans(disp, __width / 2 - boom_sp->width / 2, __height / 2 - boom_sp->height / 2, boom_sp);
+    free(boom_sp);
+
     sprite_t *gameover_sp = dfs_load_sprite("/gfx/sprites/ui/gameover.sprite");
-    graphics_draw_sprite(disp, __width / 2 - gameover_sp->width / 2, 40, gameover_sp);
+    graphics_draw_sprite(disp, __width / 2 - gameover_sp->width / 2, 20, gameover_sp);
     free(gameover_sp);
 
     sprite_t *continue_sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
@@ -226,84 +228,6 @@ bool screen_message_draw(display_context_t disp)
     return (anim >= 82);
 }
 
-// options screen
-bool screen_options(display_context_t disp, input_t *input)
-{
-    static uint8_t selected = 0;
-
-    if (input->up || input->down)
-        selected = (selected == 1 ? 0 : 1);
-
-    if (selected == 0 && (input->left || input->right))
-        sfx_switch_volume_music(input->left);
-
-    if (selected == 1 && (input->left || input->right))
-        sfx_switch_volume_sfx(input->left);
-
-    rdp_attach(disp);
-
-    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
-
-    rdp_detach_display();
-
-    sprite_t *options_sp = dfs_load_sprite("/gfx/sprites/ui/options_big.sprite");
-    graphics_draw_sprite(disp, __width / 2 - options_sp->width / 2, 10, options_sp);
-    free(options_sp);
-
-    sprite_t *music_sp = dfs_load_sprite("/gfx/sprites/ui/music.sprite");
-    graphics_draw_sprite(disp, __width / 2 - music_sp->width / 2, 80, music_sp);
-    free(music_sp);
-
-    sprite_t *sound_vol_sp = NULL;
-    switch (volume_music)
-    {
-    case VOL_100:
-        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/100_selected.sprite" : "/gfx/sprites/ui/100.sprite");
-        break;
-    case VOL_75:
-        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/75_selected.sprite" : "/gfx/sprites/ui/75.sprite");
-        break;
-    case VOL_50:
-        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/50_selected.sprite" : "/gfx/sprites/ui/50.sprite");
-        break;
-    case VOL_25:
-        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/25_selected.sprite" : "/gfx/sprites/ui/25.sprite");
-        break;
-    case VOL_0:
-        sound_vol_sp = dfs_load_sprite(selected == 0 ? "/gfx/sprites/ui/0_selected.sprite" : "/gfx/sprites/ui/0.sprite");
-        break;
-    }
-    graphics_draw_sprite(disp, __width / 2 - sound_vol_sp->width / 2, 110, sound_vol_sp);
-    free(sound_vol_sp);
-
-    sprite_t *sfx_sp = dfs_load_sprite("/gfx/sprites/ui/sfx.sprite");
-    graphics_draw_sprite(disp, __width / 2 - sfx_sp->width / 2, 140, sfx_sp);
-    free(sfx_sp);
-
-    switch (volume_sfx)
-    {
-    case VOL_100:
-        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/100_selected.sprite" : "/gfx/sprites/ui/100.sprite");
-        break;
-    case VOL_75:
-        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/75_selected.sprite" : "/gfx/sprites/ui/75.sprite");
-        break;
-    case VOL_50:
-        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/50_selected.sprite" : "/gfx/sprites/ui/50.sprite");
-        break;
-    case VOL_25:
-        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/25_selected.sprite" : "/gfx/sprites/ui/25.sprite");
-        break;
-    case VOL_0:
-        sound_vol_sp = dfs_load_sprite(selected == 1 ? "/gfx/sprites/ui/0_selected.sprite" : "/gfx/sprites/ui/0.sprite");
-        break;
-    }
-    graphics_draw_sprite(disp, __width / 2 - sound_vol_sp->width / 2, 170, sound_vol_sp);
-    free(sound_vol_sp);
-
-    return (input->A || input->start);
-}
-
 // pause menu
 screen_selection_t screen_pause(display_context_t disp, input_t *input, bool reset)
 {
@@ -313,9 +237,9 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
         selected = 0;
 
     if (input->up)
-        selected = (selected == 0 ? 5 : selected - 1);
+        selected = (selected == 0 ? 4 : selected - 1);
     else if (input->down)
-        selected = (selected == 5 ? 0 : selected + 1);
+        selected = (selected == 4 ? 0 : selected + 1);
 
     rdp_attach(disp);
 
@@ -328,21 +252,18 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
     free(pause_sp);
 
     sprite_t *resume_sp = dfs_load_sprite((selected == 0 ? "/gfx/sprites/ui/resume_selected.sprite" : "/gfx/sprites/ui/resume.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 65, resume_sp);
+    graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 90, resume_sp);
     free(resume_sp);
     sprite_t *phonebook_sp = dfs_load_sprite((selected == 1 ? "/gfx/sprites/ui/phonebook_selected.sprite" : "/gfx/sprites/ui/phonebook.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - phonebook_sp->width / 2, 90, phonebook_sp);
+    graphics_draw_sprite(disp, __width / 2 - phonebook_sp->width / 2, 115, phonebook_sp);
     free(phonebook_sp);
-    sprite_t *options_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/options_selected.sprite" : "/gfx/sprites/ui/options.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - options_sp->width / 2, 115, options_sp);
-    free(options_sp);
-    sprite_t *tutorial_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/tutorial_selected.sprite" : "/gfx/sprites/ui/tutorial.sprite"));
+    sprite_t *tutorial_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/tutorial_selected.sprite" : "/gfx/sprites/ui/tutorial.sprite"));
     graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 140, tutorial_sp);
     free(tutorial_sp);
-    sprite_t *credits_sp = dfs_load_sprite((selected == 4 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
+    sprite_t *credits_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
     graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 165, credits_sp);
     free(credits_sp);
-    sprite_t *quit_sp = dfs_load_sprite((selected == 5 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
+    sprite_t *quit_sp = dfs_load_sprite((selected == 4 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
     graphics_draw_sprite(disp, __width / 2 - quit_sp->width / 2, 190, quit_sp);
     free(quit_sp);
 
@@ -394,12 +315,12 @@ void screen_title_unload()
 
 screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
 {
-    static uint8_t selected = 0;
+    static uint8_t selected = screen_selection_resume;
 
     if (input->up)
-        selected = (selected == 0 ? 3 : 0);
+        selected = (selected == screen_selection_resume ? screen_selection_tutorial : screen_selection_resume);
     else if (input->down)
-        selected = (selected == 3 ? 0 : 3);
+        selected = (selected == screen_selection_tutorial ? screen_selection_resume : screen_selection_tutorial);
 
     rdp_attach(disp);
 
@@ -470,25 +391,80 @@ bool screen_tutorial(display_context_t disp, input_t *input, bool reset)
         sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
         free(sp);
-        if (input->A || input->start)
+        if (input->A || input->start || input->R)
             page++;
-        return false;
+        if (input->L)
+            page--;
+        break;
     case 1:
         sp = dfs_load_sprite("/gfx/sprites/ui/how_to.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
         free(sp);
 
         sp = dfs_load_sprite("/gfx/sprites/ui/use_l_r.sprite");
-        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 120, sp);
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
         free(sp);
 
         sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
         free(sp);
+        if (input->A || input->start || input->R)
+            page++;
+        if (input->L)
+            page--;
+        break;
+    case 2:
+        sp = dfs_load_sprite("/gfx/sprites/ui/how_to_left.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
+        free(sp);
+
+        sp = dfs_load_sprite("/gfx/sprites/ui/tuto_left.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
+        free(sp);
+
+        sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
+        free(sp);
+        if (input->A || input->start || input->R)
+            page++;
+        if (input->L)
+            page--;
+        break;
+    case 3:
+        sp = dfs_load_sprite("/gfx/sprites/ui/how_to_center.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
+        free(sp);
+        sp = dfs_load_sprite("/gfx/sprites/ui/tuto_center.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
+        free(sp);
+
+        sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
+        free(sp);
+        if (input->A || input->start || input->R)
+            page++;
+        if (input->L)
+            page--;
+        break;
+    case 4:
+        sp = dfs_load_sprite("/gfx/sprites/ui/how_to_right.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
+        free(sp);
+        sp = dfs_load_sprite("/gfx/sprites/ui/tuto_right.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
+        free(sp);
+
+        sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
+        free(sp);
+        if (input->A || input->start || input->R)
+            page++;
+        if (input->L)
+            page--;
         break;
     }
 
-    return (input->A || input->start);
+    return (page == 5);
 }
 
 // end game screen
@@ -501,7 +477,7 @@ bool screen_win(display_context_t disp, input_t *input)
     rdp_detach_display();
 
     sprite_t *win_sp = dfs_load_sprite("/gfx/sprites/ui/win.sprite");
-    graphics_draw_sprite(disp, __width / 2 - win_sp->width / 2, 40, win_sp);
+    graphics_draw_sprite(disp, __width / 2 - win_sp->width / 2, 20, win_sp);
     free(win_sp);
 
     sprite_t *continue_sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");

@@ -8,6 +8,11 @@ generate() {
     convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" $6
 }
 
+
+generate_left() {
+    convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity West label:"$5" $6
+}
+
 generate_action() {
     convert -strip -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 10 -crop 16 -gravity West label:"$1" $2
 }
@@ -50,8 +55,6 @@ generate_label  'TURBINES' resources/gfx/sprites/ui/label_turbines.png
 generate_label  'PUMPS' resources/gfx/sprites/ui/label_pumps.png
 generate_label  'CONTROL RODS' resources/gfx/sprites/ui/label_control_rods.png
 generate_label  'COMPASS' resources/gfx/sprites/ui/label_wind_turbines.png
-
-
 # edited by hand
 #generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
 generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
@@ -87,11 +90,17 @@ generate_action 'Set freq\nto\n242Hz' resources/gfx/sprites/actions/freq-242-%d.
 generate_action 'Call\nSpare\nParts\n(Phonebook\nin menu)' resources/gfx/sprites/actions/call-spare-%d.png
 
 # tutorial
-generate "#1f2029ff" "#f9d72fff" "$font" 24 'How to manage the stations' resources/gfx/sprites/ui/how_to.png
+generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the stations' resources/gfx/sprites/ui/how_to.png
+generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the LEFT station' resources/gfx/sprites/ui/how_to_left.png
+generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the CENTER station' resources/gfx/sprites/ui/how_to_center.png
+generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the RIGHT station' resources/gfx/sprites/ui/how_to_right.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'LEFT' resources/gfx/sprites/ui/left.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'CENTER' resources/gfx/sprites/ui/center.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'RIGHT' resources/gfx/sprites/ui/right.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'Use L and R to change station' resources/gfx/sprites/ui/use_l_r.png
+generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad to tweak the RADIO\n\nDo (not) use Z to press AZ-5\n\nUse the joystick to set the COMPASS" resources/gfx/sprites/ui/tuto_left.png
+generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad and C buttons to interact\nwith the CONTROL RODS\n\nPress B to switch the LIGHTS\n\nDouble / triple tap A to activate\nthe PRESSURIZER" resources/gfx/sprites/ui/tuto_center.png
+generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Rotate the joystick to activate the PUMPS\n\nPress Z to switch between the TURBINES & KEYPAD\n\nUse A to interact with TURBINES & KEYPAD\n\nPress B to clear out KEYPAD" resources/gfx/sprites/ui/tuto_right.png
 
 
 # title screen
@@ -112,8 +121,6 @@ generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Resume" resources/gfx/sprites/ui/re
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume_selected.png
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Phonebook" resources/gfx/sprites/ui/phonebook.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Phonebook" resources/gfx/sprites/ui/phonebook_selected.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Options" resources/gfx/sprites/ui/options.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 "Options" resources/gfx/sprites/ui/options_selected.png
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial_selected.png
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits.png
@@ -121,19 +128,6 @@ generate "#1f2029ff" "#f9d72fff" "$font" 18 "Credits" resources/gfx/sprites/ui/c
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit_selected.png
 
-# options screen
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Options" resources/gfx/sprites/ui/options_big.png
-generate "#1f2029ff" "#f9d72fff" "$font" 16 "< 100% >" resources/gfx/sprites/ui/100_selected.png
-generate "#1f2029ff" "#f9d72fff" "$font" 16 "< 75 \% >" resources/gfx/sprites/ui/75_selected.png
-generate "#1f2029ff" "#f9d72fff" "$font" 16 "< 50 \% >" resources/gfx/sprites/ui/50_selected.png
-generate "#1f2029ff" "#f9d72fff" "$font" 16 "< 25 \% >" resources/gfx/sprites/ui/25_selected.png
-generate "#1f2029ff" "#f9d72fff" "$font" 16 "< 0  \% >" resources/gfx/sprites/ui/0_selected.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 16 "< 100% >" resources/gfx/sprites/ui/100.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 16 "< 75 \% >" resources/gfx/sprites/ui/75.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 16 "< 50 \% >" resources/gfx/sprites/ui/50.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 16 "< 25 \% >" resources/gfx/sprites/ui/25.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 16 "< 0  \% >" resources/gfx/sprites/ui/0.png
-generate "#1f2029ff" "#f9d72fff" "$font_uni" 16 "sfx" resources/gfx/sprites/ui/sfx.png
 
 # credits screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Credits" resources/gfx/sprites/ui/credits_big.png

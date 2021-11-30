@@ -134,6 +134,8 @@ int main()
                         stop_timer(game_timer);
                         game_timer = NULL;
                     }
+                    if (screen == game_over)
+                        sfx_play(CH_SFX, SFX_GAME_OVER, false);
                 }
             }
             break;
@@ -141,10 +143,6 @@ int main()
         case pause: // pause menu.
             switch (screen_pause(disp, &input, false))
             {
-            case screen_selection_options:
-                prev_screen = pause;
-                screen = options;
-                break;
             case screen_selection_resume:
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 input_timer(); // reset pressed to 0
@@ -176,10 +174,6 @@ int main()
             default:
                 break;
             }
-            break;
-        case options:
-            if (screen_options(disp, &input))
-                screen = prev_screen;
             break;
         case tutorial:
             if (screen_tutorial(disp, &input, false))

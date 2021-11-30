@@ -12,7 +12,6 @@ typedef enum screen
     game,
     game_over,
     message,
-    options,
     pause,
     phonebook,
     title,
@@ -25,10 +24,9 @@ typedef enum screen_selection
     screen_selection_none = -1,
     screen_selection_resume = 0,
     screen_selection_phonebook = 1,
-    screen_selection_options = 2,
-    screen_selection_tutorial = 3,
-    screen_selection_credits = 4,
-    screen_selection_quit = 5,
+    screen_selection_tutorial = 2,
+    screen_selection_credits = 3,
+    screen_selection_quit = 4,
 } screen_selection_t;
 
 bool screen_credits(display_context_t disp, input_t *input);
