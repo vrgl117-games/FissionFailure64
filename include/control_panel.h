@@ -13,9 +13,7 @@
 
 typedef enum
 {
-    LABEL_INSTRUCTIONS,
     LABEL_LIGHTS,
-    LABEL_STATUS,
     LABEL_RADIO,
     LABEL_TURBINES,
     LABEL_PUMPS,
@@ -23,6 +21,7 @@ typedef enum
     LABEL_AZ_5,
     LABEL_PRESSURIZER,
     LABEL_DANGER,
+    LABEL_WIND_TURBINES,
 
     TEXT_A,
     TEXT_B,
@@ -48,7 +47,7 @@ typedef struct station_left
     uint8_t sliders[NUM_SLIDERS];
     uint8_t selected_slider;
 
-    uint8_t joystick;
+    uint8_t compass;
     bool button_z;
 
 } station_left_t;
@@ -63,7 +62,6 @@ typedef struct station_center
     uint8_t grid[GRID_SIZE][GRID_SIZE];
     uint8_t gridselector_x;
     uint8_t gridselector_y;
-    uint8_t button_a_presses;
     bool button_a;
     bool button_b;
 } station_center_t;
@@ -112,7 +110,7 @@ typedef enum control_panel_mode
 
 typedef struct control_panel
 {
-    int8_t temp;
+    int8_t pressure;
     int16_t freq;
     int16_t power;
     u_int8_t stress; // 0 to 100

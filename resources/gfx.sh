@@ -20,6 +20,11 @@ generate_text() {
     convert -strip -background "#5b607aff" -fill "#f0f1faff"  -font "$font_uni" -pointsize 12 -extent 10x10 -gravity Center label:"$1" $2
 }
 
+generate_direction() {
+    convert -strip -background "#f9d72fff" -fill "#1f2029ff"  -font "$font_uni" -pointsize 7 -extent 13x10 -gravity Center label:"$1" $2
+}
+
+
 # scientist
 convert -strip resources/gfx/sprites/scientists/dark.png -crop 16 resources/gfx/sprites/scientists/dark-%d.png
 convert -strip resources/gfx/sprites/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
@@ -34,18 +39,19 @@ convert -strip resources/gfx/sprites/scientists/hell2.png -crop 16 resources/gfx
 convert -strip resources/gfx/sprites/scientists/idle3.png -crop 16 resources/gfx/sprites/scientists/idle3-%d.png
 convert -strip resources/gfx/sprites/scientists/stressed3.png -crop 16 resources/gfx/sprites/scientists/stressed3-%d.png
 convert -strip resources/gfx/sprites/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
+
 # message
 generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
-
 # labels
-generate_label  'INSTRUCTIONS' resources/gfx/sprites/ui/label_instructions.png
 generate_label  'LIGHTS' resources/gfx/sprites/ui/label_lights.png
-generate_label  'STATUS' resources/gfx/sprites/ui/label_status.png
 generate_label  'RADIO' resources/gfx/sprites/ui/label_radio.png
 generate_label  'TURBINES' resources/gfx/sprites/ui/label_turbines.png
 generate_label  'PUMPS' resources/gfx/sprites/ui/label_pumps.png
 generate_label  'CONTROL RODS' resources/gfx/sprites/ui/label_control_rods.png
+generate_label  'COMPASS' resources/gfx/sprites/ui/label_wind_turbines.png
+
+
 # edited by hand
 #generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
 generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
@@ -62,6 +68,14 @@ generate_text '2'  resources/gfx/sprites/ui/text_2.png
 generate_text '3'  resources/gfx/sprites/ui/text_3.png
 generate_text '4'  resources/gfx/sprites/ui/text_4.png
 
+generate_direction 'NW'  resources/gfx/sprites/ui/text_nw.png
+generate_direction 'N'  resources/gfx/sprites/ui/text_n.png
+generate_direction 'NE'  resources/gfx/sprites/ui/text_ne.png
+generate_direction 'W'  resources/gfx/sprites/ui/text_w.png
+generate_direction 'E'  resources/gfx/sprites/ui/text_e.png
+generate_direction 'SW'  resources/gfx/sprites/ui/text_sw.png
+generate_direction 'S'  resources/gfx/sprites/ui/text_s.png
+generate_direction 'SE'  resources/gfx/sprites/ui/text_se.png
 # actions
 generate_action 'Set blue\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_b_b3-%d.png
 generate_action 'Set red\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_r_b3-%d.png
@@ -134,7 +148,7 @@ generate "#1f2029ff" "#F0F1FAff" "$font" 18 "manuhoz" resources/gfx/sprites/ui/m
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "IG/TT: @radiatorhymn" resources/gfx/sprites/ui/radiatorhymn.png
 
 # phonebook
-convert -strip -background "#F0F1FAff" -bordercolor "#F0F1FAff"  -border 2x  -fill "#1f2029ff"  -font "$font_uni" -pointsize 12 -interline-spacing -5 -gravity Center label:"Commissioner............0598-4627\nEmergency Services............911\nFuel Procurement......5294-2647\nIncident Response.....4676-4729\nNuclear Safety..........5733-4738\nPresident..................2982-2941\nPublic Affairs..........1029-4859\nReactor Supervisor..7268-2638\nSpare Parts...............3905-1273\nTreasury...................3648-3957" resources/gfx/sprites/phonebook.png
+convert -strip -background "#F0F1FAff" -bordercolor "#F0F1FAff"  -border 2x  -fill "#1f2029ff"  -font "$font_uni" -pointsize 12 -interline-spacing -5 -gravity Center label:"phonebook\n\nCommissioner............0598-4627\nEmergency Services............911\nFuel Procurement......5294-2647\nIncident Response.....4676-4729\nNintendo...............800-255-3700\nNuclear Safety..........5733-4738\nPresident..................2982-2941\nPublic Affairs..........1029-4859\nReactor Supervisor..7268-2638\nSpare Parts...............3905-1273\nTreasury...................3648-3957" resources/gfx/sprites/phonebook.png
 
 # studio logo
 convert -strip -brightness-contrast -10 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_9.png
