@@ -3,6 +3,8 @@
 static timer_link_t *presses_timer;
 static volatile uint8_t presses = 0;
 
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
 void input_init()
 {
     presses_timer = new_timer(TIMER_TICKS(500000), TF_ONE_SHOT, input_timer); //1s
@@ -34,7 +36,7 @@ input_t input_get()
 
 uint8_t input_get_A_presses()
 {
-    return presses;
+    return MIN(presses, 4);
 }
 
 void input_timer()

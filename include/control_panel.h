@@ -27,6 +27,8 @@ typedef enum
     TEXT_B,
     TEXT_C,
     TEXT_D,
+    TEXT_E,
+    TEXT_F,
     TEXT_0,
     TEXT_1,
     TEXT_2,
@@ -55,11 +57,12 @@ typedef struct station_left
 void station_left_draw();
 void station_left_input(input_t *input);
 
-#define GRID_SIZE 4
+#define GRID_SIZE_Y 4
+#define GRID_SIZE_X 6
 // hands on both sides (d-pad, A, B, C(s))
 typedef struct station_center
 {
-    uint8_t grid[GRID_SIZE][GRID_SIZE];
+    uint8_t grid[GRID_SIZE_Y][GRID_SIZE_X];
     uint8_t gridselector_x;
     uint8_t gridselector_y;
     bool button_a;
@@ -131,7 +134,7 @@ typedef enum control_panel_status
     DEAD = 2,
 } control_panel_status_t;
 
-control_panel_status_t control_panel_check_status(action_t *action);
+control_panel_status_t control_panel_check_status(action_pair_t pair);
 void control_panel_draw(display_context_t disp);
 void control_panel_init();
 void control_panel_input(input_t *input);

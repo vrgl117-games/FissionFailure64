@@ -37,8 +37,6 @@ int main()
     timer_init();
     input_init();
     debug_init_isviewer();
-    scientist_init();
-    actions_init();
     colors_init();
 
     control_panel_init();
@@ -92,6 +90,8 @@ int main()
             case screen_selection_resume:
                 screen_title_unload();
                 screen_game_load();
+                scientist_init();
+                actions_init();
                 input_timer(); // reset pressed to 0
                 screen = game;
                 sfx_stop(CH_MUSIC);
@@ -127,7 +127,6 @@ int main()
                 if (screen != game)
                 {
                     screen_game_unload();
-                    sfx_set_pause(true);
                     sfx_stop(CH_MUSIC);
                     if (game_timer != NULL)
                     {
@@ -206,6 +205,7 @@ int main()
                 control_panel_reset();
                 screen_title_load();
                 screen = title;
+                sfx_stop(CH_MUSIC);
                 sfx_reset();
                 sfx_play(CH_MUSIC, SFX_THEME, true);
             }

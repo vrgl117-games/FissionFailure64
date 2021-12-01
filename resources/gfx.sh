@@ -14,7 +14,7 @@ generate_left() {
 }
 
 generate_action() {
-    convert -strip -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 10 -crop 16 -gravity West label:"$1" $2
+    convert -strip -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 8 -crop 16 -gravity West label:"$1" $2
 }
 
 generate_label() {
@@ -65,29 +65,38 @@ generate_text 'a'  resources/gfx/sprites/ui/text_a.png
 generate_text 'b'  resources/gfx/sprites/ui/text_b.png
 generate_text 'c'  resources/gfx/sprites/ui/text_c.png
 generate_text 'd'  resources/gfx/sprites/ui/text_d.png
+generate_text 'e'  resources/gfx/sprites/ui/text_e.png
+generate_text 'f'  resources/gfx/sprites/ui/text_f.png
 generate_text '0'  resources/gfx/sprites/ui/text_0.png
 generate_text '1'  resources/gfx/sprites/ui/text_1.png
 generate_text '2'  resources/gfx/sprites/ui/text_2.png
 generate_text '3'  resources/gfx/sprites/ui/text_3.png
 generate_text '4'  resources/gfx/sprites/ui/text_4.png
 
-generate_direction 'NW'  resources/gfx/sprites/ui/text_nw.png
-generate_direction 'N'  resources/gfx/sprites/ui/text_n.png
-generate_direction 'NE'  resources/gfx/sprites/ui/text_ne.png
-generate_direction 'W'  resources/gfx/sprites/ui/text_w.png
-generate_direction 'E'  resources/gfx/sprites/ui/text_e.png
-generate_direction 'SW'  resources/gfx/sprites/ui/text_sw.png
-generate_direction 'S'  resources/gfx/sprites/ui/text_s.png
-generate_direction 'SE'  resources/gfx/sprites/ui/text_se.png
+generate_direction 'NW'  resources/gfx/sprites/ui/dir_nw.png
+generate_direction 'N'  resources/gfx/sprites/ui/dir_n.png
+generate_direction 'NE'  resources/gfx/sprites/ui/dir_ne.png
+generate_direction 'W'  resources/gfx/sprites/ui/dir_w.png
+generate_direction 'E'  resources/gfx/sprites/ui/dir_e.png
+generate_direction 'SW'  resources/gfx/sprites/ui/dir_sw.png
+generate_direction 'S'  resources/gfx/sprites/ui/dir_s.png
+generate_direction 'SE'  resources/gfx/sprites/ui/dir_se.png
+
 # actions
-generate_action 'Set blue\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_b_b3-%d.png
-generate_action 'Set red\nControl\nRod\nto B3' resources/gfx/sprites/actions/rod_r_b3-%d.png
-generate_action 'Set blue\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_b_c2-%d.png
-generate_action 'Set red\nControl\nRod\nto C2' resources/gfx/sprites/actions/rod_r_c2-%d.png
+pos=("A1" "A2" "A3" "A4" "B1" "B2" "B3" "B4" "C1" "C2" "C3" "C4" "D1" "D2" "D3" "D4" "E1" "E2" "E3" "E4" "F1" "F2" "F3" "F4")
+colors=("red" "blue" "green" "orange")
+for po in ${pos[@]}; do
+    for color in ${colors[@]}; do
+        generate_action "Set $color\nControl\nRod\nto $po" resources/gfx/sprites/actions/rod_"$color"_"$po"-%d.png
+    done
+done
 generate_action 'Turn\nOFF the\lights' resources/gfx/sprites/actions/power_off-%d.png
 generate_action 'Turn the\lights\nback ON' resources/gfx/sprites/actions/power_on-%d.png
-generate_action 'Set freq\nto\n242Hz' resources/gfx/sprites/actions/freq-242-%d.png
-generate_action 'Call\nSpare\nParts\n(Phonebook\nin menu)' resources/gfx/sprites/actions/call-spare-%d.png
+freqs=("100" "101" "107" "108" "110" "111" "114" "115" "117" "118" "124" "125" "126" "127" "131" "132" "133" "134" "139" "140" "141" "143" "144" "146" "147" "148" "150" "151" "153" "156" "157" "158" "159" "160" "160" "163" "164" "165" "166" "167" "170" "172" "173" "173" "174" "176" "177" "177" "179" "180" "180" "181" "183" "184" "186" "187" "189" "190" "190" "191" "193" "193" "194" "196" "197" "197" "198" "200" "203" "204" "205" "206" "207" "210" "210" "211" "212" "213" "214" "217" "218" "219" "220" "222" "223" "224" "225" "226" "227" "229" "230" "231" "232" "235" "236" "237" "238" "239" "239" "242" "243" "244" "245" "246" "249" "251" "252" "252" "253" "255" "256" "256" "258" "259" "259" "260" "262" "263" "265" "266" "268" "269" "269" "270" "272" "272" "273" "275" "276" "276" "277" "279" "282" "283" "284" "285" "286" "289" "289" "290" "291" "292" "293" "296" "297" "298" "299" "301" "302" "303" "304" "305" "306" "308" "309" "310" "311" "314" "315" "316" "317" "318" "318" "321" "322" "323" "324" "325" "328" "330" "331" "331" "332" "334" "335" "335" "337" "338" "338" "339" "341" "342" "344" "345" "347" "348" "348" "349" "351" "351" "352" "354" "355" "355" "356" "358" "361" "362" "363" "364" "365" "368" "368" "369" "370" "371" "372" "375" "377" "378" "380" "381" "382" "384" "385" "387" "388" "389" "394" "395" "396" "397" "401" "402" "403" "404" "410" "411" "413" "414" "417" "418" "420" "421" "427" "428" "430" "434" "435" "437" "444" "447" "451" "454" "461" "468" "60" "67" "74" "77" "81" "84" "91" "93" "94" "98")
+for freq in ${freqs[@]}; do
+    generate_action "Set freq\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
+done
+generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
 
 # tutorial
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the stations' resources/gfx/sprites/ui/how_to.png

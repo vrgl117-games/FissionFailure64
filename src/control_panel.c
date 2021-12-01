@@ -85,7 +85,10 @@ static void instructions_draw()
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
     }
     rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 138, colors[COLOR_BLACK]);
-    rdp_draw_sprites_with_texture(actions_get_current()->text, x + 8 + 4, y + 8 + 4, 0);
+    action_pair_t current = actions_get_current();
+    rdp_draw_sprites_with_texture(current.top->text, x + 8 + 4, y + 8 + 4, 0);
+    if (current.bottom)
+        rdp_draw_sprites_with_texture(current.bottom->text, x + 8 + 4, y + 8 + 4 + 60, 0);
 }
 
 void control_panel_draw(display_context_t disp)
@@ -136,68 +139,78 @@ void control_panel_input(input_t *input)
     }
 }
 
-control_panel_status_t control_panel_check_status(action_t *action)
+static control_panel_status_t control_panel_check_action(action_t *action)
+{
+    switch (action->station)
+    {
+    case STATION_LEFT:
+        switch (action->element)
+        {
+        case ELEMENT_RADIO:
+            if (control_panel.freq != action->expected[0])
+                return INCORRECT;
+        default:
+            break;
+        }
+        break;
+    case STATION_CENTER:
+        switch (action->element)
+        {
+        case ELEMENT_GRID:
+            if (control_panel.center.grid[action->expected[1]][action->expected[2]] != action->expected[0])
+                return INCORRECT;
+            break;
+        case ELEMENT_A:
+            if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
+                return INCORRECT;
+            break;
+        case ELEMENT_B:
+            if (control_panel.center.button_b != action->expected[0])
+                return INCORRECT;
+            break;
+        default:
+            break;
+        }
+        break;
+    case STATION_RIGHT:
+        switch (action->element)
+        {
+        case ELEMENT_KEYPAD:
+            if (control_panel.right.calling == false ||
+                control_panel.right.screen[0] != '0' + action->expected[0] ||
+                control_panel.right.screen[1] != '0' + action->expected[1] ||
+                control_panel.right.screen[2] != '0' + action->expected[2] ||
+                control_panel.right.screen[3] != '0' + action->expected[3] ||
+                control_panel.right.screen[4] != '0' + action->expected[4] ||
+                control_panel.right.screen[5] != '0' + action->expected[5] ||
+                control_panel.right.screen[6] != '0' + action->expected[6] ||
+                control_panel.right.screen[7] != '0' + action->expected[7])
+                return INCORRECT;
+
+            memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
+            control_panel.right.cursor = 0;
+            control_panel.right.calling = false;
+            break;
+        default:
+            break;
+        }
+        break;
+    }
+    return CORRECT;
+}
+
+control_panel_status_t control_panel_check_status(action_pair_t pair)
 {
     if (control_panel.stress == 100)
         return DEAD;
 
-    for (int i = 0; i < action->num_states; ++i)
-    {
-        switch (action->states[i].station)
-        {
-        case STATION_LEFT:
-            switch (action->states[i].element)
-            {
-            case ELEMENT_RADIO:
-                if (control_panel.freq != action->states[i].expected[0])
-                    return INCORRECT;
-            default:
-                break;
-            }
-            break;
-        case STATION_CENTER:
-            switch (action->states[i].element)
-            {
-            case ELEMENT_GRID:
-                if (control_panel.center.grid[action->states[i].expected[1]][action->states[i].expected[2]] != action->states[i].expected[0])
-                    return INCORRECT;
-                break;
-            case ELEMENT_A:
-                if (control_panel.center.button_a || control_panel.pressure != action->states[i].expected[0])
-                    return INCORRECT;
-                break;
-            case ELEMENT_B:
-                if (control_panel.center.button_b != action->states[i].expected[0])
-                    return INCORRECT;
-                break;
-            default:
-                break;
-            }
-            break;
-        case STATION_RIGHT:
-            switch (action->states[i].element)
-            {
-            case ELEMENT_KEYPAD:
-                if (control_panel.right.calling == false ||
-                    control_panel.right.screen[0] != '0' + action->states[i].expected[0] ||
-                    control_panel.right.screen[1] != '0' + action->states[i].expected[1] ||
-                    control_panel.right.screen[2] != '0' + action->states[i].expected[2] ||
-                    control_panel.right.screen[3] != '0' + action->states[i].expected[3] ||
-                    control_panel.right.screen[4] != '0' + action->states[i].expected[4] ||
-                    control_panel.right.screen[5] != '0' + action->states[i].expected[5] ||
-                    control_panel.right.screen[6] != '0' + action->states[i].expected[6] ||
-                    control_panel.right.screen[7] != '0' + action->states[i].expected[7])
-                    return INCORRECT;
+    if (control_panel_check_action(pair.top) == INCORRECT)
+        return INCORRECT;
 
-                memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
-                control_panel.right.cursor = 0;
-                control_panel.right.calling = false;
-                break;
-            default:
-                break;
-            }
-            break;
-        }
+    if (pair.bottom)
+    {
+        if (control_panel_check_action(pair.bottom) == INCORRECT)
+            return INCORRECT;
     }
 
     if (control_panel.stress < 10)
@@ -228,20 +241,22 @@ void control_panel_init()
     labels[TEXT_B] = dfs_load_sprite("/gfx/sprites/ui/text_b.sprite");
     labels[TEXT_C] = dfs_load_sprite("/gfx/sprites/ui/text_c.sprite");
     labels[TEXT_D] = dfs_load_sprite("/gfx/sprites/ui/text_d.sprite");
+    labels[TEXT_E] = dfs_load_sprite("/gfx/sprites/ui/text_e.sprite");
+    labels[TEXT_F] = dfs_load_sprite("/gfx/sprites/ui/text_f.sprite");
     labels[TEXT_0] = dfs_load_sprite("/gfx/sprites/ui/text_0.sprite");
     labels[TEXT_1] = dfs_load_sprite("/gfx/sprites/ui/text_1.sprite");
     labels[TEXT_2] = dfs_load_sprite("/gfx/sprites/ui/text_2.sprite");
     labels[TEXT_3] = dfs_load_sprite("/gfx/sprites/ui/text_3.sprite");
     labels[TEXT_4] = dfs_load_sprite("/gfx/sprites/ui/text_4.sprite");
 
-    directions[1] = dfs_load_sprite("/gfx/sprites/ui/text_nw.sprite");
-    directions[2] = dfs_load_sprite("/gfx/sprites/ui/text_n.sprite");
-    directions[3] = dfs_load_sprite("/gfx/sprites/ui/text_ne.sprite");
-    directions[4] = dfs_load_sprite("/gfx/sprites/ui/text_w.sprite");
-    directions[6] = dfs_load_sprite("/gfx/sprites/ui/text_e.sprite");
-    directions[7] = dfs_load_sprite("/gfx/sprites/ui/text_sw.sprite");
-    directions[8] = dfs_load_sprite("/gfx/sprites/ui/text_s.sprite");
-    directions[9] = dfs_load_sprite("/gfx/sprites/ui/text_se.sprite");
+    directions[1] = dfs_load_sprite("/gfx/sprites/ui/dir_nw.sprite");
+    directions[2] = dfs_load_sprite("/gfx/sprites/ui/dir_n.sprite");
+    directions[3] = dfs_load_sprite("/gfx/sprites/ui/dir_ne.sprite");
+    directions[4] = dfs_load_sprite("/gfx/sprites/ui/dir_w.sprite");
+    directions[6] = dfs_load_sprite("/gfx/sprites/ui/dir_e.sprite");
+    directions[7] = dfs_load_sprite("/gfx/sprites/ui/dir_sw.sprite");
+    directions[8] = dfs_load_sprite("/gfx/sprites/ui/dir_s.sprite");
+    directions[9] = dfs_load_sprite("/gfx/sprites/ui/dir_se.sprite");
     control_panel_reset();
 }
 
@@ -255,17 +270,17 @@ void control_panel_reset()
     // reset sliders
     for (uint8_t i = 0; i < NUM_SLIDERS; i++)
         control_panel.left.sliders[i] = 1 + rand() % 3;
-    control_panel.freq = 200 + (100 * control_panel.left.sliders[0]) + (-33 * control_panel.left.sliders[1]) + (17 * control_panel.left.sliders[2]);
+    control_panel.freq = 180 + (79 * control_panel.left.sliders[0]) + (-33 * control_panel.left.sliders[1]) + (17 * control_panel.left.sliders[2]) + (-7 * control_panel.left.sliders[3]);
 
-    // compass reset
+    // reset compass
     while (control_panel.left.compass == 0 || control_panel.left.compass == 5)
         control_panel.left.compass = rand() % 9;
 
     // reset grid
-    for (uint8_t i = 0; i < GRID_SIZE - 1; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
-        uint8_t x = rand() % GRID_SIZE;
-        uint8_t y = rand() % GRID_SIZE;
+        uint8_t x = rand() % GRID_SIZE_X;
+        uint8_t y = rand() % GRID_SIZE_Y;
         if (control_panel.center.grid[y][x] != 0)
         {
             i--;
@@ -274,8 +289,9 @@ void control_panel_reset()
         control_panel.center.grid[y][x] = i + 1;
     }
 
-    // pressurizer rest
+    // reset pressurizer
     control_panel.pressure = 1 + rand() % 6;
+
     // reset keypad
     control_panel.right.keypad[0][0] = 1;
     control_panel.right.keypad[0][1] = 2;
@@ -443,33 +459,38 @@ void station_center_draw()
     if (!control_panel.lights_off)
     {
         // Button B
-        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 100, y, 0);
-        rdp_draw_sprite_with_texture(tiles[502], x + 127, y + 18, (station->button_b ? MIRROR_Y : 0));
+        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 144, y, 0);
+        rdp_draw_sprite_with_texture(tiles[502], x + 151, y + 18, (station->button_b ? MIRROR_Y : 0));
 
         // Button A
-        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 100, y + 60, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 130, y + 75, 0);
+        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 124, y + 60, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 124, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_a && control_panel.pressure > 1 ? 482 : 481)], x + 144, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_a && control_panel.pressure > 2 ? 482 : 481)], x + 164, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_a && control_panel.pressure > 3 ? 482 : 481)], x + 184, y + 75, 0);
 
         // Grid
-        rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 10, 210, 0);
-        rdp_draw_filled_rectangle_size(x, y + 6, (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), (GRID_SIZE * cell_size) + ((GRID_SIZE + 1) * border), colors[COLOR_BG]);
+        rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 21, 210, 0);
+        rdp_draw_filled_rectangle_size(x, y + 6, (GRID_SIZE_X * cell_size) + ((GRID_SIZE_X + 1) * border), (GRID_SIZE_Y * cell_size) + ((GRID_SIZE_Y + 1) * border), colors[COLOR_BG]);
 
         rdp_draw_sprite_with_texture(labels[TEXT_A], x + 6, y - 6, 0);
         rdp_draw_sprite_with_texture(labels[TEXT_B], x + 6 + cell_size + 2, y - 6, 0);
         rdp_draw_sprite_with_texture(labels[TEXT_C], x + 6 + cell_size + 2 + cell_size + 2, y - 6, 0);
         rdp_draw_sprite_with_texture(labels[TEXT_D], x + 6 + cell_size + 2 + cell_size + 2 + cell_size + 2, y - 6, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_E], x + 6 + cell_size + 2 + cell_size + 2 + cell_size + 2 + cell_size + 2, y - 6, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_F], x + 6 + cell_size + 2 + cell_size + 2 + cell_size + 2 + cell_size + 2 + cell_size + 2, y - 6, 0);
 
-        rdp_draw_sprite_with_texture(labels[TEXT_1], x + 74, y + 10, 0);
-        rdp_draw_sprite_with_texture(labels[TEXT_2], x + 74, y + 10 + cell_size + 2, 0);
-        rdp_draw_sprite_with_texture(labels[TEXT_3], x + 74, y + 10 + cell_size + 2 + cell_size + 2, 0);
-        rdp_draw_sprite_with_texture(labels[TEXT_4], x + 74, y + 10 + cell_size + 2 + cell_size + 2 + cell_size + 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_1], x + 108, y + 10, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_2], x + 108, y + 10 + cell_size + 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_3], x + 108, y + 10 + cell_size + 2 + cell_size + 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_4], x + 108, y + 10 + cell_size + 2 + cell_size + 2 + cell_size + 2, 0);
     }
 
     y += 6;
 
-    for (uint8_t yy = 0; yy < GRID_SIZE; yy++)
+    for (uint8_t yy = 0; yy < GRID_SIZE_Y; yy++)
     {
-        for (uint8_t xx = 0; xx < GRID_SIZE; xx++)
+        for (uint8_t xx = 0; xx < GRID_SIZE_X; xx++)
         {
             if (!control_panel.lights_off && station->gridselector_x == xx && station->gridselector_y == yy)
                 rdp_draw_filled_rectangle_size(x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)), cell_size, cell_size, colors[COLOR_YELLOW]);
@@ -494,13 +515,13 @@ void station_center_input(input_t *input)
         if (station->gridselector_y > 0)
             station->gridselector_y--;
     if (input->down)
-        if (station->gridselector_y < GRID_SIZE - 1)
+        if (station->gridselector_y < GRID_SIZE_Y - 1)
             station->gridselector_y++;
     if (input->left)
         if (station->gridselector_x > 0)
             station->gridselector_x--;
     if (input->right)
-        if (station->gridselector_x < GRID_SIZE - 1)
+        if (station->gridselector_x < GRID_SIZE_X - 1)
             station->gridselector_x++;
 
     if (input->B)
@@ -543,7 +564,7 @@ void station_center_input(input_t *input)
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
             station->gridselector_y--;
         }
-        if (input->C_down && station->gridselector_y < GRID_SIZE - 1 && (station->grid[station->gridselector_y + 1][station->gridselector_x] == 0))
+        if (input->C_down && station->gridselector_y < GRID_SIZE_Y - 1 && (station->grid[station->gridselector_y + 1][station->gridselector_x] == 0))
         {
             station->grid[station->gridselector_y + 1][station->gridselector_x] = station->grid[station->gridselector_y][station->gridselector_x];
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
@@ -555,7 +576,7 @@ void station_center_input(input_t *input)
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
             station->gridselector_x--;
         }
-        if (input->C_right && station->gridselector_x < GRID_SIZE - 1 && (station->grid[station->gridselector_y][station->gridselector_x + 1] == 0))
+        if (input->C_right && station->gridselector_x < GRID_SIZE_X - 1 && (station->grid[station->gridselector_y][station->gridselector_x + 1] == 0))
         {
             station->grid[station->gridselector_y][station->gridselector_x + 1] = station->grid[station->gridselector_y][station->gridselector_x];
             station->grid[station->gridselector_y][station->gridselector_x] = 0;
