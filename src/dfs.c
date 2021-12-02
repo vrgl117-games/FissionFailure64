@@ -71,6 +71,31 @@ sprites_t *dfs_load_sprites(const char *const path)
     data->height = data->sprites[0]->height;
     return data;
 }
+sprites_t *dfs_load_sprites_by_frame(sprites_t *self, const char *const path)
+{
+    char buffer[256];
+    sprites_t *data = self;
+    if (data == NULL)
+        data = calloc(1, sizeof(sprites_t));
+
+    sprintf(buffer, path, data->loaded);
+    sprite_t *sp = dfs_load_sprite(buffer);
+    if (sp == NULL)
+    {
+        data->loaded = -1;
+    }
+    else
+    {
+
+        data->sprites[data->loaded] = sp;
+        data->width += data->sprites[data->loaded]->width;
+        data->loaded++;
+        data->slices = data->loaded;
+        data->height = data->sprites[0]->height;
+    }
+
+    return data;
+}
 
 int dfs_openf(const char *const format, ...)
 {

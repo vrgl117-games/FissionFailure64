@@ -86,14 +86,14 @@ static void instructions_draw()
     }
     rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 138, colors[COLOR_BLACK]);
     action_pair_t current = actions_get_current();
-    if (current.top->text == NULL)
-        current.top->text = dfs_load_sprites(current.top->buffer);
+    if (current.top->text == NULL || current.top->text->loaded != -1)
+        current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
 
     rdp_draw_sprites_with_texture(current.top->text, x + 8 + 4, y + 8 + 4, 0);
     if (current.bottom)
     {
-        if (current.bottom->text == NULL)
-            current.bottom->text = dfs_load_sprites(current.bottom->buffer);
+        if (current.bottom->text == NULL || current.bottom->text->loaded != -1)
+            current.bottom->text = dfs_load_sprites_by_frame(current.bottom->text, current.bottom->buffer);
         rdp_draw_sprites_with_texture(current.bottom->text, x + 8 + 4, y + 8 + 4 + 60, 0);
     }
 }

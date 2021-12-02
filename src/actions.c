@@ -72,7 +72,7 @@ static action_t *actions_new_rod(uint8_t not_color)
 {
     action_t *action = calloc(1, sizeof(action_t));
     uint8_t color = (not_color + 1) % 4;
-    char *colors[] = {"red", "blue", "green", "orange"};
+    char *colors[] = {"red", "green", "blue", "orange"};
     char pos_x[] = {'A', 'B', 'C', 'D', 'E', 'F'};
     char pos_y[] = {'1', '2', '3', '4'};
     uint8_t po_x = rand() % 6;

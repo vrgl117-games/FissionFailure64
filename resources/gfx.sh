@@ -46,7 +46,7 @@ convert -strip resources/gfx/sprites/scientists/stressed3.png -crop 16 resources
 convert -strip resources/gfx/sprites/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
 
 # message
-generate "#000000ff" "#ffff00ff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
+generate  "#1f2029ff" "#f9d72fff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
 
 # labels
 generate_label  'LIGHTS' resources/gfx/sprites/ui/label_lights.png
