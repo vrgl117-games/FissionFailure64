@@ -36,7 +36,7 @@ void screen_game_unload();
 screen_t screen_game(display_context_t disp, input_t *input);
 bool screen_game_over(display_context_t disp, input_t *input);
 void screen_load_title_resources();
-bool screen_message_draw(display_context_t disp);
+bool screen_message_draw(display_context_t disp, input_t *input);
 void screen_message_load();
 void screen_message_unload();
 bool screen_options(display_context_t disp, input_t *input);

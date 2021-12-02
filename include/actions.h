@@ -30,6 +30,7 @@ typedef struct action
     } element;
 
     uint16_t expected[8];
+    char buffer[256];
     sprites_t *text;
 
 } action_t;

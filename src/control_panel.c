@@ -86,9 +86,16 @@ static void instructions_draw()
     }
     rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 138, colors[COLOR_BLACK]);
     action_pair_t current = actions_get_current();
+    if (current.top->text == NULL)
+        current.top->text = dfs_load_sprites(current.top->buffer);
+
     rdp_draw_sprites_with_texture(current.top->text, x + 8 + 4, y + 8 + 4, 0);
     if (current.bottom)
+    {
+        if (current.bottom->text == NULL)
+            current.bottom->text = dfs_load_sprites(current.bottom->buffer);
         rdp_draw_sprites_with_texture(current.bottom->text, x + 8 + 4, y + 8 + 4 + 60, 0);
+    }
 }
 
 void control_panel_draw(display_context_t disp)
@@ -427,29 +434,29 @@ void station_left_input(input_t *input)
             control_panel.stress = (control_panel.stress < 90) ? 90 : 100;
     }
 
-    if (input->y > 90)
+    if (input->y > JOYSTICK_DEAD_ZONE)
     {
-        if (input->x < -90)
+        if (input->x < -JOYSTICK_DEAD_ZONE)
             station->compass = 1;
-        else if (input->x > 90)
+        else if (input->x > JOYSTICK_DEAD_ZONE)
             station->compass = 3;
         else
             station->compass = 2;
     }
-    else if (input->y < -90)
+    else if (input->y < -JOYSTICK_DEAD_ZONE)
     {
-        if (input->x < -90)
+        if (input->x < -JOYSTICK_DEAD_ZONE)
             station->compass = 7;
-        else if (input->x > 90)
+        else if (input->x > JOYSTICK_DEAD_ZONE)
             station->compass = 9;
         else
             station->compass = 8;
     }
     else
     {
-        if (input->x < -90)
+        if (input->x < -JOYSTICK_DEAD_ZONE)
             station->compass = 4;
-        else if (input->x > 90)
+        else if (input->x > JOYSTICK_DEAD_ZONE)
             station->compass = 6;
     }
 }
@@ -742,6 +749,8 @@ void station_right_input(input_t *input)
 
         if (input->A)
             station->levers[station->lever_selector] = !station->levers[station->lever_selector];
+
+        control_panel.power = 125 * station->levers[0] + 125 * station->levers[1] + 125 * station->levers[2] + 125 * station->levers[3];
     }
 
     if (input->Z)
@@ -774,7 +783,11 @@ void station_right_input(input_t *input)
             joystick = 4;
     }
 
-    if (joystick > station->joystick)
+    if (joystick == station->joystick)
+    {
+        // do nothing
+    }
+    else if (joystick == station->joystick + 1)
     {
         if (joystick == 8)
         {
@@ -789,6 +802,4 @@ void station_right_input(input_t *input)
         station->joystick = 0;
         station->rotations = 0;
     }
-
-    control_panel.power = 125 * station->levers[0] + 125 * station->levers[1] + 125 * station->levers[2] + 125 * station->levers[3];
 }

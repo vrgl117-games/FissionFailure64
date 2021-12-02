@@ -212,7 +212,7 @@ void screen_message_unload()
     free(message_sp);
 }
 
-bool screen_message_draw(display_context_t disp)
+bool screen_message_draw(display_context_t disp, input_t *input)
 {
     static int anim = 0;
 
@@ -225,7 +225,7 @@ bool screen_message_draw(display_context_t disp)
     graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 60, message_sp);
 
     anim++;
-    return (anim >= 82);
+    return (input->A || input->start || anim >= 102);
 }
 
 // pause menu

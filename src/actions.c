@@ -20,7 +20,8 @@ static action_t *actions_new_freq()
     action->station = STATION_LEFT;
     action->element = ELEMENT_RADIO;
     action->expected[0] = freqs[freq];
-    action->text = dfs_load_sprites_int("/gfx/sprites/actions/freq-%d-%d.sprite", freqs[freq]);
+    sprintf(action->buffer, "/gfx/sprites/actions/freq-%d", freqs[freq]);
+    strcat(action->buffer, "-%d.sprite");
 
     return action;
 }
@@ -33,8 +34,8 @@ static action_t *actions_new_compass()
     action->station = STATION_LEFT;
     action->element = ELEMENT_COMPASS;
     action->expected[0] = (dir < 4 ? dir + 1 : dir + 2);
-
-    action->text = dfs_load_sprites_string("/gfx/sprites/actions/compass-%s-%d.sprite", dirs[dir]);
+    sprintf(action->buffer, "/gfx/sprites/actions/compass-%s", dirs[dir]);
+    strcat(action->buffer, "-%d.sprite");
 
     return action;
 }
@@ -49,7 +50,8 @@ static action_t *actions_new_press()
     action->station = STATION_CENTER;
     action->element = ELEMENT_PRESSURIZER;
     action->expected[0] = 1 + pres;
-    action->text = dfs_load_sprites_int("/gfx/sprites/actions/press-%d-%d.sprite", press[pres]);
+    sprintf(action->buffer, "/gfx/sprites/actions/press-%d", press[pres]);
+    strcat(action->buffer, "-%d.sprite");
 
     return action;
 }
@@ -61,8 +63,7 @@ static action_t *actions_new_lights(bool off)
     action->station = STATION_CENTER;
     action->element = ELEMENT_LIGHTS;
     action->expected[0] = off;
-
-    action->text = dfs_load_sprites((off ? "/gfx/sprites/actions/lights_off-%d.sprite" : "/gfx/sprites/actions/lights_on-%d.sprite"));
+    strcpy(action->buffer, (off ? "/gfx/sprites/actions/lights_off-%d.sprite" : "/gfx/sprites/actions/lights_on-%d.sprite"));
 
     return action;
 }
@@ -70,10 +71,8 @@ static action_t *actions_new_lights(bool off)
 static action_t *actions_new_rod(uint8_t not_color)
 {
     action_t *action = calloc(1, sizeof(action_t));
+    uint8_t color = (not_color + 1) % 4;
     char *colors[] = {"red", "blue", "green", "orange"};
-    uint8_t color = not_color;
-    while (color == not_color)
-        color = rand() % 4;
     char pos_x[] = {'A', 'B', 'C', 'D', 'E', 'F'};
     char pos_y[] = {'1', '2', '3', '4'};
     uint8_t po_x = rand() % 6;
@@ -81,10 +80,11 @@ static action_t *actions_new_rod(uint8_t not_color)
 
     action->station = STATION_CENTER;
     action->element = ELEMENT_GRID;
-    action->expected[0] = color;
+    action->expected[0] = 1 + color;
     action->expected[1] = po_y;
     action->expected[2] = po_x;
-    action->text = dfs_load_sprites_rod("/gfx/sprites/actions/rod_%s_%c%c-%d.sprite", colors[color], pos_x[po_x], pos_y[po_y]);
+    sprintf(action->buffer, "/gfx/sprites/actions/rod_%s_%c%c", colors[color], pos_x[po_x], pos_y[po_y]);
+    strcat(action->buffer, "-%d.sprite");
 
     return action;
 }
@@ -99,7 +99,8 @@ static action_t *actions_new_power()
     action->station = STATION_RIGHT;
     action->element = ELEMENT_TURBINES;
     action->expected[0] = powers[power];
-    action->text = dfs_load_sprites_int("/gfx/sprites/actions/power-%d-%d.sprite", powers[power]);
+    sprintf(action->buffer, "/gfx/sprites/actions/power-%d", powers[power]);
+    strcat(action->buffer, "-%d.sprite");
 
     return action;
 }
@@ -111,7 +112,7 @@ static action_t *actions_new_pumps()
     action->station = STATION_RIGHT;
     action->element = ELEMENT_PUMPS;
     action->expected[0] = 9;
-    action->text = dfs_load_sprites("/gfx/sprites/actions/pumps-%d.sprite");
+    strcpy(action->buffer, "/gfx/sprites/actions/pumps-%d.sprite");
 
     return action;
 }
@@ -130,7 +131,7 @@ static action_t *actions_new_spare_part()
     action->expected[5] = 2;
     action->expected[6] = 7;
     action->expected[7] = 3;
-    action->text = dfs_load_sprites("/gfx/sprites/actions/call-spare-%d.sprite");
+    strcpy(action->buffer, "/gfx/sprites/actions/call-spare-%d.sprite");
 
     return action;
 }
@@ -177,7 +178,7 @@ void actions_reset()
     actions[5] = actions_new_lights(true);
     actions[6] = actions_new_lights(false);
     actions[7] = actions_new_pumps();
-    actions[8] = actions_new_rod(255);
+    actions[8] = actions_new_rod(rand() % 4);
     actions[9] = actions_new_rod(actions[8]->expected[0]);
     actions[10] = actions_new_rod(actions[9]->expected[0]);
 }

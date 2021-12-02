@@ -14,12 +14,15 @@ input_t input_get()
 {
     controller_scan();
     input_t input = get_keys_down().c[0];
+    input_t pressed = get_keys_pressed().c[0];
     if (input.A)
     {
         if (presses == 0)
             restart_timer(presses_timer);
         presses++;
     }
+    input.x = pressed.x;
+    input.y = pressed.y;
 
 #if DISPLAY_SAFE_AREAS
     if (pressed.L)

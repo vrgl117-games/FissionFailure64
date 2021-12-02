@@ -22,8 +22,8 @@ extern uint32_t __height;
 extern uint32_t colors[];
 #endif
 
-screen_t screen = title;
-screen_t prev_screen; //used in credits to know where to go back to
+screen_t screen = intro;
+screen_t prev_screen; //used in credits and tutorial to know where to go back to
 
 int main()
 {
@@ -38,10 +38,7 @@ int main()
     input_init();
     debug_init_isviewer();
     colors_init();
-
     control_panel_init();
-
-    srand(timer_ticks() & 0x7FFFFFFF);
 
     // blinking "press start" and window
     new_timer(TIMER_TICKS(MS20), TF_CONTINUOUS, screen_timer);
@@ -55,7 +52,10 @@ int main()
     if (screen == message)
         screen_message_load();
     else if (screen == title)
+    {
         screen_title_load();
+        sfx_play(CH_MUSIC, SFX_THEME, true);
+    }
 
     while (true)
     {
@@ -76,7 +76,7 @@ int main()
             }
             break;
         case message:
-            if (screen_message_draw(disp))
+            if (screen_message_draw(disp, &input))
             {
                 screen_message_unload();
                 screen_title_load();
@@ -88,6 +88,7 @@ int main()
             switch (screen_title_draw(disp, &input))
             {
             case screen_selection_resume:
+                srand(timer_ticks() & 0x7FFFFFFF);
                 screen_title_unload();
                 screen_game_load();
                 scientist_init();
