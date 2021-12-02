@@ -149,6 +149,11 @@ static control_panel_status_t control_panel_check_action(action_t *action)
         case ELEMENT_RADIO:
             if (control_panel.freq != action->expected[0])
                 return INCORRECT;
+            break;
+        case ELEMENT_COMPASS:
+            if (control_panel.left.compass != action->expected[0])
+                return INCORRECT;
+            break;
         default:
             break;
         }
@@ -160,11 +165,11 @@ static control_panel_status_t control_panel_check_action(action_t *action)
             if (control_panel.center.grid[action->expected[1]][action->expected[2]] != action->expected[0])
                 return INCORRECT;
             break;
-        case ELEMENT_A:
+        case ELEMENT_PRESSURIZER:
             if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
                 return INCORRECT;
             break;
-        case ELEMENT_B:
+        case ELEMENT_LIGHTS:
             if (control_panel.center.button_b != action->expected[0])
                 return INCORRECT;
             break;
@@ -175,6 +180,10 @@ static control_panel_status_t control_panel_check_action(action_t *action)
     case STATION_RIGHT:
         switch (action->element)
         {
+        case ELEMENT_TURBINES:
+            if (control_panel.power != action->expected[0])
+                return INCORRECT;
+            break;
         case ELEMENT_KEYPAD:
             if (control_panel.right.calling == false ||
                 control_panel.right.screen[0] != '0' + action->expected[0] ||
@@ -270,7 +279,7 @@ void control_panel_reset()
     // reset sliders
     for (uint8_t i = 0; i < NUM_SLIDERS; i++)
         control_panel.left.sliders[i] = 1 + rand() % 3;
-    control_panel.freq = 180 + (79 * control_panel.left.sliders[0]) + (-33 * control_panel.left.sliders[1]) + (17 * control_panel.left.sliders[2]) + (-7 * control_panel.left.sliders[3]);
+    control_panel.freq = 200 + (-5 * control_panel.left.sliders[0]) + (25 * control_panel.left.sliders[1]) + (-50 * control_panel.left.sliders[2]) + (100 * control_panel.left.sliders[3]);
 
     // reset compass
     while (control_panel.left.compass == 0 || control_panel.left.compass == 5)
@@ -409,7 +418,7 @@ void station_left_input(input_t *input)
         if (station->sliders[station->selected_slider] < SLIDER_POSITONS - 1)
             station->sliders[station->selected_slider]++;
 
-    control_panel.freq = 180 + (79 * station->sliders[0]) + (-33 * station->sliders[1]) + (17 * station->sliders[2]) + (-7 * station->sliders[3]);
+    control_panel.freq = 200 + (-5 * station->sliders[0]) + (25 * station->sliders[1]) + (-50 * station->sliders[2]) + (100 * station->sliders[3]);
 
     if (input->Z)
     {
@@ -739,29 +748,29 @@ void station_right_input(input_t *input)
         station->mode = (station->mode == MODE_KEYPAD ? MODE_LEVERS : MODE_KEYPAD);
 
     uint8_t joystick = 0;
-    if (input->y > 90)
+    if (input->y > JOYSTICK_DEAD_ZONE)
     {
-        if (input->x < -90)
+        if (input->x < -JOYSTICK_DEAD_ZONE)
             joystick = 1;
-        else if (input->x > 90)
+        else if (input->x > JOYSTICK_DEAD_ZONE)
             joystick = 3;
         else
             joystick = 2;
     }
-    else if (input->y < -90)
+    else if (input->y < -JOYSTICK_DEAD_ZONE)
     {
-        if (input->x < -90)
+        if (input->x < -JOYSTICK_DEAD_ZONE)
             joystick = 7;
-        else if (input->x > 90)
+        else if (input->x > JOYSTICK_DEAD_ZONE)
             joystick = 5;
         else
             joystick = 6;
     }
     else
     {
-        if (input->x < -90)
+        if (input->x < -JOYSTICK_DEAD_ZONE)
             joystick = 8;
-        else if (input->x > 90)
+        else if (input->x > JOYSTICK_DEAD_ZONE)
             joystick = 4;
     }
 

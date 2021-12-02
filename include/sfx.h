@@ -20,7 +20,6 @@ typedef enum ch_id
 {
     CH_MUSIC = 0,
     CH_SFX,
-    CH_SFX_2,
     CH_ID_COUNT
 } ch_id_t;
 

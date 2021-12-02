@@ -72,7 +72,7 @@ sprites_t *dfs_load_sprites(const char *const path)
     return data;
 }
 
-sprites_t *dfs_load_sprites_freq(const char *const path, const int freq)
+sprites_t *dfs_load_sprites_int(const char *const path, const int ii)
 {
     char buffer[256];
 
@@ -81,7 +81,31 @@ sprites_t *dfs_load_sprites_freq(const char *const path, const int freq)
     int i = 0;
     while (true)
     {
-        sprintf(buffer, path, freq, i);
+        sprintf(buffer, path, ii, i);
+        debugf(buffer);
+        sprite_t *sp = dfs_load_sprite(buffer);
+        if (sp == NULL)
+            break;
+
+        data->sprites[i] = sp;
+        data->width += data->sprites[i]->width;
+        i++;
+    }
+    data->slices = i;
+    data->height = data->sprites[0]->height;
+    return data;
+}
+
+sprites_t *dfs_load_sprites_string(const char *const path, const char *c)
+{
+    char buffer[256];
+
+    sprites_t *data = calloc(1, sizeof(sprites_t));
+
+    int i = 0;
+    while (true)
+    {
+        sprintf(buffer, path, c, i);
         sprite_t *sp = dfs_load_sprite(buffer);
         if (sp == NULL)
             break;

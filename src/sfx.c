@@ -24,13 +24,14 @@ void sfx_init(void)
     wav64_open(&SFX_CACHE[SFX_GAME_OVER], "/sfx/265459__gowlermusic__atomic-explosion-and-sub-rumble.wav64");
 
     mixer_ch_set_vol(CH_MUSIC, 0.5f, 0.5f);
-    mixer_ch_set_vol(CH_SFX, 0.75f, 0.75f);
+    mixer_ch_set_vol(CH_SFX, 1.0f, 1.0f);
 }
 
 void sfx_reset()
 {
+    mixer_ch_stop(CH_MUSIC);
+    mixer_ch_stop(CH_SFX);
     sfx_id_next_music = SFX_ID_COUNT;
-    paused = false;
 }
 
 void sfx_set_pause(const bool pause)
@@ -42,6 +43,7 @@ void sfx_play(const ch_id_t ch_id, const sfx_id_t sfx_id, bool loop)
 {
     wav64_set_loop(&SFX_CACHE[sfx_id], loop);
     mixer_ch_play(ch_id, &SFX_CACHE[sfx_id].wave);
+    paused = false;
 }
 
 void sfx_set_next_music(const sfx_id_t sfx_id)
@@ -66,6 +68,8 @@ void sfx_set_next_music(const sfx_id_t sfx_id)
 void sfx_stop(const ch_id_t ch_id)
 {
     mixer_ch_stop(ch_id);
+    if (ch_id == CH_MUSIC)
+        sfx_id_next_music = SFX_ID_COUNT;
 }
 
 void sfx_update()

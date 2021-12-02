@@ -330,12 +330,12 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
 
     graphics_draw_sprite(disp, __width / 2 - logo_sp->width / 2, 20, logo_sp);
 
-    if (selected == 3)
+    if (selected == screen_selection_tutorial)
         graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_sp);
     else if (ticks % 40 > 19)
         graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_selected_sp);
 
-    if (selected == 0)
+    if (selected == screen_selection_resume)
         graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_sp);
     else if (ticks % 40 > 19)
         graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_selected_sp);
@@ -368,52 +368,41 @@ bool screen_tutorial(display_context_t disp, input_t *input, bool reset)
         free(sp);
 
         sp = dfs_load_sprite("/gfx/sprites/tutorial/left.sprite");
-        graphics_draw_sprite(disp, 20, 70, sp);
+        graphics_draw_sprite(disp, 20, 60, sp);
         free(sp);
         sp = dfs_load_sprite("/gfx/sprites/ui/left.sprite");
-        graphics_draw_sprite(disp, 40, 150, sp);
+        graphics_draw_sprite(disp, 40, 140, sp);
         free(sp);
 
         sp = dfs_load_sprite("/gfx/sprites/tutorial/center.sprite");
-        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 70, sp);
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 60, sp);
         free(sp);
         sp = dfs_load_sprite("/gfx/sprites/ui/center.sprite");
-        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 150, sp);
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 140, sp);
         free(sp);
 
         sp = dfs_load_sprite("/gfx/sprites/tutorial/right.sprite");
-        graphics_draw_sprite(disp, __width - 20 - sp->width, 70, sp);
+        graphics_draw_sprite(disp, __width - 20 - sp->width, 60, sp);
         free(sp);
         sp = dfs_load_sprite("/gfx/sprites/ui/right.sprite");
-        graphics_draw_sprite(disp, __width - 40 - sp->width, 150, sp);
+        graphics_draw_sprite(disp, __width - 40 - sp->width, 140, sp);
+        free(sp);
+
+        sp = dfs_load_sprite("/gfx/sprites/ui/use_l_r.sprite");
+        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 170, sp);
         free(sp);
 
         sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
         free(sp);
-        if (input->A || input->start || input->R)
+        if (input->start)
+            return true;
+        if (input->A || input->R)
             page++;
         if (input->L)
             page--;
         break;
     case 1:
-        sp = dfs_load_sprite("/gfx/sprites/ui/how_to.sprite");
-        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
-        free(sp);
-
-        sp = dfs_load_sprite("/gfx/sprites/ui/use_l_r.sprite");
-        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
-        free(sp);
-
-        sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
-        graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
-        free(sp);
-        if (input->A || input->start || input->R)
-            page++;
-        if (input->L)
-            page--;
-        break;
-    case 2:
         sp = dfs_load_sprite("/gfx/sprites/ui/how_to_left.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
         free(sp);
@@ -425,12 +414,14 @@ bool screen_tutorial(display_context_t disp, input_t *input, bool reset)
         sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
         free(sp);
-        if (input->A || input->start || input->R)
+        if (input->start)
+            return true;
+        if (input->A || input->R)
             page++;
         if (input->L)
             page--;
         break;
-    case 3:
+    case 2:
         sp = dfs_load_sprite("/gfx/sprites/ui/how_to_center.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
         free(sp);
@@ -441,12 +432,14 @@ bool screen_tutorial(display_context_t disp, input_t *input, bool reset)
         sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
         free(sp);
-        if (input->A || input->start || input->R)
+        if (input->start)
+            return true;
+        if (input->A || input->R)
             page++;
         if (input->L)
             page--;
         break;
-    case 4:
+    case 3:
         sp = dfs_load_sprite("/gfx/sprites/ui/how_to_right.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 10, sp);
         free(sp);
@@ -457,14 +450,16 @@ bool screen_tutorial(display_context_t disp, input_t *input, bool reset)
         sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
         graphics_draw_sprite(disp, __width / 2 - sp->width / 2, 200, sp);
         free(sp);
-        if (input->A || input->start || input->R)
+        if (input->start)
+            return true;
+        if (input->A || input->R)
             page++;
         if (input->L)
             page--;
         break;
     }
 
-    return (page == 5);
+    return (page == 4);
 }
 
 // end game screen

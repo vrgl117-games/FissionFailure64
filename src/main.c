@@ -101,6 +101,7 @@ int main()
             case screen_selection_tutorial:
                 prev_screen = title;
                 screen = tutorial;
+                sfx_stop(CH_MUSIC);
                 memset(&input, 0, sizeof(input));
                 screen_tutorial(disp, &input, true);
                 break;
@@ -176,7 +177,14 @@ int main()
             break;
         case tutorial:
             if (screen_tutorial(disp, &input, false))
+            {
                 screen = prev_screen;
+                if (screen == title)
+                {
+                    sfx_reset();
+                    sfx_play(CH_MUSIC, SFX_THEME, true);
+                }
+            }
             break;
         case phonebook:
             if (screen_phonebook(disp, &input))

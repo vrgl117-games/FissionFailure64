@@ -19,14 +19,17 @@ typedef struct action
 
     enum
     {
-        ELEMENT_GRID,
         ELEMENT_RADIO,
+        ELEMENT_COMPASS,
+        ELEMENT_GRID,
+        ELEMENT_LIGHTS,
+        ELEMENT_PRESSURIZER,
+        ELEMENT_TURBINES,
+        ELEMENT_PUMPS,
         ELEMENT_KEYPAD,
-        ELEMENT_A,
-        ELEMENT_B,
     } element;
 
-    uint8_t expected[8];
+    uint16_t expected[8];
     sprites_t *text;
 
 } action_t;
