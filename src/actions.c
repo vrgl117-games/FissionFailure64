@@ -151,7 +151,7 @@ uint16_t actions_get_points()
 action_pair_t actions_get_current()
 {
     action_pair_t pair = {.top = actions[current]};
-    if (current > 6)
+    if (current > 6 && current != NUM_ACTIONS - 1)
         pair.bottom = actions[current + 1];
     return pair;
 }

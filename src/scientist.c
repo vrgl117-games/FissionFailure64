@@ -15,7 +15,9 @@ void scientist_draw()
     for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
     {
         if (scientists[i].x >= 0 && scientists[i].x < MAX_VISIBLE_X)
-            rdp_draw_sprites_with_texture((control_panel.lights_off ? dark : scientists[i].sprites[control_panel.mode]), scientists[i].x, scientists[i].y_offset + MAX(scientists[i].y, 8), scientists[i].h_direction);
+            rdp_draw_sprites_with_texture((control_panel.lights_off ? dark : scientists[i].sprites[scientists[i].mode]), scientists[i].x, scientists[i].y_offset + MAX(scientists[i].y, 8), scientists[i].h_direction);
+        else
+            scientists[i].mode = control_panel.mode;
     }
 }
 
@@ -69,9 +71,9 @@ void scientist_timer()
     for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
     {
         if (!scientists[i].h_direction)
-            scientists[i].x += (control_panel.mode + 1);
+            scientists[i].x += (scientists[i].mode + 1);
         else
-            scientists[i].x -= (control_panel.mode + 1);
+            scientists[i].x -= (scientists[i].mode + 1);
 
         if (scientists[i].v_direction)
             scientists[i].y++;
