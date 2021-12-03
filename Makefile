@@ -77,7 +77,7 @@ resetup:	##  Force recreate the dev environment (docker image).
 
 cen64:		##    Start rom in CEN64 emulator.
 	@echo "Starting cen64..."
-	$(CEN64_DIR)/cen64 -multithread -noaudio -is-viewer -controller num=1,pak=rumble $(CEN64_DIR)/pifdata.bin $(PROG_NAME).z64
+	$(CEN64_DIR)/cen64 -multithread -noaudio -is-viewer -controller num=1 $(CEN64_DIR)/pifdata.bin $(PROG_NAME).z64
 
 clean:		##    Cleanup temp files.
 	@echo "Cleaning up temp files..."

@@ -53,7 +53,8 @@ convert -strip resources/gfx/pngs/window/hell_alt.png -crop 16 resources/gfx/spr
 
 
 # message
-generate  "#1f2029ff" "#f9d72fff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
+generate  "#1f2029ff" "#f9d72fff" "$font" 20 'This game is best enjoyed\nusing the original N64 controller' resources/gfx/sprites/ui/message.png
+generate  "#1f2029ff" "#f9d72fff" "$font" 20 'Please insert your Rumble Pak now\nif you wish to play with it' resources/gfx/sprites/ui/rumble_not_detected.png
 
 # labels
 generate_label  'LIGHTS' resources/gfx/sprites/ui/label_lights.png

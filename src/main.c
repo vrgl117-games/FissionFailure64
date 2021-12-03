@@ -22,7 +22,7 @@ extern uint32_t __height;
 extern uint32_t colors[];
 #endif
 
-screen_t screen = title;
+screen_t screen = message;
 screen_t prev_screen; //used in credits and tutorial to know where to go back to
 
 int main()
@@ -39,6 +39,7 @@ int main()
     debug_init_isviewer();
     colors_init();
     control_panel_init();
+    srand(timer_ticks() & 0x7FFFFFFF);
 
     // blinking "press start" and window
     new_timer(TIMER_TICKS(MS20), TF_CONTINUOUS, screen_timer);
@@ -80,6 +81,7 @@ int main()
             {
                 screen_message_unload();
                 screen_title_load();
+                srand(timer_ticks() & 0x7FFFFFFF);
                 screen = title;
                 sfx_play(CH_MUSIC, SFX_THEME, true);
             }
@@ -88,7 +90,6 @@ int main()
             switch (screen_title_draw(disp, &input))
             {
             case screen_selection_resume:
-                srand(timer_ticks() & 0x7FFFFFFF);
                 screen_title_unload();
                 screen_game_load();
                 scientist_init();
@@ -136,7 +137,10 @@ int main()
                         game_timer = NULL;
                     }
                     if (screen == game_over)
+                    {
                         sfx_play(CH_SFX, SFX_GAME_OVER, false);
+                        rumble_start(0);
+                    }
                 }
             }
             break;
@@ -210,6 +214,7 @@ int main()
         case game_over:
             if (screen_game_over(disp, &input))
             {
+                rumble_stop(0);
                 actions_reset();
                 control_panel_reset();
                 screen_title_load();

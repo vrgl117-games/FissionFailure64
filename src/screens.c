@@ -213,18 +213,30 @@ bool screen_game_over(display_context_t disp, input_t *input)
 }
 
 static sprite_t *message_sp = NULL;
+static sprite_t *pak_sp = NULL;
+static sprite_t *pak_not_sp = NULL;
+static sprite_t *rumble_sp = NULL;
+static sprite_t *continue_sp = NULL;
 void screen_message_load()
 {
     message_sp = dfs_load_sprite("/gfx/sprites/ui/message.sprite");
+    pak_sp = dfs_load_sprite("/gfx/sprites/ui/pak_detected.sprite");
+    pak_not_sp = dfs_load_sprite("/gfx/sprites/ui/pak_not_detected.sprite");
+    rumble_sp = dfs_load_sprite("/gfx/sprites/ui/rumble_not_detected.sprite");
+    continue_sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
 }
 void screen_message_unload()
 {
     free(message_sp);
+    free(pak_sp);
+    free(pak_not_sp);
+    free(rumble_sp);
+    free(continue_sp);
 }
 
 bool screen_message_draw(display_context_t disp, input_t *input)
 {
-    static int anim = 0;
+    static uint8_t anim = 0;
 
     rdp_attach(disp);
 
@@ -232,10 +244,12 @@ bool screen_message_draw(display_context_t disp, input_t *input)
 
     rdp_detach_display();
 
-    graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 60, message_sp);
+    graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
+
+    graphics_draw_sprite(disp, __width / 2 - rumble_sp->width / 2, 120, rumble_sp);
 
     anim++;
-    return (input->A || input->start || anim >= 102);
+    return (anim > 128 || input->A || input->start);
 }
 
 // pause menu

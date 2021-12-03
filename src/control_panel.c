@@ -120,10 +120,16 @@ void control_panel_draw(display_context_t disp)
         break;
     }
 
-    if (control_panel.mode == IDLE)
+    if (control_panel.mode == IDLE || control_panel.stress % 2 == 0)
+    {
+        rumble_stop(0);
         rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
+    }
     else
-        rdp_draw_sprite_with_texture(tiles[(control_panel.stress % 2 == 0 ? 1 : 12)], 198, 10, 0);
+    {
+        rumble_start(0);
+        rdp_draw_sprite_with_texture(tiles[1], 198, 10, 0);
+    }
 
     if (control_panel.current_station == 2)
         station_right_draw_graphics(disp);
