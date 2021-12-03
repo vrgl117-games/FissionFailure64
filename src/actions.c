@@ -162,7 +162,7 @@ void actions_reset()
 {
     current = 0;
 
-    for (uint8_t i = 0; i < 8; i++)
+    for (uint8_t i = 0; i < 11; i++)
     {
         if (actions[i])
         {

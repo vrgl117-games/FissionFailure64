@@ -22,7 +22,7 @@ extern uint32_t __height;
 extern uint32_t colors[];
 #endif
 
-screen_t screen = intro;
+screen_t screen = title;
 screen_t prev_screen; //used in credits and tutorial to know where to go back to
 
 int main()

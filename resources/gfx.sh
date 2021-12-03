@@ -156,14 +156,17 @@ generate "#1f2029ff" "#f9d72fff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit
 # credits screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Credits" resources/gfx/sprites/ui/credits_big.png
 generate "#1f2029ff" "#f9d72fff" "$font_uni" 16 "programming" resources/gfx/sprites/ui/programming.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Isabel Jimenez & Victor Vieux" resources/gfx/sprites/ui/isabel_victor.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "www.vrgl117.games" resources/gfx/sprites/ui/vrgl117games.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "Isabel Jimenez & Victor Vieux" resources/gfx/sprites/ui/isabel_victor.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "www.vrgl117.games" resources/gfx/sprites/ui/vrgl117games.png
 generate "#1f2029ff" "#f9d72fff" "$font_uni" 16 "art" resources/gfx/sprites/ui/art.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "jphosho" resources/gfx/sprites/ui/jphosho.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "IG: @jphosho" resources/gfx/sprites/ui/atjphosho.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "jphosho" resources/gfx/sprites/ui/jphosho.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "IG: @jphosho" resources/gfx/sprites/ui/atjphosho.png
 generate "#1f2029ff" "#f9d72fff" "$font_uni" 16 "music" resources/gfx/sprites/ui/music.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "manuhoz" resources/gfx/sprites/ui/manuhoz.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "IG/TT: @radiatorhymn" resources/gfx/sprites/ui/radiatorhymn.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "manuhoz" resources/gfx/sprites/ui/manuhoz.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "IG/TT: @radiatorhymn" resources/gfx/sprites/ui/radiatorhymn.png
+generate "#1f2029ff" "#f9d72fff" "$font_uni" 16 "sfx" resources/gfx/sprites/ui/sfx.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "GowlerMusic" resources/gfx/sprites/ui/gowlermusic.png
+generate "#1f2029ff" "#F0F1FAff" "$font" 16 "LittleRobotSoundFactory" resources/gfx/sprites/ui/littlerobotsoundfactory.png
 
 # phonebook
 convert -strip -background "#F0F1FAff" -bordercolor "#F0F1FAff"  -border 2x  -fill "#1f2029ff"  -font "$font_uni" -pointsize 12 -interline-spacing -5 -gravity Center label:"phonebook\n\nCommissioner............0598-4627\nEmergency Services............911\nFuel Procurement......5294-2647\nIncident Response.....4676-4729\nNintendo...............800-255-3700\nNuclear Safety..........5733-4738\nPresident..................2982-2941\nPublic Affairs..........1029-4859\nReactor Supervisor..7268-2638\nSpare Parts...............3905-1273\nTreasury...................3648-3957" resources/gfx/sprites/phonebook.png

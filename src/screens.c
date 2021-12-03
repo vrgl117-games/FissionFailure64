@@ -31,24 +31,34 @@ bool screen_credits(display_context_t disp, input_t *input)
     free(credits_sp);
 
     sprite_t *programming_sp = dfs_load_sprite("/gfx/sprites/ui/programming.sprite");
-    graphics_draw_sprite(disp, __width / 2 - programming_sp->width / 2, 70, programming_sp);
+    graphics_draw_sprite(disp, 100 - programming_sp->width / 2, 70, programming_sp);
     free(programming_sp);
     sprite_t *isabel_victor_sp = dfs_load_sprite("/gfx/sprites/ui/isabel_victor.sprite");
-    graphics_draw_sprite(disp, __width / 2 - isabel_victor_sp->width / 2, 100, isabel_victor_sp);
+    graphics_draw_sprite(disp, 100 - isabel_victor_sp->width / 2, 100, isabel_victor_sp);
     free(isabel_victor_sp);
     sprite_t *vrgl117games_sp = dfs_load_sprite("/gfx/sprites/ui/vrgl117games.sprite");
-    graphics_draw_sprite(disp, __width / 2 - vrgl117games_sp->width / 2, 124, vrgl117games_sp);
+    graphics_draw_sprite(disp, 100 - vrgl117games_sp->width / 2, 124, vrgl117games_sp);
     free(vrgl117games_sp);
 
     sprite_t *art_sp = dfs_load_sprite("/gfx/sprites/ui/art.sprite");
-    graphics_draw_sprite(disp, 60 - art_sp->width / 2, 150, art_sp);
+    graphics_draw_sprite(disp, __width - 80 - art_sp->width / 2, 70, art_sp);
     free(art_sp);
     sprite_t *jphosho_sp = dfs_load_sprite("/gfx/sprites/ui/jphosho.sprite");
-    graphics_draw_sprite(disp, 60 - jphosho_sp->width / 2, 180, jphosho_sp);
+    graphics_draw_sprite(disp, __width - 80 - jphosho_sp->width / 2, 100, jphosho_sp);
     free(jphosho_sp);
     sprite_t *atjphosho_sp = dfs_load_sprite("/gfx/sprites/ui/atjphosho.sprite");
-    graphics_draw_sprite(disp, 60 - atjphosho_sp->width / 2, 204, atjphosho_sp);
+    graphics_draw_sprite(disp, __width - 80 - atjphosho_sp->width / 2, 124, atjphosho_sp);
     free(atjphosho_sp);
+
+    sprite_t *sfx_sp = dfs_load_sprite("/gfx/sprites/ui/sfx.sprite");
+    graphics_draw_sprite(disp, 100 - sfx_sp->width / 2, 150, sfx_sp);
+    free(sfx_sp);
+    sprite_t *littlerobotsoundfactory_sp = dfs_load_sprite("/gfx/sprites/ui/littlerobotsoundfactory.sprite");
+    graphics_draw_sprite(disp, 100 - littlerobotsoundfactory_sp->width / 2, 180, littlerobotsoundfactory_sp);
+    free(littlerobotsoundfactory_sp);
+    sprite_t *gowlermusic_sp = dfs_load_sprite("/gfx/sprites/ui/gowlermusic.sprite");
+    graphics_draw_sprite(disp, 100 - gowlermusic_sp->width / 2, 204, gowlermusic_sp);
+    free(gowlermusic_sp);
 
     sprite_t *music_sp = dfs_load_sprite("/gfx/sprites/ui/music.sprite");
     graphics_draw_sprite(disp, __width - 80 - music_sp->width / 2, 150, music_sp);
