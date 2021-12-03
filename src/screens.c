@@ -117,24 +117,24 @@ bool screen_intro(display_context_t disp)
     anim++;
     return (anim >= 112);
 }
-static sprite_t *window_idle_sp = NULL;
-static sprite_t *window_stressed_sp = NULL;
-static sprite_t *window_hell_sp = NULL;
-static sprite_t *window_hell_alt_sp = NULL;
+static sprites_t *window_idle_sp = NULL;
+static sprites_t *window_stressed_sp = NULL;
+static sprites_t *window_hell_sp = NULL;
+static sprites_t *window_hell_alt_sp = NULL;
 void screen_game_load()
 {
-    window_idle_sp = dfs_load_sprite("/gfx/sprites/window/idle.sprite");
-    window_stressed_sp = dfs_load_sprite("/gfx/sprites/window/stressed.sprite");
-    window_hell_sp = dfs_load_sprite("/gfx/sprites/window/hell.sprite");
-    window_hell_alt_sp = dfs_load_sprite("/gfx/sprites/window/hell_alt.sprite");
+    window_idle_sp = dfs_load_sprites("/gfx/sprites/window/idle-%d.sprite");
+    window_stressed_sp = dfs_load_sprites("/gfx/sprites/window/stressed-%d.sprite");
+    window_hell_sp = dfs_load_sprites("/gfx/sprites/window/hell-%d.sprite");
+    window_hell_alt_sp = dfs_load_sprites("/gfx/sprites/window/hell_alt-%d.sprite");
 }
 
 void screen_game_unload()
 {
-    free(window_idle_sp);
-    free(window_stressed_sp);
-    free(window_hell_sp);
-    free(window_hell_alt_sp);
+    dfs_free_sprites(window_idle_sp);
+    dfs_free_sprites(window_stressed_sp);
+    dfs_free_sprites(window_hell_sp);
+    dfs_free_sprites(window_hell_alt_sp);
 }
 
 // main screen for the game
@@ -156,7 +156,7 @@ screen_t screen_game(display_context_t disp, input_t *input)
         break;
     }
 
-    sprite_t *window = window_idle_sp;
+    sprites_t *window = window_idle_sp;
     switch (control_panel.mode)
     {
     case STRESSED:
@@ -179,7 +179,7 @@ screen_t screen_game(display_context_t disp, input_t *input)
     else
         rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
 
-    graphics_draw_sprite(disp, 70, 20, window);
+    rdp_draw_sprites_with_texture(window, 70, 20, 0);
 
     scientist_draw();
 
@@ -197,7 +197,7 @@ bool screen_game_over(display_context_t disp, input_t *input)
 
     rdp_detach_display();
 
-    sprite_t *boom_sp = dfs_load_sprite("/gfx/sprites/window/boom.sprite");
+    sprite_t *boom_sp = dfs_load_sprite("/gfx/sprites/boom.sprite");
     graphics_draw_sprite_trans(disp, __width / 2 - boom_sp->width / 2, __height / 2 - boom_sp->height / 2, boom_sp);
     free(boom_sp);
 

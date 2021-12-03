@@ -31,19 +31,26 @@ generate_direction() {
 
 
 # scientist
-convert -strip resources/gfx/sprites/scientists/dark.png -crop 16 resources/gfx/sprites/scientists/dark-%d.png
-convert -strip resources/gfx/sprites/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
-convert -strip resources/gfx/sprites/scientists/stressed0.png -crop 16 resources/gfx/sprites/scientists/stressed0-%d.png
-convert -strip resources/gfx/sprites/scientists/hell0.png -crop 16 resources/gfx/sprites/scientists/hell0-%d.png
-convert -strip resources/gfx/sprites/scientists/idle1.png -crop 16 resources/gfx/sprites/scientists/idle1-%d.png
-convert -strip resources/gfx/sprites/scientists/stressed1.png -crop 16 resources/gfx/sprites/scientists/stressed1-%d.png
-convert -strip resources/gfx/sprites/scientists/hell1.png -crop 16 resources/gfx/sprites/scientists/hell1-%d.png
-convert -strip resources/gfx/sprites/scientists/idle2.png -crop 16 resources/gfx/sprites/scientists/idle2-%d.png
-convert -strip resources/gfx/sprites/scientists/stressed2.png -crop 16 resources/gfx/sprites/scientists/stressed2-%d.png
-convert -strip resources/gfx/sprites/scientists/hell2.png -crop 16 resources/gfx/sprites/scientists/hell2-%d.png
-convert -strip resources/gfx/sprites/scientists/idle3.png -crop 16 resources/gfx/sprites/scientists/idle3-%d.png
-convert -strip resources/gfx/sprites/scientists/stressed3.png -crop 16 resources/gfx/sprites/scientists/stressed3-%d.png
-convert -strip resources/gfx/sprites/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
+convert -strip resources/gfx/pngs/scientists/dark.png -crop 16 resources/gfx/sprites/scientists/dark-%d.png
+convert -strip resources/gfx/pngs/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
+convert -strip resources/gfx/pngs/scientists/stressed0.png -crop 16 resources/gfx/sprites/scientists/stressed0-%d.png
+convert -strip resources/gfx/pngs/scientists/hell0.png -crop 16 resources/gfx/sprites/scientists/hell0-%d.png
+convert -strip resources/gfx/pngs/scientists/idle1.png -crop 16 resources/gfx/sprites/scientists/idle1-%d.png
+convert -strip resources/gfx/pngs/scientists/stressed1.png -crop 16 resources/gfx/sprites/scientists/stressed1-%d.png
+convert -strip resources/gfx/pngs/scientists/hell1.png -crop 16 resources/gfx/sprites/scientists/hell1-%d.png
+convert -strip resources/gfx/pngs/scientists/idle2.png -crop 16 resources/gfx/sprites/scientists/idle2-%d.png
+convert -strip resources/gfx/pngs/scientists/stressed2.png -crop 16 resources/gfx/sprites/scientists/stressed2-%d.png
+convert -strip resources/gfx/pngs/scientists/hell2.png -crop 16 resources/gfx/sprites/scientists/hell2-%d.png
+convert -strip resources/gfx/pngs/scientists/idle3.png -crop 16 resources/gfx/sprites/scientists/idle3-%d.png
+convert -strip resources/gfx/pngs/scientists/stressed3.png -crop 16 resources/gfx/sprites/scientists/stressed3-%d.png
+convert -strip resources/gfx/pngs/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
+
+# window
+convert -strip resources/gfx/pngs/window/idle.png -crop 16 resources/gfx/sprites/window/idle-%d.png
+convert -strip resources/gfx/pngs/window/stressed.png -crop 16 resources/gfx/sprites/window/stressed-%d.png
+convert -strip resources/gfx/pngs/window/hell.png -crop 16 resources/gfx/sprites/window/hell-%d.png
+convert -strip resources/gfx/pngs/window/hell_alt.png -crop 16 resources/gfx/sprites/window/hell_alt-%d.png
+
 
 # message
 generate  "#1f2029ff" "#f9d72fff" "$font" 24 'This game is best\nenjoyed using the\noriginal N64 controller' resources/gfx/sprites/ui/message.png
@@ -172,23 +179,23 @@ generate "#1f2029ff" "#F0F1FAff" "$font" 16 "LittleRobotSoundFactory" resources/
 convert -strip -background "#F0F1FAff" -bordercolor "#F0F1FAff"  -border 2x  -fill "#1f2029ff"  -font "$font_uni" -pointsize 12 -interline-spacing -5 -gravity Center label:"phonebook\n\nCommissioner............0598-4627\nEmergency Services............911\nFuel Procurement......5294-2647\nIncident Response.....4676-4729\nNintendo...............800-255-3700\nNuclear Safety..........5733-4738\nPresident..................2982-2941\nPublic Affairs..........1029-4859\nReactor Supervisor..7268-2638\nSpare Parts...............3905-1273\nTreasury...................3648-3957" resources/gfx/sprites/phonebook.png
 
 # studio logo
-convert -strip -brightness-contrast -10 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_9.png
-convert -strip -brightness-contrast -20 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_8.png
-convert -strip -brightness-contrast -30 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_7.png
-convert -strip -brightness-contrast -40 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_6.png
-convert -strip -brightness-contrast -50 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_5.png
-convert -strip -brightness-contrast -60 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_4.png
-convert -strip -brightness-contrast -70 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_3.png
-convert -strip -brightness-contrast -80 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_2.png
-convert -strip -brightness-contrast -90 resources/gfx/sprites/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_1.png
+convert -strip -brightness-contrast -10 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_9.png
+convert -strip -brightness-contrast -20 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_8.png
+convert -strip -brightness-contrast -30 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_7.png
+convert -strip -brightness-contrast -40 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_6.png
+convert -strip -brightness-contrast -50 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_5.png
+convert -strip -brightness-contrast -60 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_4.png
+convert -strip -brightness-contrast -70 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_3.png
+convert -strip -brightness-contrast -80 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_2.png
+convert -strip -brightness-contrast -90 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_1.png
 
 # n64 + n64brew jam logo
-convert -strip -brightness-contrast -10 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_9.png
-convert -strip -brightness-contrast -20 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_8.png
-convert -strip -brightness-contrast -30 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_7.png
-convert -strip -brightness-contrast -40 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_6.png
-convert -strip -brightness-contrast -50 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_5.png
-convert -strip -brightness-contrast -60 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_4.png
-convert -strip -brightness-contrast -70 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_3.png
-convert -strip -brightness-contrast -80 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_2.png
-convert -strip -brightness-contrast -90 resources/gfx/sprites/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_1.png
+convert -strip -brightness-contrast -10 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_9.png
+convert -strip -brightness-contrast -20 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_8.png
+convert -strip -brightness-contrast -30 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_7.png
+convert -strip -brightness-contrast -40 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_6.png
+convert -strip -brightness-contrast -50 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_5.png
+convert -strip -brightness-contrast -60 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_4.png
+convert -strip -brightness-contrast -70 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_3.png
+convert -strip -brightness-contrast -80 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_2.png
+convert -strip -brightness-contrast -90 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_1.png
