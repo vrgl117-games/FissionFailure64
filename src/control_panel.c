@@ -92,7 +92,7 @@ static void instructions_draw()
         current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
 
     rdp_draw_sprites_with_texture(current.top->text, x + 8 + 4, y + 8 + 4, 0);
-    if (current.bottom)
+    if (current.bottom && current.top->text->loaded == -1)
     {
         if (current.bottom->text == NULL || current.bottom->text->loaded != -1)
             current.bottom->text = dfs_load_sprites_by_frame(current.bottom->text, current.bottom->buffer);
