@@ -125,6 +125,7 @@ typedef struct control_panel
     uint8_t current_station;
     bool lights_off;
     uint8_t off_timer;
+    uint16_t memory;
 } control_panel_t;
 
 typedef enum control_panel_status

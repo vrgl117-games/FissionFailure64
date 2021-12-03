@@ -143,13 +143,14 @@ screen_t screen_game(display_context_t disp, input_t *input)
 
     control_panel_input(input);
 
-    switch (control_panel_check_status(actions_get_current()))
+    action_pair_t current = actions_get_current();
+    switch (control_panel_check_status(current))
     {
     case DEAD:
         return game_over;
 
     case CORRECT:
-        if (actions_next())
+        if (actions_next((current.bottom ? 2 : 1)))
             return win;
         break;
     case INCORRECT:

@@ -41,9 +41,10 @@ typedef struct action_pair
     action_t *bottom;
 } action_pair_t;
 
+uint16_t actions_get_points();
 action_pair_t actions_get_current();
 void actions_init();
-bool actions_next();
+bool actions_next(uint8_t i);
 void actions_reset();
 
 #endif //__ACTIONS_H__

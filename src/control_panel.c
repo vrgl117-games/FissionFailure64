@@ -43,7 +43,7 @@ static void danger_bar_draw()
 static void instruments_draw(display_context_t disp)
 {
     uint8_t x = 220;
-    uint8_t y = 150;
+    uint8_t y = 140;
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
@@ -53,23 +53,25 @@ static void instruments_draw(display_context_t disp)
 
         rdp_detach_display();
 
-        graphics_draw_text(disp, x + 8, y + 12, "PRESS");
-        graphics_draw_text(disp, x + 8, y + 12 + 24, "POWER");
-        graphics_draw_text(disp, x + 8, y + 12 + 24 + 24, "FREQ");
+        graphics_draw_text(disp, x + 8, y, "POINTS");
+        graphics_draw_text(disp, x + 8, y + 18, "PRESS");
+        graphics_draw_text(disp, x + 8, y + 18 + 18, "POWER");
+        graphics_draw_text(disp, x + 8, y + 18 + 18 + 18, "FREQ");
+        graphics_draw_text(disp, x + 8, y + 18 + 18 + 18 + 18, "RAM");
     }
     else
         rdp_detach_display();
 
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 54, y + 10, colors[COLOR_BLACK], "%01dkPa", control_panel.pressure);
-    graphics_set_color(colors[COLOR_WHITE], 0);
+    graphics_draw_textf_with_background(disp, x + 60, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
 
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 54, y + 10 + 24, colors[COLOR_BLACK], "%.03dW", control_panel.power);
-    graphics_set_color(colors[COLOR_WHITE], 0);
+    graphics_draw_textf_with_background(disp, x + 54, y - 2 + 18, colors[COLOR_BLACK], "%01dkPa", control_panel.pressure);
 
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 46, y + 10 + 24 + 24, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
+    graphics_draw_textf_with_background(disp, x + 54, y - 2 + 18 + 18, colors[COLOR_BLACK], "%.03dW", control_panel.power);
+
+    graphics_draw_textf_with_background(disp, x + 46, y - 2 + 18 + 18 + 18, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
+
+    graphics_draw_textf_with_background(disp, x + 38, y - 2 + 18 + 18 + 18 + 18, colors[COLOR_BLACK], "%dkB", control_panel.memory * 1000);
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
 
@@ -84,7 +86,7 @@ static void instructions_draw()
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
     }
-    rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 138, colors[COLOR_BLACK]);
+    rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 122, colors[COLOR_BLACK]);
     action_pair_t current = actions_get_current();
     if (current.top->text == NULL || current.top->text->loaded != -1)
         current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
@@ -213,6 +215,10 @@ static control_panel_status_t control_panel_check_action(action_t *action)
             control_panel.right.cursor = 0;
             control_panel.right.calling = false;
             break;
+        case ELEMENT_PUMPS:
+            if (control_panel.right.rotations != 9)
+                return INCORRECT;
+            break;
         default:
             break;
         }
@@ -234,6 +240,8 @@ control_panel_status_t control_panel_check_status(action_pair_t pair)
         if (control_panel_check_action(pair.bottom) == INCORRECT)
             return INCORRECT;
     }
+
+    control_panel.right.rotations = 0;
 
     if (control_panel.stress < 10)
         control_panel.stress = 0;
@@ -286,6 +294,7 @@ void control_panel_reset()
 {
     memset(&control_panel, 0, sizeof(control_panel));
 
+    control_panel.memory = (is_memory_expanded() ? 8 : 4);
     // select center station
     control_panel.current_station = 1;
 
@@ -396,7 +405,8 @@ void station_left_draw()
     uint8_t cell_size = 13;
     uint8_t border = 2;
 
-    rdp_draw_filled_rectangle_size(x, y, (MINIGRID_SIZE * cell_size) + ((MINIGRID_SIZE + 1) * border), (MINIGRID_SIZE * cell_size) + ((MINIGRID_SIZE + 1) * border), colors[COLOR_BG]);
+    if (!control_panel.lights_off)
+        rdp_draw_filled_rectangle_size(x, y, (MINIGRID_SIZE * cell_size) + ((MINIGRID_SIZE + 1) * border), (MINIGRID_SIZE * cell_size) + ((MINIGRID_SIZE + 1) * border), colors[COLOR_BG]);
 
     for (uint8_t yy = 0; yy < MINIGRID_SIZE; yy++)
     {
@@ -788,12 +798,11 @@ void station_right_input(input_t *input)
         else if (input->x > JOYSTICK_DEAD_ZONE)
             joystick = 4;
     }
-
-    if (joystick == station->joystick)
+    if (joystick == 0 || joystick == station->joystick || (joystick == 8 && station->joystick == 0))
     {
         // do nothing
     }
-    else if (joystick == station->joystick + 1)
+    else if (joystick == station->joystick + 1 || joystick == station->joystick + 2)
     {
         if (joystick == 8)
         {

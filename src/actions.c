@@ -7,8 +7,10 @@
 #include "colors.h"
 #include "dfs.h"
 
-static action_t *actions[11];
+#define NUM_ACTIONS 12
+static action_t *actions[NUM_ACTIONS];
 static uint8_t current = 0;
+static uint16_t points = 0;
 
 // actions for left station
 static action_t *actions_new_freq()
@@ -141,28 +143,32 @@ void actions_init()
     actions_reset();
 }
 
+uint16_t actions_get_points()
+{
+    return points;
+}
+
 action_pair_t actions_get_current()
 {
     action_pair_t pair = {.top = actions[current]};
-    if (current > 4 && current != 10)
+    if (current > 6)
         pair.bottom = actions[current + 1];
     return pair;
 }
 
-bool actions_next()
+bool actions_next(uint8_t i)
 {
-    if (current > 3)
-        current += 2;
-    else
-        current++;
-    return (current >= 11);
+    current += i;
+    points++;
+    return (current >= NUM_ACTIONS);
 }
 
 void actions_reset()
 {
     current = 0;
+    points = 0;
 
-    for (uint8_t i = 0; i < 11; i++)
+    for (uint8_t i = 0; i < NUM_ACTIONS; i++)
     {
         if (actions[i])
         {
@@ -181,4 +187,5 @@ void actions_reset()
     actions[8] = actions_new_rod(rand() % 4);
     actions[9] = actions_new_rod(actions[8]->expected[0]);
     actions[10] = actions_new_rod(actions[9]->expected[0]);
+    actions[11] = actions_new_pumps();
 }
