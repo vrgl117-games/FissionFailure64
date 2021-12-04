@@ -12,6 +12,13 @@ typedef struct action
 {
     enum
     {
+        STATION_LEFT,
+        STATION_CENTER,
+        STATION_RIGHT
+    } station;
+
+    enum
+    {
         ELEMENT_RADIO,
         ELEMENT_COMPASS,
         ELEMENT_GRID,
