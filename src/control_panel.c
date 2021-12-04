@@ -92,7 +92,7 @@ static void instructions_draw()
         current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
 
     rdp_draw_sprites_with_texture(current.top->text, x + 8 + 4, y + 8 + 4, 0);
-    if (current.bottom)
+    if (current.bottom && current.top->text->loaded == -1)
     {
         if (current.bottom->text == NULL || current.bottom->text->loaded != -1)
             current.bottom->text = dfs_load_sprites_by_frame(current.bottom->text, current.bottom->buffer);
@@ -156,72 +156,50 @@ void control_panel_input(input_t *input)
 
 static control_panel_status_t control_panel_check_action(action_t *action)
 {
-    switch (action->station)
-    {
-    case STATION_LEFT:
-        switch (action->element)
-        {
-        case ELEMENT_RADIO:
-            if (control_panel.freq != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_COMPASS:
-            if (control_panel.left.compass != action->expected[0])
-                return INCORRECT;
-            break;
-        default:
-            break;
-        }
-        break;
-    case STATION_CENTER:
-        switch (action->element)
-        {
-        case ELEMENT_GRID:
-            if (control_panel.center.grid[action->expected[1]][action->expected[2]] != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_PRESSURIZER:
-            if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_LIGHTS:
-            if (control_panel.center.button_b != action->expected[0])
-                return INCORRECT;
-            break;
-        default:
-            break;
-        }
-        break;
-    case STATION_RIGHT:
-        switch (action->element)
-        {
-        case ELEMENT_TURBINES:
-            if (control_panel.power != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_KEYPAD:
-            if (control_panel.right.calling == false ||
-                control_panel.right.screen[0] != '0' + action->expected[0] ||
-                control_panel.right.screen[1] != '0' + action->expected[1] ||
-                control_panel.right.screen[2] != '0' + action->expected[2] ||
-                control_panel.right.screen[3] != '0' + action->expected[3] ||
-                control_panel.right.screen[4] != '0' + action->expected[4] ||
-                control_panel.right.screen[5] != '0' + action->expected[5] ||
-                control_panel.right.screen[6] != '0' + action->expected[6] ||
-                control_panel.right.screen[7] != '0' + action->expected[7])
-                return INCORRECT;
 
-            memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
-            control_panel.right.cursor = 0;
-            control_panel.right.calling = false;
-            break;
-        case ELEMENT_PUMPS:
-            if (control_panel.right.rotations != 9)
-                return INCORRECT;
-            break;
-        default:
-            break;
-        }
+    switch (action->element)
+    {
+    case ELEMENT_RADIO:
+        if (control_panel.freq != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_COMPASS:
+        if (control_panel.left.compass != action->expected[0])
+            return INCORRECT;
+        break;
+
+    case ELEMENT_GRID:
+        if (control_panel.center.grid[action->expected[1]][action->expected[2]] != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_PRESSURIZER:
+        if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_LIGHTS:
+        if (control_panel.center.button_b != action->expected[0])
+            return INCORRECT;
+        break;
+
+    case ELEMENT_TURBINES:
+        if (control_panel.power != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_KEYPAD:
+        if (control_panel.right.calling == false ||
+            control_panel.right.screen[0] != '0' + action->expected[0] ||
+            control_panel.right.screen[1] != '0' + action->expected[1] ||
+            control_panel.right.screen[2] != '0' + action->expected[2] ||
+            control_panel.right.screen[3] != '0' + action->expected[3] ||
+            control_panel.right.screen[4] != '0' + action->expected[4] ||
+            control_panel.right.screen[5] != '0' + action->expected[5] ||
+            control_panel.right.screen[6] != '0' + action->expected[6] ||
+            control_panel.right.screen[7] != '0' + action->expected[7])
+            return INCORRECT;
+        break;
+    case ELEMENT_PUMPS:
+        if (control_panel.right.rotations != 9)
+            return INCORRECT;
         break;
     }
     return CORRECT;
@@ -241,7 +219,14 @@ control_panel_status_t control_panel_check_status(action_pair_t pair)
             return INCORRECT;
     }
 
-    control_panel.right.rotations = 0;
+    if (control_panel.right.calling)
+    {
+        memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
+        control_panel.right.cursor = 0;
+        control_panel.right.calling = false;
+    }
+    if (control_panel.right.rotations == 9)
+        control_panel.right.rotations = 0;
 
     if (control_panel.stress < 10)
         control_panel.stress = 0;
@@ -321,7 +306,7 @@ void control_panel_reset()
     }
 
     // reset pressurizer
-    control_panel.pressure = 1 + rand() % 6;
+    control_panel.pressure = 1 + rand() % 4;
 
     // reset keypad
     control_panel.right.keypad[0][0] = 1;

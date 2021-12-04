@@ -98,6 +98,7 @@ int main()
                 screen = game;
                 sfx_stop(CH_MUSIC);
                 control_panel_reset();
+                scientist_reset();
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 break;
             case screen_selection_tutorial:
@@ -171,6 +172,7 @@ int main()
             case screen_selection_quit:
                 actions_reset();
                 control_panel_reset();
+                scientist_reset();
                 screen_title_load();
                 screen = title;
                 sfx_reset();
@@ -202,6 +204,7 @@ int main()
                 {
                     actions_reset();
                     control_panel_reset();
+                    scientist_reset();
                     screen_title_load();
                     screen = title;
                     sfx_reset();
@@ -217,6 +220,7 @@ int main()
                 rumble_stop(0);
                 actions_reset();
                 control_panel_reset();
+                scientist_reset();
                 screen_title_load();
                 screen = title;
                 sfx_stop(CH_MUSIC);
