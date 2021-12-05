@@ -43,9 +43,9 @@ typedef struct action_pair
 typedef enum level
 {
     EASY = 10,
-    NORMAL = 20,
-    HARD = 30,
-    EXTRA_HARD = 40,
+    NORMAL = 40,
+    HARD = 80,
+    EXTRA_HARD = 120,
 } level_t;
 
 typedef action_t *(*action_new)();

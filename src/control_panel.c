@@ -37,7 +37,7 @@ static void danger_bar_draw()
     }
 
     rdp_draw_filled_rectangle_size(x + 12, 10, 2, 100, colors[COLOR_WHITE]);
-    rdp_draw_filled_rectangle_size(x + 12, 10 + 100 - control_panel.stress, 2, control_panel.stress, colors[(control_panel.mode == HELL ? COLOR_RED : (control_panel.mode == STRESSED ? COLOR_ORANGE : COLOR_YELLOW))]);
+    rdp_draw_filled_rectangle_size(x + 12, 10 + 100 - control_panel.geiger / 10, 2, control_panel.geiger / 10, colors[(control_panel.mode == HELL ? COLOR_RED : (control_panel.mode == STRESSED ? COLOR_ORANGE : COLOR_YELLOW))]);
 }
 
 static void instruments_draw(display_context_t disp)
@@ -122,7 +122,7 @@ void control_panel_draw(display_context_t disp)
         break;
     }
 
-    if (control_panel.mode == IDLE || control_panel.stress % 2 == 0)
+    if (control_panel.mode == IDLE || control_panel.geiger % 20 < 10)
     {
         rumble_stop(0);
         rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
@@ -209,13 +209,13 @@ static control_panel_status_t control_panel_check_action(action_t *action)
         {
         case ELEMENT_COMPASS:
             if (control_panel.left.compass != action->expected[1])
-                control_panel.stress = (control_panel.stress < 80) ? 80 : 100;
+                control_panel.geiger = (control_panel.geiger < 700) ? 700 : 1000;
 
             break;
 
         case ELEMENT_TURBINES:
             if (control_panel.power != action->expected[1])
-                control_panel.stress = (control_panel.stress < 80) ? 80 : 100;
+                control_panel.geiger = (control_panel.geiger < 700) ? 700 : 1000;
 
             break;
 
@@ -231,7 +231,7 @@ static control_panel_status_t control_panel_check_action(action_t *action)
 
 control_panel_status_t control_panel_check_status(action_pair_t pair)
 {
-    if (control_panel.stress >= 100)
+    if (control_panel.geiger >= 1000)
         return DEAD;
 
     if (control_panel_check_action(pair.top) == INCORRECT)
@@ -245,10 +245,10 @@ control_panel_status_t control_panel_check_status(action_pair_t pair)
 
     control_panel.right.rotations = 0;
 
-    if (control_panel.stress < 10)
-        control_panel.stress = 0;
+    if (control_panel.geiger < 100)
+        control_panel.geiger = 0;
     else
-        control_panel.stress -= 10;
+        control_panel.geiger -= 100;
 
     sfx_play(CH_SFX, SFX_ACTION, false);
     return CORRECT;
@@ -347,18 +347,18 @@ void control_panel_timer()
 {
     uint8_t points = actions_get_points();
     if (points < EASY)
-        control_panel.stress++;
+        control_panel.geiger += 10;
     else if (points < NORMAL)
-        control_panel.stress += 2;
+        control_panel.geiger += 15;
     else
-        control_panel.stress += 3;
+        control_panel.geiger += 20;
 
-    if (control_panel.stress <= STRESS_THRESHOLD)
+    if (control_panel.geiger <= STRESS_THRESHOLD)
     {
         control_panel.mode = IDLE;
         sfx_set_next_music(SFX_IDLE);
     }
-    else if (control_panel.stress <= HELL_THRESHOLD)
+    else if (control_panel.geiger <= HELL_THRESHOLD)
     {
         control_panel.mode = STRESSED;
         sfx_set_next_music(SFX_STRESS);
@@ -455,7 +455,7 @@ void station_left_input(input_t *input)
     if (input->Z)
     {
         if (actions_get_current().top->element != ELEMENT_AZ5)
-            control_panel.stress = (control_panel.stress < 80) ? 80 : 100;
+            control_panel.geiger = (control_panel.geiger < 700) ? 700 : 1000;
     }
 
     station->button_z = input->Z;
@@ -639,19 +639,17 @@ void station_right_draw_graphics(display_context_t disp)
     graphics_set_color(colors[COLOR_YELLOW], 0);
     if (station->calling)
     {
-        if (control_panel.stress % 2 == 0)
+        if (control_panel.geiger % 20 < 10)
             graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "CALLING.", station->screen);
         else
             graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "CALLING ", station->screen);
     }
     else if (station->cursor == 0)
     {
-        if (control_panel.stress % 2 == 0)
+        if (control_panel.geiger % 20 < 10)
             graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "        ", station->screen);
         else
-        {
             graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "       _", station->screen);
-        }
     }
     else
         graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "% 8s", station->screen);

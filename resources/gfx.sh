@@ -58,7 +58,7 @@ generate  "#1f2029ff" "#f9d72fff" "$font" 20 'Please insert your Rumble Pak now\
 
 # labels
 generate_label  'LIGHTS' resources/gfx/sprites/ui/label_lights.png
-generate_label  'RADIO' resources/gfx/sprites/ui/label_radio.png
+generate_label  'E.M.F' resources/gfx/sprites/ui/label_radio.png
 generate_label  'TURBINES' resources/gfx/sprites/ui/label_turbines.png
 generate_label  'PUMPS' resources/gfx/sprites/ui/label_pumps.png
 generate_label  'CONTROL RODS' resources/gfx/sprites/ui/label_control_rods.png
@@ -67,7 +67,7 @@ generate_label  'COMPASS' resources/gfx/sprites/ui/label_wind_turbines.png
 #generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
 generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
 # edited by hand
-#generate_label  'D\nA\nN\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
+generate_label  'G\nE\nI\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
 
 generate_text 'a'  resources/gfx/sprites/ui/text_a.png
 generate_text 'b'  resources/gfx/sprites/ui/text_b.png
@@ -100,7 +100,7 @@ for po in ${pos[@]}; do
 done
 freqs=("200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "50" "150" "250" "350" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "75" "175" "275" "375" "250" "350" "450" "550" "200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "275" "375" "475" "575" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "45" "145" "245" "345" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "70" "170" "270" "370" "245" "345" "445" "545" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "270" "370" "470" "570" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "40" "140" "240" "340" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "65" "165" "265" "365" "240" "340" "440" "540" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "265" "365" "465" "565" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "35" "135" "235" "335" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410" "60" "160" "260" "360" "235" "335" "435" "535" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "260" "360" "460" "560" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410")
 for freq in ${freqs[@]}; do
-    generate_action "Set Radio\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
+    generate_action "Set E.M.F\nMonitor\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
 done
 press=("1000" "2000" "3000" "4000")
 for pres in ${press[@]}; do
@@ -131,7 +131,7 @@ generate "#1f2029ff" "#f9d72fff" "$font" 18 'LEFT' resources/gfx/sprites/ui/left
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'CENTER' resources/gfx/sprites/ui/center.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'RIGHT' resources/gfx/sprites/ui/right.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 'Use L and R to change station' resources/gfx/sprites/ui/use_l_r.png
-generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad to tweak the RADIO\n\nDo (not) use Z to press AZ-5\n\nUse the joystick to set the COMPASS" resources/gfx/sprites/ui/tuto_left.png
+generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad to tweak the RADIO\n\nUse Z to press AZ-5\n\nUse the joystick to set the COMPASS" resources/gfx/sprites/ui/tuto_left.png
 generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad and C buttons to interact\nwith the CONTROL RODS\n\nPress B to switch the LIGHTS\n\nDouble / triple tap A to activate\nthe PRESSURIZER" resources/gfx/sprites/ui/tuto_center.png
 generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Rotate the joystick to activate the PUMPS\n\nPress Z to switch between the TURBINES & KEYPAD\n\nUse A to interact with TURBINES & KEYPAD\n\nPress B to clear out KEYPAD" resources/gfx/sprites/ui/tuto_right.png
 

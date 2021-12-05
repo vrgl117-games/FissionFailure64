@@ -226,7 +226,7 @@ bool actions_next()
         pair.bottom = get_action(pair.top->element);
     }
     points++;
-    return (points >= 80);
+    return (points >= EXTRA_HARD * 2);
 }
 
 void actions_reset()

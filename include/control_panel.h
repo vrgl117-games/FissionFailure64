@@ -8,8 +8,8 @@
 #include "actions.h"
 #include "input.h"
 
-#define STRESS_THRESHOLD 28
-#define HELL_THRESHOLD 62
+#define STRESS_THRESHOLD 280
+#define HELL_THRESHOLD 620
 
 typedef enum
 {
@@ -116,7 +116,7 @@ typedef struct control_panel
     int8_t pressure;
     int16_t freq;
     int16_t power;
-    u_int8_t stress; // 0 to 100
+    uint16_t geiger; // 0 to 1000
     station_left_t left;
     station_center_t center;
     station_right_t right;
