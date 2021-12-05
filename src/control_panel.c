@@ -156,72 +156,74 @@ void control_panel_input(input_t *input)
 
 static control_panel_status_t control_panel_check_action(action_t *action)
 {
-    switch (action->station)
-    {
-    case STATION_LEFT:
-        switch (action->element)
-        {
-        case ELEMENT_RADIO:
-            if (control_panel.freq != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_COMPASS:
-            if (control_panel.left.compass != action->expected[0])
-                return INCORRECT;
-            break;
-        default:
-            break;
-        }
-        break;
-    case STATION_CENTER:
-        switch (action->element)
-        {
-        case ELEMENT_GRID:
-            if (control_panel.center.grid[action->expected[1]][action->expected[2]] != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_PRESSURIZER:
-            if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_LIGHTS:
-            if (control_panel.center.button_b != action->expected[0])
-                return INCORRECT;
-            break;
-        default:
-            break;
-        }
-        break;
-    case STATION_RIGHT:
-        switch (action->element)
-        {
-        case ELEMENT_TURBINES:
-            if (control_panel.power != action->expected[0])
-                return INCORRECT;
-            break;
-        case ELEMENT_KEYPAD:
-            if (control_panel.right.calling == false ||
-                control_panel.right.screen[0] != '0' + action->expected[0] ||
-                control_panel.right.screen[1] != '0' + action->expected[1] ||
-                control_panel.right.screen[2] != '0' + action->expected[2] ||
-                control_panel.right.screen[3] != '0' + action->expected[3] ||
-                control_panel.right.screen[4] != '0' + action->expected[4] ||
-                control_panel.right.screen[5] != '0' + action->expected[5] ||
-                control_panel.right.screen[6] != '0' + action->expected[6] ||
-                control_panel.right.screen[7] != '0' + action->expected[7])
-                return INCORRECT;
 
-            memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
-            control_panel.right.cursor = 0;
-            control_panel.right.calling = false;
+    switch (action->element)
+    {
+    case ELEMENT_RADIO:
+        if (control_panel.freq != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_COMPASS:
+        if (control_panel.left.compass != action->expected[0])
+            return INCORRECT;
+        break;
+
+    case ELEMENT_GRID:
+        if (control_panel.center.grid[action->expected[1]][action->expected[2]] != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_PRESSURIZER:
+        if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
+            return INCORRECT;
+        break;
+
+    case ELEMENT_TURBINES:
+        if (control_panel.power != action->expected[0])
+            return INCORRECT;
+        break;
+    case ELEMENT_KEYPAD:
+        if (control_panel.right.calling == false ||
+            control_panel.right.screen[0] != '0' + action->expected[0] ||
+            control_panel.right.screen[1] != '0' + action->expected[1] ||
+            control_panel.right.screen[2] != '0' + action->expected[2] ||
+            control_panel.right.screen[3] != '0' + action->expected[3] ||
+            control_panel.right.screen[4] != '0' + action->expected[4] ||
+            control_panel.right.screen[5] != '0' + action->expected[5] ||
+            control_panel.right.screen[6] != '0' + action->expected[6] ||
+            control_panel.right.screen[7] != '0' + action->expected[7])
+            return INCORRECT;
+
+        memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
+        control_panel.right.cursor = 0;
+        control_panel.right.calling = false;
+        break;
+    case ELEMENT_PUMPS:
+        if (control_panel.right.rotations != 9)
+            return INCORRECT;
+        break;
+
+    case ELEMENT_AZ5:
+        if (!control_panel.left.button_z)
+            return INCORRECT;
+        switch (action->expected[0])
+        {
+        case ELEMENT_COMPASS:
+            if (control_panel.left.compass != action->expected[1])
+                control_panel.stress = (control_panel.stress < 80) ? 80 : 100;
+
             break;
-        case ELEMENT_PUMPS:
-            if (control_panel.right.rotations != 9)
-                return INCORRECT;
+
+        case ELEMENT_TURBINES:
+            if (control_panel.power != action->expected[1])
+                control_panel.stress = (control_panel.stress < 80) ? 80 : 100;
+
             break;
+
         default:
             break;
         }
+
+    default:
         break;
     }
     return CORRECT;
@@ -229,7 +231,7 @@ static control_panel_status_t control_panel_check_action(action_t *action)
 
 control_panel_status_t control_panel_check_status(action_pair_t pair)
 {
-    if (control_panel.stress == 100)
+    if (control_panel.stress >= 100)
         return DEAD;
 
     if (control_panel_check_action(pair.top) == INCORRECT)
@@ -343,7 +345,14 @@ void control_panel_reset()
 
 void control_panel_timer()
 {
-    control_panel.stress++;
+    uint8_t points = actions_get_points();
+    if (points < EASY)
+        control_panel.stress++;
+    else if (points < NORMAL)
+        control_panel.stress += 2;
+    else
+        control_panel.stress += 3;
+
     if (control_panel.stress <= STRESS_THRESHOLD)
     {
         control_panel.mode = IDLE;
@@ -445,10 +454,11 @@ void station_left_input(input_t *input)
 
     if (input->Z)
     {
-        station->button_z = !station->button_z;
-        if (station->button_z)
-            control_panel.stress = (control_panel.stress < 90) ? 90 : 100;
+        if (actions_get_current().top->element != ELEMENT_AZ5)
+            control_panel.stress = (control_panel.stress < 80) ? 80 : 100;
     }
+
+    station->button_z = input->Z;
 
     if (input->y > JOYSTICK_DEAD_ZONE)
     {

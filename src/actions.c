@@ -8,10 +8,15 @@
 #include "control_panel.h"
 #include "dfs.h"
 
-#define NUM_ACTIONS 9
-static action_t *actions[NUM_ACTIONS];
-static uint8_t current = 0;
+static action_new actions[ELEMENT_IDX];
 static uint16_t points = 0;
+
+static action_pair_t pair = {0};
+
+// Last rod action
+static int8_t color_prev = -1;
+static int8_t pos_x_prev = -1;
+static int8_t pos_y_prev = -1;
 
 extern control_panel_t control_panel;
 
@@ -68,34 +73,24 @@ static action_t *actions_new_press()
     return action;
 }
 
-static action_t *actions_new_lights(bool off)
+static action_t *actions_new_rod()
 {
     action_t *action = calloc(1, sizeof(action_t));
-
-    action->station = STATION_CENTER;
-    action->element = ELEMENT_LIGHTS;
-    action->expected[0] = off;
-    strcpy(action->buffer, (off ? "/gfx/sprites/actions/lights_off-%d.sprite" : "/gfx/sprites/actions/lights_on-%d.sprite"));
-
-    return action;
-}
-
-static action_t *actions_new_rod(uint8_t not_color, uint8_t not_x, uint8_t not_y)
-{
-    action_t *action = calloc(1, sizeof(action_t));
-    uint8_t color = (not_color + 1) % 4;
+    uint8_t color = (color_prev + 1) % 4;
     char *colors[] = {"red", "green", "blue", "orange"};
-    char pos_x[] = {'A', 'B', 'C', 'D', 'E', 'F'};
-    char pos_y[] = {'1', '2', '3', '4'};
-    uint8_t po_x = (not_x + 1) % 6;
-    uint8_t po_y = (not_y + 1) % 4;
+    char letters[] = {'A', 'B', 'C', 'D', 'E', 'F'};
+    char numbers[] = {'1', '2', '3', '4'};
+    uint8_t pos_x = (pos_x_prev + 1) % 6;
+    uint8_t pos_y = (pos_y_prev + 1) % 4;
 
-    action->station = STATION_CENTER;
     action->element = ELEMENT_GRID;
     action->expected[0] = 1 + color;
-    action->expected[1] = po_y;
-    action->expected[2] = po_x;
-    sprintf(action->buffer, "/gfx/sprites/actions/rod_%s_%c%c", colors[color], pos_x[po_x], pos_y[po_y]);
+    color_prev = action->expected[0];
+    action->expected[1] = pos_y;
+    pos_y_prev = pos_y;
+    action->expected[2] = pos_x;
+    pos_x_prev = pos_x;
+    sprintf(action->buffer, "/gfx/sprites/actions/rod_%s_%c%c", colors[color], letters[pos_x], numbers[pos_y]);
     strcat(action->buffer, "-%d.sprite");
 
     return action;
@@ -123,7 +118,6 @@ static action_t *actions_new_pumps()
 {
     action_t *action = calloc(1, sizeof(action_t));
 
-    action->station = STATION_RIGHT;
     action->element = ELEMENT_PUMPS;
     action->expected[0] = 9;
     strcpy(action->buffer, "/gfx/sprites/actions/pumps-%d.sprite");
@@ -135,7 +129,6 @@ static action_t *actions_new_spare_part()
 {
     action_t *action = calloc(1, sizeof(action_t));
 
-    action->station = STATION_CENTER;
     action->element = ELEMENT_KEYPAD;
     action->expected[0] = 3;
     action->expected[1] = 9;
@@ -150,8 +143,35 @@ static action_t *actions_new_spare_part()
     return action;
 }
 
+static action_t *actions_new_az5()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+    char *dependants[] = {"turbines", "compass"};
+    element_t elements[] = {ELEMENT_TURBINES, ELEMENT_COMPASS};
+    uint8_t desired_values[] = {0, 2};
+
+    uint8_t dependants_pos = rand() % 2;
+    action->element = ELEMENT_AZ5;
+    action->expected[0] = elements[dependants_pos];
+    action->expected[1] = desired_values[dependants_pos];
+
+    sprintf(action->buffer, "/gfx/sprites/actions/az5-%s", dependants[dependants_pos]);
+    strcat(action->buffer, "-%d.sprite");
+
+    return action;
+}
+
 void actions_init()
 {
+    actions[ELEMENT_TURBINES] = actions_new_power;
+    actions[ELEMENT_COMPASS] = actions_new_compass;
+    actions[ELEMENT_PRESSURIZER] = actions_new_press;
+    actions[ELEMENT_RADIO] = actions_new_freq;
+    actions[ELEMENT_GRID] = actions_new_rod;
+    actions[ELEMENT_PUMPS] = actions_new_pumps;
+    actions[ELEMENT_KEYPAD] = actions_new_spare_part;
+    actions[ELEMENT_AZ5] = actions_new_az5;
+
     actions_reset();
 }
 
@@ -160,46 +180,57 @@ uint16_t actions_get_points()
     return points;
 }
 
+uint8_t difficulty()
+{
+    if (points < EASY)
+    {
+        return ELEMENT_RADIO;
+    }
+    if (points < NORMAL)
+    {
+        return ELEMENT_KEYPAD;
+    }
+
+    return ELEMENT_IDX;
+}
+
+static action_t *get_action(uint8_t unwanted_action)
+{
+    uint8_t wanted_action = rand() % (difficulty());
+    while (wanted_action == unwanted_action)
+        wanted_action = rand() % (difficulty());
+    return actions[wanted_action]();
+}
+
 action_pair_t actions_get_current()
 {
-    action_pair_t pair = {.top = actions[current]};
-    if (current > 1 && current != NUM_ACTIONS - 1)
-        pair.bottom = actions[current + 1];
     return pair;
 }
 
-bool actions_next(uint8_t i)
+bool actions_next()
 {
-    current += i;
+    if (pair.top != 0)
+    {
+        dfs_free_sprites(pair.top->text);
+        free(pair.top);
+    }
+
+    pair.top = get_action(255);
+    if (points > EXTRA_HARD && pair.top->element != ELEMENT_AZ5)
+    {
+        if (pair.bottom != 0)
+        {
+            dfs_free_sprites(pair.bottom->text);
+            free(pair.bottom);
+        }
+        pair.bottom = get_action(pair.top->element);
+    }
     points++;
-    return (current >= NUM_ACTIONS);
+    return (points >= 80);
 }
 
 void actions_reset()
 {
-    current = 0;
+    actions_next();
     points = 0;
-
-    for (uint8_t i = 0; i < NUM_ACTIONS; i++)
-    {
-        if (actions[i])
-        {
-            dfs_free_sprites(actions[i]->text);
-            free(actions[i]);
-        }
-    }
-    // center
-    actions[0] = actions_new_rod(rand() % 4, rand() % 6, rand() % 4);
-    actions[1] = actions_new_lights(true);
-    actions[2] = actions_new_lights(false);
-    actions[3] = actions_new_press();
-
-    // left
-    actions[4] = actions_new_freq(control_panel.freq);
-    actions[5] = actions_new_compass();
-
-    //right
-    actions[6] = actions_new_power();
-    actions[7] = actions_new_pumps();
-    actions[8] = actions_new_spare_part();
 }

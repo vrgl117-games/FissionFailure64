@@ -8,27 +8,26 @@
 
 #include "dfs.h"
 
+typedef enum element
+{
+    // EASY
+    ELEMENT_TURBINES,
+    ELEMENT_COMPASS,
+    ELEMENT_PRESSURIZER,
+    // NORMAL
+    ELEMENT_RADIO,
+    ELEMENT_GRID,
+    ELEMENT_PUMPS,
+    // HARD
+    ELEMENT_KEYPAD,
+    ELEMENT_AZ5,
+
+    ELEMENT_IDX,
+} element_t;
+
 typedef struct action
 {
-    enum
-    {
-        STATION_LEFT,
-        STATION_CENTER,
-        STATION_RIGHT
-    } station;
-
-    enum
-    {
-        ELEMENT_RADIO,
-        ELEMENT_COMPASS,
-        ELEMENT_GRID,
-        ELEMENT_LIGHTS,
-        ELEMENT_PRESSURIZER,
-        ELEMENT_TURBINES,
-        ELEMENT_PUMPS,
-        ELEMENT_KEYPAD,
-    } element;
-
+    element_t element;
     uint16_t expected[8];
     char buffer[256];
     sprites_t *text;
@@ -41,10 +40,20 @@ typedef struct action_pair
     action_t *bottom;
 } action_pair_t;
 
+typedef enum level
+{
+    EASY = 10,
+    NORMAL = 20,
+    HARD = 30,
+    EXTRA_HARD = 40,
+} level_t;
+
+typedef action_t *(*action_new)();
+
 uint16_t actions_get_points();
 action_pair_t actions_get_current();
 void actions_init();
-bool actions_next(uint8_t i);
+bool actions_next();
 void actions_reset();
 
 #endif //__ACTIONS_H__

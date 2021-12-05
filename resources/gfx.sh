@@ -98,8 +98,6 @@ for po in ${pos[@]}; do
         generate_action "Set $color\nControl\nRod\nto $po" resources/gfx/sprites/actions/rod_"$color"_"$po"-%d.png
     done
 done
-generate_action 'Turn\nOFF the\nlights' resources/gfx/sprites/actions/lights_off-%d.png
-generate_action 'Turn the\nlights\nback ON' resources/gfx/sprites/actions/lights_on-%d.png
 freqs=("200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "50" "150" "250" "350" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "75" "175" "275" "375" "250" "350" "450" "550" "200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "275" "375" "475" "575" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "45" "145" "245" "345" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "70" "170" "270" "370" "245" "345" "445" "545" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "270" "370" "470" "570" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "40" "140" "240" "340" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "65" "165" "265" "365" "240" "340" "440" "540" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "265" "365" "465" "565" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "35" "135" "235" "335" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410" "60" "160" "260" "360" "235" "335" "435" "535" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "260" "360" "460" "560" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410")
 for freq in ${freqs[@]}; do
     generate_action "Set Radio\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
@@ -120,6 +118,9 @@ for power in ${powers[@]}; do
 done
 generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps-%d.png
 generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
+
+generate_action 'Press AZ-5\nwhen\nturbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png
+generate_action 'Press AZ-5\nwhen\ncompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
 
 # tutorial
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the stations' resources/gfx/sprites/ui/how_to.png
