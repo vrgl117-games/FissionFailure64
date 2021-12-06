@@ -62,8 +62,10 @@ typedef struct station_center
     uint8_t grid[GRID_SIZE_Y][GRID_SIZE_X];
     uint8_t gridselector_x;
     uint8_t gridselector_y;
-    bool button_a;
-    bool button_b;
+    bool pressurizer;
+    bool lights;
+
+    bool A;
 } station_center_t;
 
 #define KEYPAD_H 4

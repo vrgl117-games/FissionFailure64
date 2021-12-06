@@ -69,6 +69,12 @@ void scientist_init()
     }
 }
 
+void scientist_reset()
+{
+    for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
+        scientists[i].mode = 0;
+}
+
 void scientist_timer()
 {
     for (uint8_t i = 0; i < NUM_SCIENTIST; i++)

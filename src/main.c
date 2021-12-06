@@ -32,11 +32,11 @@ int main()
     rdp_init();
     audio_init(44100, 4);
     audio_write_silence();
+    debug_init_isviewer();
     sfx_init();
     control_panel_init();
     timer_init();
     input_init();
-    debug_init_isviewer();
     colors_init();
     actions_init();
     control_panel_init();
@@ -95,16 +95,18 @@ int main()
                 screen_game_load();
                 scientist_init();
                 actions_reset();
-                input_timer(); // reset pressed to 0
+                input_reset_presses();
                 screen = game;
                 sfx_stop(CH_MUSIC);
                 control_panel_reset();
+                scientist_reset();
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 break;
             case screen_selection_tutorial:
                 screen_title_unload();
-                screen_game_load();
+                screen_tutorial_load();
                 actions_reset_tutorial();
+                input_reset_presses();
                 screen = tutorial;
                 sfx_stop(CH_MUSIC);
                 control_panel_reset_tutorial();
@@ -152,7 +154,7 @@ int main()
             {
             case screen_selection_resume:
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
-                input_timer(); // reset pressed to 0
+                input_reset_presses();
                 screen = game;
                 sfx_set_pause(false);
                 break;
@@ -164,8 +166,6 @@ int main()
                 screen = credits;
                 break;
             case screen_selection_quit:
-                actions_reset();
-                control_panel_reset();
                 screen_title_load();
                 screen = title;
                 sfx_reset();
@@ -176,10 +176,9 @@ int main()
             }
             break;
         case tutorial:
-            if (screen_tutorial(disp, &input))
+            if (input.start || screen_tutorial(disp, &input))
             {
-                screen_game_unload();
-                control_panel_reset();
+                screen_tutorial_unload();
                 screen_title_load();
                 screen = title;
                 sfx_reset();
@@ -195,8 +194,6 @@ int main()
             {
                 if (prev_screen == win)
                 {
-                    actions_reset();
-                    control_panel_reset();
                     screen_title_load();
                     screen = title;
                     sfx_reset();
@@ -210,8 +207,6 @@ int main()
             if (screen_game_over(disp, &input))
             {
                 rumble_stop(0);
-                actions_reset();
-                control_panel_reset();
                 screen_title_load();
                 screen = title;
                 sfx_stop(CH_MUSIC);

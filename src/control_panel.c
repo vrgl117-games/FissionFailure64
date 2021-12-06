@@ -43,14 +43,14 @@ static void danger_bar_draw()
 static void instruments_draw(display_context_t disp)
 {
     uint8_t x = 220;
-    uint8_t y = 140;
+    uint8_t y = 120;
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
     if (!control_panel.lights_off)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
-
+        y += 20;
         rdp_detach_display();
 
         graphics_draw_text(disp, x + 8, y, "POINTS");
@@ -60,7 +60,10 @@ static void instruments_draw(display_context_t disp)
         graphics_draw_text(disp, x + 8, y + 18 + 18 + 18 + 18, "RAM");
     }
     else
+    {
+        y += 20;
         rdp_detach_display();
+    }
 
     graphics_set_color(colors[COLOR_RED], 0);
     graphics_draw_textf_with_background(disp, x + 60, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
@@ -108,7 +111,7 @@ static void instructions_draw_tutorial()
         if (current.top->text == NULL || current.top->text->loaded != -1)
             current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
 
-        rdp_draw_sprites_with_texture(current.top->text, __width / 2 - current.top->text->width / 2, 20, 0);
+        rdp_draw_sprites_with_texture(current.top->text, __width / 2 - current.top->text->width / 2, 14, 0);
     }
 }
 
@@ -118,7 +121,7 @@ static control_panel_status_t control_panel_check_action(action_t *action)
     switch (action->element)
     {
     case ELEMENT_TUTORIAL:
-        if (!control_panel.center.button_a)
+        if (!control_panel.center.A)
             return INCORRECT;
         break;
     case ELEMENT_RADIO:
@@ -135,7 +138,7 @@ static control_panel_status_t control_panel_check_action(action_t *action)
             return INCORRECT;
         break;
     case ELEMENT_PRESSURIZER:
-        if (control_panel.center.button_a || control_panel.pressure != action->expected[0])
+        if (control_panel.center.pressurizer || control_panel.pressure != action->expected[0])
             return INCORRECT;
         break;
 
@@ -212,7 +215,6 @@ control_panel_status_t control_panel_check_status(action_pair_t pair)
     else
         control_panel.geiger -= 100;
 
-    sfx_play(CH_SFX, SFX_ACTION, false);
     return CORRECT;
 }
 
@@ -503,14 +505,14 @@ static void station_center_draw()
     {
         // Button B
         rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 144, y, 0);
-        rdp_draw_sprite_with_texture(tiles[502], x + 151, y + 18, (station->button_b ? MIRROR_Y : 0));
+        rdp_draw_sprite_with_texture(tiles[502], x + 151, y + 18, (station->lights ? MIRROR_Y : 0));
 
         // Button A
         rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 124, y + 60, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_a ? 482 : 481)], x + 124, y + 75, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_a && control_panel.pressure > 1 ? 482 : 481)], x + 144, y + 75, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_a && control_panel.pressure > 2 ? 482 : 481)], x + 164, y + 75, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_a && control_panel.pressure > 3 ? 482 : 481)], x + 184, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer ? 482 : 481)], x + 124, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 1 ? 482 : 481)], x + 144, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 2 ? 482 : 481)], x + 164, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 3 ? 482 : 481)], x + 184, y + 75, 0);
 
         // Grid
         rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 21, 210, 0);
@@ -569,14 +571,14 @@ static void station_center_input(input_t *input, bool tutorial)
 
     if (input->B)
     {
-        station->button_b = !station->button_b;
-        if (station->button_b)
+        station->lights = !station->lights;
+        if (station->lights)
             control_panel.off_timer = 0;
         else
             control_panel.off_timer = 16;
     }
 
-    if (station->button_b)
+    if (station->lights)
     {
         if (control_panel.off_timer <= 16)
             control_panel.off_timer++;
@@ -590,16 +592,19 @@ static void station_center_input(input_t *input, bool tutorial)
         control_panel.lights_off = false;
 
     if (tutorial && actions_get_current_tutorial().top != NULL && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
-        station->button_a = input->A;
+    {
+        station->A = input->A;
+        input_reset_presses();
+    }
     else
     {
         if (input_get_A_presses())
         {
-            station->button_a = true;
+            station->pressurizer = true;
             control_panel.pressure = input_get_A_presses();
         }
         else
-            station->button_a = false;
+            station->pressurizer = false;
     }
     if (station->grid[station->gridselector_y][station->gridselector_x])
     {

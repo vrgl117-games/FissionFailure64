@@ -71,7 +71,7 @@ generate_label  'COMPASS' resources/gfx/sprites/ui/label_wind_turbines.png
 #generate_label  'AZ-S' resources/gfx/sprites/ui/label_az_5.png
 generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
 # edited by hand
-generate_label  'G\nE\nI\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
+#generate_label  'G\nE\nI\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
 
 generate_text 'a'  resources/gfx/sprites/ui/text_a.png
 generate_text 'b'  resources/gfx/sprites/ui/text_b.png
@@ -98,7 +98,7 @@ generate_direction 'SE'  resources/gfx/sprites/ui/dir_se.png
 
 
 
-generate_action_tutorial "Welcome new team member!\n\nThe Fukumilebyl power plant\nis in dire need of your help!" resources/gfx/sprites/actions/tuto-welcome-%d.png
+generate_action_tutorial "Welcome new team member!\n\nThe GreenGlo power plant\nis in dire need of your help!" resources/gfx/sprites/actions/tuto-welcome-%d.png
 generate_action_tutorial "Your team of brave scientists\nwill be doing all the manual labor\nbut they need the reactor's components\nto be set properly from the control room." resources/gfx/sprites/actions/tuto-intro-%d.png
 generate_action_tutorial "You will be in charge of three stations.\nLet's start by getting familiar\nwith the center station.\nYour team is counting on you!\nThey face grave danger!" resources/gfx/sprites/actions/tuto-center-%d.png
 generate_action_tutorial "Keep an eye on the\nGeiger counter level!\nThe plant can explode\nif it's too high!\n" resources/gfx/sprites/actions/tuto-geiger-%d.png
@@ -120,8 +120,7 @@ for pres in ${press[@]}; do
     generate_action "Set\npressure\nto\n${pres}Pa" resources/gfx/sprites/actions/press-"$pres"-%d.png
 done
 
-generate_action_tutorial "Set pressure to\n2000Pa by double tapping\nA button" resources/gfx/sprites/actions/tuto-press-2000-%d.png
-
+generate_action_tutorial "Set pressure to 2000Pa by\ndouble tapping A button" resources/gfx/sprites/actions/tuto-press-2000-%d.png
 
 dirs=("NorthWest" "North" "NorthEast" "West" "East" "SouthWest" "South" "SouthEast")
 for dir in ${dirs[@]}; do
@@ -137,20 +136,6 @@ generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/c
 
 generate_action 'Press AZ-5\nwhen\nturbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png
 generate_action 'Press AZ-5\nwhen\ncompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
-
-# tutorial
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the stations' resources/gfx/sprites/ui/how_to.png
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the LEFT station' resources/gfx/sprites/ui/how_to_left.png
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the CENTER station' resources/gfx/sprites/ui/how_to_center.png
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 10 'How to manage the RIGHT station' resources/gfx/sprites/ui/how_to_right.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 'LEFT' resources/gfx/sprites/ui/left.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 'CENTER' resources/gfx/sprites/ui/center.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 'RIGHT' resources/gfx/sprites/ui/right.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 'Use L and R to change station' resources/gfx/sprites/ui/use_l_r.png
-generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad to tweak the RADIO\n\nUse Z to press AZ-5\n\nUse the joystick to set the COMPASS" resources/gfx/sprites/ui/tuto_left.png
-generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Use d-pad and C buttons to interact\nwith the CONTROL RODS\n\nPress B to switch the LIGHTS\n\nDouble / triple tap A to activate\nthe PRESSURIZER" resources/gfx/sprites/ui/tuto_center.png
-generate_left "#1f2029ff" "#f9d72fff" "$font" 16 "Rotate the joystick to activate the PUMPS\n\nPress Z to switch between the TURBINES & KEYPAD\n\nUse A to interact with TURBINES & KEYPAD\n\nPress B to clear out KEYPAD" resources/gfx/sprites/ui/tuto_right.png
-
 
 # title screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
@@ -170,8 +155,6 @@ generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Resume" resources/gfx/sprites/ui/re
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Resume" resources/gfx/sprites/ui/resume_selected.png
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Phonebook" resources/gfx/sprites/ui/phonebook.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Phonebook" resources/gfx/sprites/ui/phonebook_selected.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 "Tutorial" resources/gfx/sprites/ui/tutorial_selected.png
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits.png
 generate "#1f2029ff" "#f9d72fff" "$font" 18 "Credits" resources/gfx/sprites/ui/credits_selected.png
 generate "#1f2029ff" "#F0F1FAff" "$font" 18 "Quit" resources/gfx/sprites/ui/quit.png

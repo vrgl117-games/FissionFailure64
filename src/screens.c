@@ -117,6 +117,7 @@ bool screen_intro(display_context_t disp)
     anim++;
     return (anim >= 112);
 }
+
 static sprites_t *window_idle_sp = NULL;
 static sprites_t *window_stressed_sp = NULL;
 static sprites_t *window_hell_sp = NULL;
@@ -150,6 +151,7 @@ screen_t screen_game(display_context_t disp, input_t *input)
         return game_over;
 
     case CORRECT:
+        sfx_play(CH_SFX, SFX_ACTION, false);
         if (actions_next((current.bottom ? 2 : 1)))
             return win;
         break;
@@ -262,9 +264,9 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
         selected = 0;
 
     if (input->up)
-        selected = (selected == 0 ? 4 : selected - 1);
+        selected = (selected == 0 ? 3 : selected - 1);
     else if (input->down)
-        selected = (selected == 4 ? 0 : selected + 1);
+        selected = (selected == 3 ? 0 : selected + 1);
 
     rdp_attach(disp);
 
@@ -275,21 +277,17 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
     sprite_t *pause_sp = dfs_load_sprite("/gfx/sprites/ui/pause_big.sprite");
     graphics_draw_sprite(disp, __width / 2 - pause_sp->width / 2, 10, pause_sp);
     free(pause_sp);
-
     sprite_t *resume_sp = dfs_load_sprite((selected == 0 ? "/gfx/sprites/ui/resume_selected.sprite" : "/gfx/sprites/ui/resume.sprite"));
     graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 90, resume_sp);
     free(resume_sp);
     sprite_t *phonebook_sp = dfs_load_sprite((selected == 1 ? "/gfx/sprites/ui/phonebook_selected.sprite" : "/gfx/sprites/ui/phonebook.sprite"));
     graphics_draw_sprite(disp, __width / 2 - phonebook_sp->width / 2, 115, phonebook_sp);
     free(phonebook_sp);
-    sprite_t *tutorial_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/tutorial_selected.sprite" : "/gfx/sprites/ui/tutorial.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 140, tutorial_sp);
-    free(tutorial_sp);
-    sprite_t *credits_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 165, credits_sp);
+    sprite_t *credits_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
+    graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 140, credits_sp);
     free(credits_sp);
-    sprite_t *quit_sp = dfs_load_sprite((selected == 4 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - quit_sp->width / 2, 190, quit_sp);
+    sprite_t *quit_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
+    graphics_draw_sprite(disp, __width / 2 - quit_sp->width / 2, 165, quit_sp);
     free(quit_sp);
 
     if (input->A)
@@ -371,28 +369,50 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
 }
 
 // tutorial screen
+static sprite_t *tuto_left = NULL;
+static sprite_t *tuto_center = NULL;
+static sprite_t *tuto_right = NULL;
+void screen_tutorial_load()
+{
+    tuto_left = dfs_load_sprite("/gfx/sprites/tutorial/left.sprite");
+    tuto_center = dfs_load_sprite("/gfx/sprites/tutorial/center.sprite");
+    tuto_right = dfs_load_sprite("/gfx/sprites/tutorial/right.sprite");
+}
+
+void screen_tutorial_unload()
+{
+    free(tuto_left);
+    free(tuto_center);
+    free(tuto_right);
+}
+
 bool screen_tutorial(display_context_t disp, input_t *input)
 {
 
     control_panel_input(input, true);
 
     action_pair_t current = actions_get_current_tutorial();
-    switch (control_panel_check_status(current))
+    if (control_panel_check_status(current) == CORRECT)
     {
-    case CORRECT:
+        if (current.top->element != ELEMENT_TUTORIAL)
+            sfx_play(CH_SFX, SFX_ACTION, false);
         if (actions_next_tutorial())
             return true;
-        break;
-    default:
-        break;
     }
 
     rdp_attach(disp);
 
-    rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+    if (!control_panel.lights_off)
+        rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+    else
+        rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
 
     control_panel_draw_tutorial(disp);
 
+    if (actions_get_current_tutorial().top->element == ELEMENT_PRESSURIZER)
+    {
+        graphics_draw_sprite(disp, __width / 2 - tuto_center->width / 2, 46, tuto_center);
+    }
     return false;
 }
 

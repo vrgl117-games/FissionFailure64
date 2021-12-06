@@ -9,7 +9,7 @@ typedef struct SI_condat input_t;
 
 input_t input_get();
 void input_init();
-void input_timer();
+void input_reset_presses();
 uint8_t input_get_A_presses();
 
 #endif //__INPUT_H__

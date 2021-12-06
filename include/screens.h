@@ -24,9 +24,9 @@ typedef enum screen_selection
     screen_selection_none = -1,
     screen_selection_resume = 0,
     screen_selection_phonebook = 1,
-    screen_selection_tutorial = 2,
-    screen_selection_credits = 3,
-    screen_selection_quit = 4,
+    screen_selection_credits = 2,
+    screen_selection_quit = 3,
+    screen_selection_tutorial = 4,
 } screen_selection_t;
 
 bool screen_credits(display_context_t disp, input_t *input);
@@ -47,6 +47,8 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input);
 void screen_title_load();
 void screen_title_unload();
 bool screen_tutorial(display_context_t disp, input_t *input);
+void screen_tutorial_load();
+void screen_tutorial_unload();
 bool screen_win(display_context_t disp, input_t *input);
 
 #endif //__SCREENS_H__
