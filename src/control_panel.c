@@ -100,57 +100,15 @@ static void instructions_draw()
     }
 }
 
-void control_panel_draw(display_context_t disp)
+static void instructions_draw_tutorial()
 {
-    danger_bar_draw();
-    instructions_draw();
+    action_pair_t current = actions_get_current_tutorial();
+    if (current.top != NULL)
+    {
+        if (current.top->text == NULL || current.top->text->loaded != -1)
+            current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
 
-    if (!control_panel.lights_off)
-    {
-        rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
-    }
-    switch (control_panel.current_station)
-    {
-    case 0:
-        station_left_draw(disp);
-        break;
-    case 1:
-        station_center_draw(disp);
-        break;
-    case 2:
-        station_right_draw(disp);
-        break;
-    }
-
-    if (control_panel.mode == IDLE || control_panel.geiger % 20 < 10)
-    {
-        rumble_stop(0);
-        rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
-    }
-    else
-    {
-        rumble_start(0);
-        rdp_draw_sprite_with_texture(tiles[1], 198, 10, 0);
-    }
-
-    if (control_panel.current_station == 2)
-        station_right_draw_graphics(disp);
-    instruments_draw(disp);
-}
-
-void control_panel_input(input_t *input)
-{
-    switch (control_panel.current_station)
-    {
-    case 0:
-        station_left_input(input);
-        break;
-    case 1:
-        station_center_input(input);
-        break;
-    case 2:
-        station_right_input(input);
-        break;
+        rdp_draw_sprites_with_texture(current.top->text, __width / 2 - current.top->text->width / 2, 20, 0);
     }
 }
 
@@ -159,6 +117,10 @@ static control_panel_status_t control_panel_check_action(action_t *action)
 
     switch (action->element)
     {
+    case ELEMENT_TUTORIAL:
+        if (!control_panel.center.button_a)
+            return INCORRECT;
+        break;
     case ELEMENT_RADIO:
         if (control_panel.freq != action->expected[0])
             return INCORRECT;
@@ -343,15 +305,54 @@ void control_panel_reset()
     control_panel.power = 125 * control_panel.right.levers[0] + 125 * control_panel.right.levers[1] + 125 * control_panel.right.levers[2] + 125 * control_panel.right.levers[3];
 }
 
+void control_panel_reset_tutorial()
+{
+    memset(&control_panel, 0, sizeof(control_panel));
+
+    control_panel.memory = (is_memory_expanded() ? 8 : 4);
+    // select center station
+    control_panel.current_station = 1;
+
+    // reset sliders to != 500Hz (tutorial action)
+    control_panel.freq = 200 + (-5 * control_panel.left.sliders[0]) + (25 * control_panel.left.sliders[1]) + (-50 * control_panel.left.sliders[2]) + (100 * control_panel.left.sliders[3]);
+
+    // reset compass to != SouthEast (tutorial action)
+    control_panel.left.compass = 1;
+
+    // reset grid to != 1 is not in 2,3 (tutorial action)
+    control_panel.center.grid[0][0] = 1;
+    control_panel.center.grid[1][1] = 2;
+    control_panel.center.grid[2][2] = 3;
+    control_panel.center.grid[3][3] = 4;
+
+    // reset pressurizer != 1 (tutorial welcome) and != 2 (tutorial action)
+    control_panel.pressure = 4;
+
+    // reset keypad
+    control_panel.right.keypad[0][0] = 1;
+    control_panel.right.keypad[0][1] = 2;
+    control_panel.right.keypad[0][2] = 3;
+    control_panel.right.keypad[1][0] = 4;
+    control_panel.right.keypad[1][1] = 5;
+    control_panel.right.keypad[1][2] = 6;
+    control_panel.right.keypad[2][0] = 7;
+    control_panel.right.keypad[2][1] = 8;
+    control_panel.right.keypad[2][2] = 9;
+    control_panel.right.keypad[3][1] = 0;
+
+    // levers are set to 0 by default != 250 (tutorial action)
+    control_panel.power = 125 * control_panel.right.levers[0] + 125 * control_panel.right.levers[1] + 125 * control_panel.right.levers[2] + 125 * control_panel.right.levers[3];
+}
+
 void control_panel_timer()
 {
     uint8_t points = actions_get_points();
     if (points < EASY)
         control_panel.geiger += 10;
     else if (points < NORMAL)
-        control_panel.geiger += 15;
+        control_panel.geiger += 12;
     else
-        control_panel.geiger += 20;
+        control_panel.geiger += 15;
 
     if (control_panel.geiger <= STRESS_THRESHOLD)
     {
@@ -370,7 +371,7 @@ void control_panel_timer()
     }
 }
 
-void station_left_draw()
+static void station_left_draw()
 {
     uint16_t x = 16;
     uint16_t y = 152;
@@ -430,9 +431,9 @@ void station_left_draw()
     }
 }
 
-void station_left_input(input_t *input)
+static void station_left_input(input_t *input, bool tutorial)
 {
-    if (input->R)
+    if (input->R && !tutorial)
         control_panel.current_station++;
 
     station_left_t *station = &(control_panel.left);
@@ -487,7 +488,7 @@ void station_left_input(input_t *input)
     }
 }
 
-void station_center_draw()
+static void station_center_draw()
 {
     uint16_t x = 10;
     uint16_t y = 130;
@@ -544,11 +545,11 @@ void station_center_draw()
     }
 }
 
-void station_center_input(input_t *input)
+static void station_center_input(input_t *input, bool tutorial)
 {
-    if (input->L)
+    if (input->L && !tutorial)
         control_panel.current_station--;
-    else if (input->R)
+    else if (input->R && !tutorial)
         control_panel.current_station++;
 
     station_center_t *station = &(control_panel.center);
@@ -588,16 +589,18 @@ void station_center_input(input_t *input)
     else
         control_panel.lights_off = false;
 
-    if (input_get_A_presses())
-    {
-        station->button_a = true;
-        control_panel.pressure = input_get_A_presses();
-    }
+    if (tutorial && actions_get_current_tutorial().top != NULL && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+        station->button_a = input->A;
     else
     {
-        station->button_a = false;
+        if (input_get_A_presses())
+        {
+            station->button_a = true;
+            control_panel.pressure = input_get_A_presses();
+        }
+        else
+            station->button_a = false;
     }
-
     if (station->grid[station->gridselector_y][station->gridselector_x])
     {
         if (input->C_up && station->gridselector_y > 0 && (station->grid[station->gridselector_y - 1][station->gridselector_x] == 0))
@@ -627,7 +630,7 @@ void station_center_input(input_t *input)
     }
 }
 
-void station_right_draw_graphics(display_context_t disp)
+static void station_right_draw_graphics(display_context_t disp)
 {
     uint16_t x = 16;
     uint16_t y = 152;
@@ -656,7 +659,7 @@ void station_right_draw_graphics(display_context_t disp)
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
 
-void station_right_draw()
+static void station_right_draw()
 {
     uint16_t x = 16;
     uint16_t y = 152;
@@ -708,9 +711,9 @@ void station_right_draw()
     }
 }
 
-void station_right_input(input_t *input)
+static void station_right_input(input_t *input, bool tutorial)
 {
-    if (input->L)
+    if (input->L && !tutorial)
         control_panel.current_station--;
 
     station_right_t *station = &(control_panel.right);
@@ -825,4 +828,80 @@ void station_right_input(input_t *input)
         station->joystick = 0;
         station->rotations = 0;
     }
+}
+
+void control_panel_input(input_t *input, bool tutorial)
+{
+    switch (control_panel.current_station)
+    {
+    case 0:
+        station_left_input(input, tutorial);
+        break;
+    case 1:
+        station_center_input(input, tutorial);
+        break;
+    case 2:
+        station_right_input(input, tutorial);
+        break;
+    }
+}
+
+void control_panel_draw_tutorial(display_context_t disp)
+{
+    instructions_draw_tutorial();
+
+    if (!control_panel.lights_off)
+        rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
+    switch (control_panel.current_station)
+    {
+    case 0:
+        station_left_draw(disp);
+        break;
+    case 1:
+        station_center_draw(disp);
+        break;
+    case 2:
+        station_right_draw(disp);
+        break;
+    }
+
+    if (control_panel.current_station == 2)
+        station_right_draw_graphics(disp);
+    instruments_draw(disp);
+}
+
+void control_panel_draw(display_context_t disp)
+{
+    danger_bar_draw();
+    instructions_draw();
+
+    if (!control_panel.lights_off)
+        rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
+    switch (control_panel.current_station)
+    {
+    case 0:
+        station_left_draw(disp);
+        break;
+    case 1:
+        station_center_draw(disp);
+        break;
+    case 2:
+        station_right_draw(disp);
+        break;
+    }
+
+    if (control_panel.mode == IDLE || control_panel.geiger % 20 < 10)
+    {
+        rumble_stop(0);
+        rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
+    }
+    else
+    {
+        rumble_start(0);
+        rdp_draw_sprite_with_texture(tiles[1], 198, 10, 0);
+    }
+
+    if (control_panel.current_station == 2)
+        station_right_draw_graphics(disp);
+    instruments_draw(disp);
 }

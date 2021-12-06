@@ -46,7 +46,7 @@ void screen_timer();
 screen_selection_t screen_title_draw(display_context_t disp, input_t *input);
 void screen_title_load();
 void screen_title_unload();
-bool screen_tutorial(display_context_t disp, input_t *input, bool reset);
+bool screen_tutorial(display_context_t disp, input_t *input);
 bool screen_win(display_context_t disp, input_t *input);
 
 #endif //__SCREENS_H__

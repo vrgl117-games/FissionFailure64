@@ -23,7 +23,7 @@ extern uint32_t colors[];
 #endif
 
 screen_t screen = message;
-screen_t prev_screen; //used in credits and tutorial to know where to go back to
+screen_t prev_screen; //used in credits to know where to go back to
 
 int main()
 {
@@ -38,6 +38,7 @@ int main()
     input_init();
     debug_init_isviewer();
     colors_init();
+    actions_init();
     control_panel_init();
     srand(timer_ticks() & 0x7FFFFFFF);
 
@@ -93,7 +94,7 @@ int main()
                 screen_title_unload();
                 screen_game_load();
                 scientist_init();
-                actions_init();
+                actions_reset();
                 input_timer(); // reset pressed to 0
                 screen = game;
                 sfx_stop(CH_MUSIC);
@@ -101,11 +102,12 @@ int main()
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 break;
             case screen_selection_tutorial:
-                prev_screen = title;
+                screen_title_unload();
+                screen_game_load();
+                actions_reset_tutorial();
                 screen = tutorial;
                 sfx_stop(CH_MUSIC);
-                memset(&input, 0, sizeof(input));
-                screen_tutorial(disp, &input, true);
+                control_panel_reset_tutorial();
                 break;
             default:
                 break;
@@ -155,14 +157,7 @@ int main()
                 sfx_set_pause(false);
                 break;
             case screen_selection_phonebook:
-                prev_screen = pause;
                 screen = phonebook;
-                break;
-            case screen_selection_tutorial:
-                prev_screen = pause;
-                screen = tutorial;
-                memset(&input, 0, sizeof(input));
-                screen_tutorial(disp, &input, true);
                 break;
             case screen_selection_credits:
                 prev_screen = pause;
@@ -181,19 +176,19 @@ int main()
             }
             break;
         case tutorial:
-            if (screen_tutorial(disp, &input, false))
+            if (screen_tutorial(disp, &input))
             {
-                screen = prev_screen;
-                if (screen == title)
-                {
-                    sfx_reset();
-                    sfx_play(CH_MUSIC, SFX_THEME, true);
-                }
+                screen_game_unload();
+                control_panel_reset();
+                screen_title_load();
+                screen = title;
+                sfx_reset();
+                sfx_play(CH_MUSIC, SFX_THEME, true);
             }
             break;
         case phonebook:
             if (screen_phonebook(disp, &input))
-                screen = prev_screen;
+                screen = pause;
             break;
         case credits:
             if (screen_credits(disp, &input))

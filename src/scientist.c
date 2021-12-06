@@ -8,7 +8,7 @@
 extern control_panel_t control_panel;
 
 static scientist_t scientists[NUM_SCIENTIST];
-static sprites_t *dark;
+static sprites_t *dark = NULL;
 
 void scientist_draw()
 {
@@ -23,46 +23,49 @@ void scientist_draw()
 
 void scientist_init()
 {
-    dark = dfs_load_sprites("/gfx/sprites/scientists/dark-%d.sprite");
-
-    sprites_t *scientists_sp[4][3] = {
-        {
-            dfs_load_sprites("/gfx/sprites/scientists/idle0-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/stressed0-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/hell0-%d.sprite"),
-        },
-        {
-            dfs_load_sprites("/gfx/sprites/scientists/idle1-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/stressed1-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
-        },
-        {
-            dfs_load_sprites("/gfx/sprites/scientists/idle2-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/stressed2-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
-        },
-        {
-            dfs_load_sprites("/gfx/sprites/scientists/idle3-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/stressed3-%d.sprite"),
-            dfs_load_sprites("/gfx/sprites/scientists/hell3-%d.sprite"),
-        },
-    };
-
-    for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
+    if (dark == NULL)
     {
-        scientists[i].h_direction = (rand() % 2);
-        scientists[i].v_direction = (rand() % 2);
-        scientists[i].x = (rand() % (MAX_X - MIN_X)) + MIN_X;
-        scientists[i].y = 1 + (rand() % 7);
-        scientists[i].y_offset = 28 + (rand() % 3 * 2);
+        dark = dfs_load_sprites("/gfx/sprites/scientists/dark-%d.sprite");
 
-        uint8_t num = i;
-        if (i > 3)
-            num = rand() % 4;
+        sprites_t *scientists_sp[4][3] = {
+            {
+                dfs_load_sprites("/gfx/sprites/scientists/idle0-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/stressed0-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/hell0-%d.sprite"),
+            },
+            {
+                dfs_load_sprites("/gfx/sprites/scientists/idle1-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/stressed1-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
+            },
+            {
+                dfs_load_sprites("/gfx/sprites/scientists/idle2-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/stressed2-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
+            },
+            {
+                dfs_load_sprites("/gfx/sprites/scientists/idle3-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/stressed3-%d.sprite"),
+                dfs_load_sprites("/gfx/sprites/scientists/hell3-%d.sprite"),
+            },
+        };
 
-        scientists[i].sprites[0] = scientists_sp[num][0];
-        scientists[i].sprites[1] = scientists_sp[num][1];
-        scientists[i].sprites[2] = scientists_sp[num][2];
+        for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
+        {
+            scientists[i].h_direction = (rand() % 2);
+            scientists[i].v_direction = (rand() % 2);
+            scientists[i].x = (rand() % (MAX_X - MIN_X)) + MIN_X;
+            scientists[i].y = 1 + (rand() % 7);
+            scientists[i].y_offset = 28 + (rand() % 3 * 2);
+
+            uint8_t num = i;
+            if (i > 3)
+                num = rand() % 4;
+
+            scientists[i].sprites[0] = scientists_sp[num][0];
+            scientists[i].sprites[1] = scientists_sp[num][1];
+            scientists[i].sprites[2] = scientists_sp[num][2];
+        }
     }
 }
 

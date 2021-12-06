@@ -54,9 +54,6 @@ typedef struct station_left
 
 } station_left_t;
 
-void station_left_draw();
-void station_left_input(input_t *input);
-
 #define GRID_SIZE_Y 4
 #define GRID_SIZE_X 6
 // hands on both sides (d-pad, A, B, C(s))
@@ -68,9 +65,6 @@ typedef struct station_center
     bool button_a;
     bool button_b;
 } station_center_t;
-
-void station_center_draw();
-void station_center_input(input_t *input);
 
 #define KEYPAD_H 4
 #define KEYPAD_W 3
@@ -99,10 +93,6 @@ typedef struct station_right
     uint8_t rotations;
 
 } station_right_t;
-
-void station_right_draw();
-void station_right_draw_graphics(display_context_t disp);
-void station_right_input(input_t *input);
 
 typedef enum control_panel_mode
 {
@@ -137,9 +127,11 @@ typedef enum control_panel_status
 
 control_panel_status_t control_panel_check_status(action_pair_t pair);
 void control_panel_draw(display_context_t disp);
+void control_panel_draw_tutorial(display_context_t disp);
 void control_panel_init();
-void control_panel_input(input_t *input);
+void control_panel_input(input_t *input, bool tutorial);
 void control_panel_reset();
+void control_panel_reset_tutorial();
 void control_panel_timer();
 
 #endif // __CONTROL_PANEL_H__

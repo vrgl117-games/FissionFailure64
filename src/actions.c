@@ -8,7 +8,7 @@
 #include "control_panel.h"
 #include "dfs.h"
 
-static action_new actions[ELEMENT_IDX];
+static action_new actions[ELEMENT_TUTORIAL];
 static uint16_t points = 0;
 
 static action_pair_t pair = {0};
@@ -161,20 +161,6 @@ static action_t *actions_new_az5()
     return action;
 }
 
-void actions_init()
-{
-    actions[ELEMENT_TURBINES] = actions_new_power;
-    actions[ELEMENT_COMPASS] = actions_new_compass;
-    actions[ELEMENT_PRESSURIZER] = actions_new_press;
-    actions[ELEMENT_RADIO] = actions_new_freq;
-    actions[ELEMENT_GRID] = actions_new_rod;
-    actions[ELEMENT_PUMPS] = actions_new_pumps;
-    actions[ELEMENT_KEYPAD] = actions_new_spare_part;
-    actions[ELEMENT_AZ5] = actions_new_az5;
-
-    actions_reset();
-}
-
 uint16_t actions_get_points()
 {
     return points;
@@ -191,7 +177,7 @@ uint8_t difficulty()
         return ELEMENT_KEYPAD;
     }
 
-    return ELEMENT_IDX;
+    return ELEMENT_TUTORIAL;
 }
 
 static action_t *get_action(uint8_t unwanted_action)
@@ -233,4 +219,101 @@ void actions_reset()
 {
     actions_next();
     points = 0;
+}
+
+// Tutorial
+u_int8_t current_element = 0;
+static action_new actions_tutorial[4];
+
+static action_t *actions_new_press_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_PRESSURIZER;
+    action->expected[0] = 2;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-press-2000-%d.sprite");
+
+    return action;
+}
+
+static action_t *actions_new_welcome_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TUTORIAL;
+    action->expected[1] = 1;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-welcome-%d.sprite");
+
+    return action;
+}
+
+static action_t *actions_new_intro_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TUTORIAL;
+    action->expected[1] = 1;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-intro-%d.sprite");
+
+    return action;
+}
+
+static action_t *actions_new_center_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TUTORIAL;
+    action->expected[1] = 1;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-center-%d.sprite");
+
+    return action;
+}
+
+static action_t *get_action_tutorial()
+{
+    return actions_tutorial[current_element]();
+}
+
+action_pair_t actions_get_current_tutorial()
+{
+    return pair;
+}
+
+bool actions_next_tutorial()
+{
+    if (pair.top != NULL)
+    {
+        dfs_free_sprites(pair.top->text);
+        free(pair.top);
+        pair.top = NULL;
+    }
+    pair.bottom = NULL;
+    if (current_element == 4)
+        return true;
+    pair.top = get_action_tutorial();
+    current_element++;
+    return false;
+}
+
+void actions_reset_tutorial()
+{
+    current_element = 0;
+    actions_next_tutorial();
+}
+
+void actions_init()
+{
+    actions[ELEMENT_TURBINES] = actions_new_power;
+    actions[ELEMENT_COMPASS] = actions_new_compass;
+    actions[ELEMENT_PRESSURIZER] = actions_new_press;
+    actions[ELEMENT_RADIO] = actions_new_freq;
+    actions[ELEMENT_GRID] = actions_new_rod;
+    actions[ELEMENT_PUMPS] = actions_new_pumps;
+    actions[ELEMENT_KEYPAD] = actions_new_spare_part;
+    actions[ELEMENT_AZ5] = actions_new_az5;
+
+    actions_tutorial[0] = actions_new_welcome_tutorial;
+    actions_tutorial[1] = actions_new_intro_tutorial;
+    actions_tutorial[2] = actions_new_center_tutorial;
+    actions_tutorial[3] = actions_new_press_tutorial;
 }

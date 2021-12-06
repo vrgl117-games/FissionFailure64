@@ -22,7 +22,7 @@ typedef enum element
     ELEMENT_KEYPAD,
     ELEMENT_AZ5,
 
-    ELEMENT_IDX,
+    ELEMENT_TUTORIAL,
 } element_t;
 
 typedef struct action
@@ -55,5 +55,10 @@ action_pair_t actions_get_current();
 void actions_init();
 bool actions_next();
 void actions_reset();
+
+// Tutorial
+action_pair_t actions_get_current_tutorial();
+bool actions_next_tutorial();
+void actions_reset_tutorial();
 
 #endif //__ACTIONS_H__
