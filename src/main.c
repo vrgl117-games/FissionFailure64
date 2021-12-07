@@ -145,6 +145,8 @@ int main()
                         sfx_play(CH_SFX, SFX_GAME_OVER, false);
                         rumble_start(0);
                     }
+                    else if (screen == win)
+                        sfx_play(CH_SFX, SFX_WIN, false);
                 }
             }
             break;

@@ -14,6 +14,7 @@ typedef enum sfx_id
     SFX_HELL,
     SFX_ACTION,
     SFX_GAME_OVER,
+    SFX_WIN,
     SFX_ID_COUNT,
 } sfx_id_t;
 
