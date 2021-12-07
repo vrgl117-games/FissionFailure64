@@ -319,29 +319,29 @@ bool screen_phonebook(display_context_t disp, input_t *input)
     return (input->A || input->start);
 }
 
-static sprite_t *logo_sp = NULL;
-static sprite_t *start_sp = NULL;
-static sprite_t *start_selected_sp = NULL;
-static sprite_t *tutorial_sp = NULL;
-static sprite_t *tutorial_selected_sp = NULL;
+static sprites_t *logo_sp = NULL;
+static sprites_t *start_sp = NULL;
+static sprites_t *start_selected_sp = NULL;
+static sprites_t *tutorial_sp = NULL;
+static sprites_t *tutorial_selected_sp = NULL;
 static sprite_t *nuclear_sp = NULL;
 void screen_title_load()
 {
-    logo_sp = dfs_load_sprite("/gfx/sprites/ui/logo.sprite");
-    start_sp = dfs_load_sprite("/gfx/sprites/ui/caps_start.sprite");
-    start_selected_sp = dfs_load_sprite("/gfx/sprites/ui/caps_start_selected.sprite");
-    tutorial_sp = dfs_load_sprite("/gfx/sprites/ui/caps_tutorial.sprite");
-    tutorial_selected_sp = dfs_load_sprite("/gfx/sprites/ui/caps_tutorial_selected.sprite");
+    logo_sp = dfs_load_sprites("/gfx/sprites/ui/logo-%d.sprite");
+    start_sp = dfs_load_sprites("/gfx/sprites/ui/caps_start-%d.sprite");
+    start_selected_sp = dfs_load_sprites("/gfx/sprites/ui/caps_start_selected-%d.sprite");
+    tutorial_sp = dfs_load_sprites("/gfx/sprites/ui/caps_tutorial-%d.sprite");
+    tutorial_selected_sp = dfs_load_sprites("/gfx/sprites/ui/caps_tutorial_selected-%d.sprite");
     nuclear_sp = dfs_load_sprite("/gfx/sprites/ui/nuclear.sprite");
 }
 
 void screen_title_unload()
 {
-    free(logo_sp);
-    free(start_sp);
-    free(start_selected_sp);
-    free(tutorial_sp);
-    free(tutorial_selected_sp);
+    dfs_free_sprites(logo_sp);
+    dfs_free_sprites(start_sp);
+    dfs_free_sprites(start_selected_sp);
+    dfs_free_sprites(tutorial_sp);
+    dfs_free_sprites(tutorial_selected_sp);
     free(nuclear_sp);
 }
 
@@ -362,19 +362,20 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
         rdp_draw_sprite_with_texture(nuclear_sp, 100, (selected == screen_selection_resume ? 162 : 192), 0);
         rdp_draw_sprite_with_texture(nuclear_sp, __width - 100 - nuclear_sp->width, (selected == screen_selection_resume ? 162 : 192), 0);
     }
-    rdp_detach_display();
 
-    graphics_draw_sprite(disp, __width / 2 - logo_sp->width / 2, 20, logo_sp);
+    rdp_draw_sprites_with_texture(logo_sp, __width / 2 - logo_sp->width / 2, 20, 0);
 
     if (selected == screen_selection_tutorial)
-        graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_sp);
+        rdp_draw_sprites_with_texture(start_sp, __width / 2 - start_sp->width / 2, 160, 0);
     else if (ticks % 40 > 19)
-        graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_selected_sp);
+        rdp_draw_sprites_with_texture(start_selected_sp, __width / 2 - start_sp->width / 2, 160, 0);
 
     if (selected == screen_selection_resume)
-        graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_sp);
+        rdp_draw_sprites_with_texture(tutorial_sp, __width / 2 - tutorial_sp->width / 2, 190, 0);
     else if (ticks % 40 > 19)
-        graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_selected_sp);
+        rdp_draw_sprites_with_texture(tutorial_selected_sp, __width / 2 - tutorial_sp->width / 2, 190, 0);
+
+    rdp_detach_display();
 
     if (input->A || input->start)
         return selected;

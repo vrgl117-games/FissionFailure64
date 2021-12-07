@@ -8,6 +8,9 @@ generate() {
     convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center label:"$5" $6
 }
 
+generate_crop() {
+    convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity center -crop $5 label:"$6" $7
+}
 
 generate_left() {
     convert -strip -background $1 -fill $2 -font $3 -pointsize $4 -gravity West label:"$5" $6
@@ -64,12 +67,6 @@ convert -strip resources/gfx/pngs/tutorial/left.png -crop 16 resources/gfx/sprit
 convert -strip resources/gfx/pngs/tutorial/center.png -crop 16 resources/gfx/sprites/tutorial/center-%d.png
 convert -strip resources/gfx/pngs/tutorial/right.png -crop 16 resources/gfx/sprites/tutorial/right-%d.png
 
-# gameover / win
-convert -strip resources/gfx/pngs/boom.png -crop 16 resources/gfx/sprites/boom-%d.png
-convert -strip resources/gfx/pngs/ui/continue.png -crop 16 resources/gfx/sprites/ui/continue-%d.png
-convert -strip resources/gfx/pngs/ui/gameover.png -crop 16 resources/gfx/sprites/ui/gameover-%d.png
-convert -strip resources/gfx/pngs/ui/win.png -crop 16 resources/gfx/sprites/ui/win-%d.png
-
 # message
 generate  "#1f2029ff" "#f9d72fff" "$font" 20 'This game is best enjoyed\nusing the original N64 controller' resources/gfx/sprites/ui/message.png
 generate  "#1f2029ff" "#f9d72fff" "$font" 20 'Please insert your Rumble Pak now\nif you wish to play with it' resources/gfx/sprites/ui/rumble_not_detected.png
@@ -109,9 +106,6 @@ generate_direction 'S'  resources/gfx/sprites/ui/dir_s.png
 generate_direction 'SE'  resources/gfx/sprites/ui/dir_se.png
 
 # actions
-
-
-
 generate_action_tutorial "\n\n\n\nWelcome new team member!\n\nThe GreenGlo power plant\nis in dire need of your help!" resources/gfx/sprites/actions/tuto-welcome-%d.png
 generate_action_tutorial "\n\n\n\nYour team of brave scientists\nwill be doing all the manual labor\n\nBut they need the reactor's components\nto be set properly from the control room." resources/gfx/sprites/actions/tuto-intro-%d.png
 generate_action_tutorial "You will be in charge of three stations.\n\nLet's start by getting familiar\nwith the center station.\n\nYour team is counting on you!\nThey face grave danger!" resources/gfx/sprites/actions/tuto-center-%d.png
@@ -145,7 +139,6 @@ for dir in ${dirs[@]}; do
 done
 generate_action_tutorial "Use L to switch to the left station, then set\nCompass to SouthEast by using the joystick." resources/gfx/sprites/actions/tuto-compass-SouthEast-%d.png
 
-
 powers=("0" "125" "250" "375" "500")
 for power in ${powers[@]}; do
     generate_action "Set\nTurbines\nto\n${power}W" resources/gfx/sprites/actions/power-"$power"-%d.png
@@ -169,15 +162,17 @@ generate_action_tutorial 'Press AZ-5 when Compass points North\nusing the Z butt
 
 # title screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "START" resources/gfx/sprites/ui/caps_start.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 "START" resources/gfx/sprites/ui/caps_start_selected.png
-generate "#1f2029ff" "#F0F1FAff" "$font" 18 "TUTORIAL" resources/gfx/sprites/ui/caps_tutorial.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 "TUTORIAL" resources/gfx/sprites/ui/caps_tutorial_selected.png
+generate_crop "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 16 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo-%d.png
+generate_crop "#1f2029ff" "#F0F1FAff" "$font" 18 32 "START" resources/gfx/sprites/ui/caps_start-%d.png
+generate_crop "#1f2029ff" "#f9d72fff" "$font" 18 32 "START" resources/gfx/sprites/ui/caps_start_selected-%d.png
+generate_crop "#1f2029ff" "#F0F1FAff" "$font" 18 32 "TUTORIAL" resources/gfx/sprites/ui/caps_tutorial-%d.png
+generate_crop "#1f2029ff" "#f9d72fff" "$font" 18 32 "TUTORIAL" resources/gfx/sprites/ui/caps_tutorial_selected-%d.png
 
 # win / game over screens
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Well Done!" resources/gfx/sprites/ui/win.png
-generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Game Over..." resources/gfx/sprites/ui/gameover.png
-generate "#1f2029ff" "#f9d72fff" "$font" 18 "CONTINUE" resources/gfx/sprites/ui/continue.png
+convert -strip resources/gfx/pngs/boom.png -crop 16 resources/gfx/sprites/boom-%d.png
+generate_crop "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 16 "Well Done!" resources/gfx/sprites/ui/win-%d.png
+generate_crop "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 16 "Game Over..." resources/gfx/sprites/ui/gameover-%d.png
+generate_crop "#1f2029ff" "#f9d72fff" "$font" 18 16 "CONTINUE" resources/gfx/sprites/ui/continue-%d.png
 
 # pause screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Pause" resources/gfx/sprites/ui/pause_big.png
