@@ -141,7 +141,12 @@ generate_action_tutorial 'Set the Turbines to 250W (flip UP\ntwo of them) using 
 generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps-%d.png
 generate_action_tutorial "Use R (2x) to switch to the right station, then\nactivate the pumps by rotating the joystick." resources/gfx/sprites/actions/tuto-pumps-%d.png
 
+generate_action 'Call\nIncident\nResponse\n(see menu)' resources/gfx/sprites/actions/call-incident-%d.png
+generate_action 'Call\nNuclear\nSafety\n(see menu)' resources/gfx/sprites/actions/call-nuclear-%d.png
+generate_action 'Call the\nPresident\n(see menu)' resources/gfx/sprites/actions/call-president-%d.png
+generate_action 'Call\nPublic\nAffairs\n(see menu)' resources/gfx/sprites/actions/call-public-%d.png
 generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
+generate_action 'Call the\nTreasury\n(see menu)' resources/gfx/sprites/actions/call-treasury-%d.png
 generate_action_tutorial 'Use Z button to switch to keypad, then\ncall 911 using A and C buttons.' resources/gfx/sprites/actions/tuto-call-911-%d.png
 
 generate_action 'Press AZ-5\nwhen\nTurbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png

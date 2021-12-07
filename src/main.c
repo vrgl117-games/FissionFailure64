@@ -38,7 +38,6 @@ int main()
     timer_init();
     input_init();
     colors_init();
-    actions_init();
     control_panel_init();
     srand(timer_ticks() & 0x7FFFFFFF);
 

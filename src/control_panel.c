@@ -318,6 +318,8 @@ void control_panel_reset_tutorial()
 {
     memset(&control_panel, 0, sizeof(control_panel));
 
+    control_panel.geiger = 500;
+
     control_panel.memory = (is_memory_expanded() ? 8 : 4);
     // select center station
     control_panel.current_station = 1;

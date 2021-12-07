@@ -8,7 +8,6 @@
 #include "control_panel.h"
 #include "dfs.h"
 
-static action_new actions[ELEMENT_TUTORIAL];
 static uint16_t points = 0;
 
 static action_pair_t pair = {0};
@@ -125,20 +124,82 @@ static action_t *actions_new_pumps()
     return action;
 }
 
-static action_t *actions_new_spare_part()
+static action_t *actions_new_keypad()
 {
+    uint16_t name = rand() % 6;
+
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_KEYPAD;
-    action->expected[0] = 3;
-    action->expected[1] = 9;
-    action->expected[2] = 0;
-    action->expected[3] = 5;
-    action->expected[4] = 1;
-    action->expected[5] = 2;
-    action->expected[6] = 7;
-    action->expected[7] = 3;
-    strcpy(action->buffer, "/gfx/sprites/actions/call-spare-%d.sprite");
+    switch (name)
+    {
+    case 0:
+        action->expected[0] = 4;
+        action->expected[1] = 6;
+        action->expected[2] = 7;
+        action->expected[3] = 6;
+        action->expected[4] = 4;
+        action->expected[5] = 7;
+        action->expected[6] = 2;
+        action->expected[7] = 9;
+        strcpy(action->buffer, "/gfx/sprites/actions/call-incident-%d.sprite");
+        break;
+    case 1:
+        action->expected[0] = 5;
+        action->expected[1] = 7;
+        action->expected[2] = 3;
+        action->expected[3] = 3;
+        action->expected[4] = 4;
+        action->expected[5] = 7;
+        action->expected[6] = 3;
+        action->expected[7] = 8;
+        strcpy(action->buffer, "/gfx/sprites/actions/call-nuclear-%d.sprite");
+        break;
+    case 2:
+        action->expected[0] = 2;
+        action->expected[1] = 9;
+        action->expected[2] = 8;
+        action->expected[3] = 2;
+        action->expected[4] = 2;
+        action->expected[5] = 9;
+        action->expected[6] = 4;
+        action->expected[7] = 1;
+        strcpy(action->buffer, "/gfx/sprites/actions/call-president-%d.sprite");
+        break;
+    case 3:
+        action->expected[0] = 1;
+        action->expected[1] = 0;
+        action->expected[2] = 2;
+        action->expected[3] = 9;
+        action->expected[4] = 4;
+        action->expected[5] = 8;
+        action->expected[6] = 5;
+        action->expected[7] = 9;
+        strcpy(action->buffer, "/gfx/sprites/actions/call-public-%d.sprite");
+        break;
+    case 4:
+        action->expected[0] = 3;
+        action->expected[1] = 9;
+        action->expected[2] = 0;
+        action->expected[3] = 5;
+        action->expected[4] = 1;
+        action->expected[5] = 2;
+        action->expected[6] = 7;
+        action->expected[7] = 3;
+        strcpy(action->buffer, "/gfx/sprites/actions/call-spare-%d.sprite");
+        break;
+    case 5:
+        action->expected[0] = 3;
+        action->expected[1] = 6;
+        action->expected[2] = 4;
+        action->expected[3] = 8;
+        action->expected[4] = 3;
+        action->expected[5] = 9;
+        action->expected[6] = 5;
+        action->expected[7] = 7;
+        strcpy(action->buffer, "/gfx/sprites/actions/call-treasury-%d.sprite");
+        break;
+    }
 
     return action;
 }
@@ -160,6 +221,17 @@ static action_t *actions_new_az5()
 
     return action;
 }
+
+static action_new actions[] = {
+    actions_new_power,
+    actions_new_compass,
+    actions_new_press,
+    actions_new_rod,
+    actions_new_pumps,
+    actions_new_freq,
+    actions_new_keypad,
+    actions_new_az5,
+};
 
 uint16_t actions_get_points()
 {
@@ -432,16 +504,4 @@ void actions_reset_tutorial()
 {
     current_element = 0;
     actions_next_tutorial();
-}
-
-void actions_init()
-{
-    actions[ELEMENT_TURBINES] = actions_new_power;
-    actions[ELEMENT_COMPASS] = actions_new_compass;
-    actions[ELEMENT_PRESSURIZER] = actions_new_press;
-    actions[ELEMENT_RADIO] = actions_new_freq;
-    actions[ELEMENT_GRID] = actions_new_rod;
-    actions[ELEMENT_PUMPS] = actions_new_pumps;
-    actions[ELEMENT_KEYPAD] = actions_new_spare_part;
-    actions[ELEMENT_AZ5] = actions_new_az5;
 }

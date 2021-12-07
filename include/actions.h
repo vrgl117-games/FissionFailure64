@@ -60,7 +60,6 @@ typedef action_t *(*action_new)();
 
 uint16_t actions_get_points();
 action_pair_t actions_get_current();
-void actions_init();
 bool actions_next();
 void actions_reset();
 
