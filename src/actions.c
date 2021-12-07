@@ -399,7 +399,6 @@ static action_t *actions_new_welcome_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    action->expected[1] = 1;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-welcome-%d.sprite");
 
     return action;
@@ -410,7 +409,6 @@ static action_t *actions_new_intro_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    action->expected[1] = 1;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-intro-%d.sprite");
 
     return action;
@@ -421,7 +419,6 @@ static action_t *actions_new_center_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    action->expected[1] = 1;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-center-%d.sprite");
     action->show = SHOW_STATION;
 
@@ -433,7 +430,6 @@ static action_t *actions_new_geiger_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    action->expected[1] = 1;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-geiger-%d.sprite");
     action->show = SHOW_DANGER;
 

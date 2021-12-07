@@ -324,6 +324,7 @@ static sprite_t *start_sp = NULL;
 static sprite_t *start_selected_sp = NULL;
 static sprite_t *tutorial_sp = NULL;
 static sprite_t *tutorial_selected_sp = NULL;
+static sprite_t *nuclear_sp = NULL;
 void screen_title_load()
 {
     logo_sp = dfs_load_sprite("/gfx/sprites/ui/logo.sprite");
@@ -331,6 +332,7 @@ void screen_title_load()
     start_selected_sp = dfs_load_sprite("/gfx/sprites/ui/caps_start_selected.sprite");
     tutorial_sp = dfs_load_sprite("/gfx/sprites/ui/caps_tutorial.sprite");
     tutorial_selected_sp = dfs_load_sprite("/gfx/sprites/ui/caps_tutorial_selected.sprite");
+    nuclear_sp = dfs_load_sprite("/gfx/sprites/ui/nuclear.sprite");
 }
 
 void screen_title_unload()
@@ -340,6 +342,7 @@ void screen_title_unload()
     free(start_selected_sp);
     free(tutorial_sp);
     free(tutorial_selected_sp);
+    free(nuclear_sp);
 }
 
 screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
@@ -354,7 +357,11 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
     rdp_attach(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
-
+    if (ticks % 40 > 19)
+    {
+        rdp_draw_sprite_with_texture(nuclear_sp, 100, (selected == screen_selection_resume ? 162 : 192), 0);
+        rdp_draw_sprite_with_texture(nuclear_sp, __width - 100 - nuclear_sp->width, (selected == screen_selection_resume ? 162 : 192), 0);
+    }
     rdp_detach_display();
 
     graphics_draw_sprite(disp, __width / 2 - logo_sp->width / 2, 20, logo_sp);

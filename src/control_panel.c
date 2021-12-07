@@ -40,17 +40,16 @@ static void danger_bar_draw()
     rdp_draw_filled_rectangle_size(x + 12, 10 + 100 - control_panel.geiger / 10, 2, control_panel.geiger / 10, colors[(control_panel.mode == HELL ? COLOR_RED : (control_panel.mode == STRESSED ? COLOR_ORANGE : COLOR_YELLOW))]);
 }
 
-static void instruments_draw(display_context_t disp, uint8_t offset)
+static void instruments_draw(display_context_t disp)
 {
     uint8_t x = 220;
-    uint8_t y = 140 - offset;
+    uint8_t y = 140;
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
     if (!control_panel.lights_off)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
-        y += offset;
         rdp_detach_display();
 
         graphics_draw_text(disp, x + 8, y, "POINTS");
@@ -60,10 +59,7 @@ static void instruments_draw(display_context_t disp, uint8_t offset)
         graphics_draw_text(disp, x + 8, y + 18 + 18 + 18 + 18, "RAM");
     }
     else
-    {
-        y += offset;
         rdp_detach_display();
-    }
 
     graphics_set_color(colors[COLOR_RED], 0);
     graphics_draw_textf_with_background(disp, x + 60, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
@@ -75,6 +71,48 @@ static void instruments_draw(display_context_t disp, uint8_t offset)
     graphics_draw_textf_with_background(disp, x + 46, y - 2 + 18 + 18 + 18, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
 
     graphics_draw_textf_with_background(disp, x + 38, y - 2 + 18 + 18 + 18 + 18, colors[COLOR_BLACK], "%dkB", control_panel.memory * 1000);
+    graphics_set_color(colors[COLOR_WHITE], 0);
+}
+
+static void instruments_draw_tutorial(display_context_t disp)
+{
+    uint8_t x = 220;
+    uint8_t y = 120;
+    uint8_t width = __width - x;
+    uint8_t height = __height - y;
+
+    action_t *current = actions_get_current_tutorial().top;
+
+    if (!control_panel.lights_off)
+    {
+        rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
+        y += 20;
+        rdp_detach_display();
+
+        if (current->element == ELEMENT_TUTORIAL && current->expected[1] == 1)
+            graphics_draw_text(disp, x + 8, y, "POINTS");
+        else if (current->element == ELEMENT_PRESSURIZER)
+            graphics_draw_text(disp, x + 8, y + 18, "PRESS");
+        else if (current->element == ELEMENT_TURBINES)
+            graphics_draw_text(disp, x + 8, y + 18 + 18, "POWER");
+        else if (current->element == ELEMENT_RADIO)
+            graphics_draw_text(disp, x + 8, y + 18 + 18 + 18, "FREQ");
+    }
+    else
+    {
+        y += 20;
+        rdp_detach_display();
+    }
+
+    graphics_set_color(colors[COLOR_RED], 0);
+    if (current->element == ELEMENT_TUTORIAL && current->expected[1] == 1)
+        graphics_draw_textf_with_background(disp, x + 60, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
+    else if (current->element == ELEMENT_PRESSURIZER)
+        graphics_draw_textf_with_background(disp, x + 54, y - 2 + 18, colors[COLOR_BLACK], "%01dkPa", control_panel.pressure);
+    else if (current->element == ELEMENT_TURBINES)
+        graphics_draw_textf_with_background(disp, x + 54, y - 2 + 18 + 18, colors[COLOR_BLACK], "%.03dW", control_panel.power);
+    else if (current->element == ELEMENT_RADIO)
+        graphics_draw_textf_with_background(disp, x + 46, y - 2 + 18 + 18 + 18, colors[COLOR_BLACK], "%02dHz", control_panel.freq);
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
 
@@ -793,7 +831,9 @@ static void station_right_input(input_t *input, bool tutorial)
         if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
             control_panel.center.A = input->A;
         else if (input->A)
-            station->levers[station->lever_selector] = !station->levers[station->lever_selector];
+            station->levers[station->lever_selector] = false;
+        else if (input->B)
+            station->levers[station->lever_selector] = true;
 
         control_panel.power = 125 * station->levers[0] + 125 * station->levers[1] + 125 * station->levers[2] + 125 * station->levers[3];
     }
@@ -892,7 +932,7 @@ void control_panel_draw_tutorial(display_context_t disp)
 
     if (control_panel.current_station == 2)
         station_right_draw_graphics(disp);
-    instruments_draw(disp, 20);
+    instruments_draw_tutorial(disp);
 }
 
 void control_panel_draw(display_context_t disp)
@@ -928,5 +968,5 @@ void control_panel_draw(display_context_t disp)
 
     if (control_panel.current_station == 2)
         station_right_draw_graphics(disp);
-    instruments_draw(disp, 0);
+    instruments_draw(disp);
 }
