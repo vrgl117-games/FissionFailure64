@@ -70,7 +70,7 @@ void scientist_init()
 
             scientists[i].sprites[0] = scientists_sp[num][0];
             scientists[i].sprites[1] = scientists_sp[num][1];
-            scientists[i].sprites[2] = scientists_sp[num][1]; // TODO add back 2 when we have new sprites
+            scientists[i].sprites[2] = scientists_sp[num][2];
         }
     }
 }
