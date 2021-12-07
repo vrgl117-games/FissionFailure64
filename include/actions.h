@@ -59,6 +59,8 @@ typedef enum level
 typedef action_t *(*action_new)();
 
 uint16_t actions_get_points();
+action_t *actions_new_lights();
+action_t *actions_new_lights_tutorial();
 action_pair_t actions_get_current();
 bool actions_next();
 void actions_reset();

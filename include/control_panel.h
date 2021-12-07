@@ -70,6 +70,7 @@ typedef struct station_center
     uint8_t gridselector_y;
     bool pressurizer;
     bool lights;
+    uint8_t nb_switch_lights;
 
     bool A;
 } station_center_t;

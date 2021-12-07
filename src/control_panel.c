@@ -14,6 +14,8 @@ control_panel_t control_panel;
 static sprite_t *tiles[24] = {0};
 static sprite_t *labels[LABEL_IDX] = {0};
 static sprite_t *directions[10] = {0};
+static action_t *action_lights = 0;
+static action_t *action_lights_tuto = 0;
 
 extern uint32_t __width;
 extern uint32_t __height;
@@ -94,6 +96,8 @@ static void instruments_draw_tutorial(display_context_t disp)
         else if (current->element == ELEMENT_RADIO)
             rdp_draw_sprite_with_texture(labels[TEXT_FREQ], x + 9, y + 18 + 18 + 18 - 2, 0);
     }
+    else
+        y += 20;
 
     rdp_detach_display();
 
@@ -120,6 +124,16 @@ static void instructions_draw()
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
     }
+    if (control_panel.center.lights && control_panel.center.nb_switch_lights > 5)
+    {
+
+        if (action_lights->text == NULL || action_lights->text->loaded != -1)
+            action_lights->text = dfs_load_sprites_by_frame(action_lights->text, action_lights->buffer);
+
+        rdp_draw_sprites_with_texture(action_lights->text, x + 8 + 4, y + 8 + 4, 0);
+
+        return;
+    }
     rdp_draw_filled_rectangle_size(x + 8, y + 8, width - 16, 122, colors[COLOR_BLACK]);
     action_pair_t current = actions_get_current();
     if (current.top->text == NULL || current.top->text->loaded != -1)
@@ -136,6 +150,18 @@ static void instructions_draw()
 
 static void instructions_draw_tutorial()
 {
+
+    if (control_panel.center.lights && control_panel.center.nb_switch_lights > 5)
+    {
+
+        if (action_lights_tuto->text == NULL || action_lights_tuto->text->loaded != -1)
+            action_lights_tuto->text = dfs_load_sprites_by_frame(action_lights_tuto->text, action_lights_tuto->buffer);
+
+        rdp_draw_sprites_with_texture(action_lights_tuto->text, __width / 2 - action_lights_tuto->text->width / 2, 14, 0);
+
+        return;
+    }
+
     action_pair_t current = actions_get_current_tutorial();
     if (current.top != NULL)
     {
@@ -235,7 +261,8 @@ static control_panel_status_t control_panel_check_action(action_t *action)
 control_panel_status_t control_panel_check_status(action_pair_t pair)
 {
 
-    if (control_panel.right.state == CALLING &&
+    if (pair.top->show == SHOW_NONE &&
+        control_panel.right.state == CALLING &&
         control_panel.right.screen[0] == '9' &&
         control_panel.right.screen[1] == '1' &&
         control_panel.right.screen[2] == '1')
@@ -248,9 +275,8 @@ control_panel_status_t control_panel_check_status(action_pair_t pair)
         control_panel.right.state = CHEAT;
         return INCORRECT;
     }
-    else
 
-        if (control_panel.geiger >= 1000)
+    if (control_panel.geiger >= 1000)
         return DEAD;
 
     if (control_panel_check_action(pair.top) == INCORRECT)
@@ -313,6 +339,9 @@ void control_panel_init()
     directions[7] = dfs_load_sprite("/gfx/sprites/ui/dir_sw.sprite");
     directions[8] = dfs_load_sprite("/gfx/sprites/ui/dir_s.sprite");
     directions[9] = dfs_load_sprite("/gfx/sprites/ui/dir_se.sprite");
+
+    action_lights = actions_new_lights();
+    action_lights_tuto = actions_new_lights_tutorial();
     control_panel_reset();
 }
 
@@ -634,10 +663,15 @@ static void station_center_input(input_t *input, bool tutorial)
     if (input->B)
     {
         station->lights = !station->lights;
+        station->nb_switch_lights++;
         if (station->lights)
             control_panel.off_timer = 0;
         else
+        {
             control_panel.off_timer = 16;
+            if (station->nb_switch_lights > 6)
+                station->nb_switch_lights = 0;
+        }
     }
 
     if (station->lights)
@@ -836,8 +870,11 @@ static void station_right_input(input_t *input, bool tutorial)
 
         if (input->B)
         {
-            memset(station->screen, 0, sizeof(station->screen));
-            station->cursor = 0;
+            if (station->cursor > 0)
+            {
+                station->screen[station->cursor] = 0;
+                station->cursor--;
+            }
             station->state = NONE;
         }
     }

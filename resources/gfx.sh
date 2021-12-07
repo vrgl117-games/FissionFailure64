@@ -166,6 +166,9 @@ generate_action 'Press AZ-5\nwhen\nTurbines\nare off' resources/gfx/sprites/acti
 generate_action 'Press AZ-5\nwhen\nCompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
 generate_action_tutorial 'Press AZ-5 when Compass points North\nusing the Z button.' resources/gfx/sprites/actions/tuto-az5-compass-%d.png
 
+generate_action 'Stop\nplaying\nwith the\nlights!!!' resources/gfx/sprites/actions/lights-%d.png
+generate_action_tutorial '\nStop playing with the lights!!!' resources/gfx/sprites/actions/tuto-lights-%d.png
+
 # title screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
 generate_crop "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 16 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo-%d.png

@@ -55,6 +55,16 @@ static action_t *actions_new_compass()
 }
 
 // actions for center station
+action_t *actions_new_lights()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_PRESSURIZER;
+    strcpy(action->buffer, "/gfx/sprites/actions/lights-%d.sprite");
+
+    return action;
+}
+
 static action_t *actions_new_press()
 {
     action_t *action = calloc(1, sizeof(action_t));
@@ -376,6 +386,16 @@ static action_t *actions_new_power_up_tutorial()
     action->expected[0] = 250;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-power-250-%d.sprite");
     action->show = SHOW_STATION;
+
+    return action;
+}
+
+action_t *actions_new_lights_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_PRESSURIZER;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-lights-%d.sprite");
 
     return action;
 }
