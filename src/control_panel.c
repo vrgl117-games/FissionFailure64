@@ -147,15 +147,16 @@ static control_panel_status_t control_panel_check_action(action_t *action)
             return INCORRECT;
         break;
     case ELEMENT_KEYPAD:
-        if (control_panel.right.calling == false ||
-            control_panel.right.screen[0] != '0' + action->expected[0] ||
+        if (control_panel.right.calling == false)
+            return INCORRECT;
+        if (control_panel.right.screen[0] != '0' + action->expected[0] ||
             control_panel.right.screen[1] != '0' + action->expected[1] ||
             control_panel.right.screen[2] != '0' + action->expected[2] ||
-            control_panel.right.screen[3] != '0' + action->expected[3] ||
-            control_panel.right.screen[4] != '0' + action->expected[4] ||
-            control_panel.right.screen[5] != '0' + action->expected[5] ||
-            control_panel.right.screen[6] != '0' + action->expected[6] ||
-            control_panel.right.screen[7] != '0' + action->expected[7])
+            (action->expected[3] != 0 && control_panel.right.screen[3] != '0' + action->expected[3]) ||
+            (action->expected[4] != 0 && control_panel.right.screen[4] != '0' + action->expected[4]) ||
+            (action->expected[5] != 0 && control_panel.right.screen[5] != '0' + action->expected[5]) ||
+            (action->expected[6] != 0 && control_panel.right.screen[6] != '0' + action->expected[6]) ||
+            (action->expected[7] != 0 && control_panel.right.screen[7] != '0' + action->expected[7]))
             return INCORRECT;
 
         memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
@@ -173,6 +174,12 @@ static control_panel_status_t control_panel_check_action(action_t *action)
         switch (action->expected[0])
         {
         case ELEMENT_COMPASS:
+            if (action->show != SHOW_NONE)
+            {
+                if (control_panel.left.compass == action->expected[1])
+                    return CORRECT;
+                return INCORRECT;
+            }
             if (control_panel.left.compass != action->expected[1])
                 control_panel.geiger = (control_panel.geiger < 700) ? 700 : 1000;
 
@@ -321,7 +328,7 @@ void control_panel_reset_tutorial()
     // reset compass to != SouthEast (tutorial action)
     control_panel.left.compass = 1;
 
-    // reset grid to != red is not in F4 (tutorial action)
+    // reset grid to != red is not in D4 (tutorial action)
     control_panel.center.grid[0][0] = 1;
     control_panel.center.grid[1][1] = 2;
     control_panel.center.grid[2][2] = 3;
@@ -435,7 +442,7 @@ static void station_left_draw()
 
 static void station_left_input(input_t *input, bool tutorial)
 {
-    if (input->R && !tutorial)
+    if (input->R && (!tutorial || actions_get_current_tutorial().top->element == ELEMENT_PUMPS))
         control_panel.current_station++;
 
     station_left_t *station = &(control_panel.left);
@@ -549,9 +556,9 @@ static void station_center_draw()
 
 static void station_center_input(input_t *input, bool tutorial)
 {
-    if (input->L && !tutorial)
+    if (input->L && (!tutorial || actions_get_current_tutorial().top->element == ELEMENT_COMPASS))
         control_panel.current_station--;
-    else if (input->R && !tutorial)
+    else if (input->R && (!tutorial || actions_get_current_tutorial().top->element == ELEMENT_PUMPS))
         control_panel.current_station++;
 
     station_center_t *station = &(control_panel.center);
@@ -591,7 +598,7 @@ static void station_center_input(input_t *input, bool tutorial)
     else
         control_panel.lights_off = false;
 
-    if (tutorial && actions_get_current_tutorial().top != NULL && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+    if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
     {
         station->A = input->A;
         input_reset_presses();
@@ -738,7 +745,9 @@ static void station_right_input(input_t *input, bool tutorial)
             if (station->keypadselector_x < KEYPAD_W - 1)
                 station->keypadselector_x++;
 
-        if (input->A)
+        if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+            control_panel.center.A = input->A;
+        else if (input->A)
         {
             if (station->keypadselector_x == 2 && station->keypadselector_y == 3)
             {
@@ -779,7 +788,9 @@ static void station_right_input(input_t *input, bool tutorial)
             if (station->lever_selector < NUM_LEVERS - 1)
                 station->lever_selector++;
 
-        if (input->A)
+        if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+            control_panel.center.A = input->A;
+        else if (input->A)
             station->levers[station->lever_selector] = !station->levers[station->lever_selector];
 
         control_panel.power = 125 * station->levers[0] + 125 * station->levers[1] + 125 * station->levers[2] + 125 * station->levers[3];

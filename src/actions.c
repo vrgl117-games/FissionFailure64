@@ -90,7 +90,7 @@ static action_t *actions_new_rod()
     pos_y_prev = pos_y;
     action->expected[2] = pos_x;
     pos_x_prev = pos_x;
-    sprintf(action->buffer, "/gfx/sprites/actions/rod_%s_%c%c", colors[color], letters[pos_x], numbers[pos_y]);
+    sprintf(action->buffer, "/gfx/sprites/actions/rod-%s-%c%c", colors[color], letters[pos_x], numbers[pos_y]);
     strcat(action->buffer, "-%d.sprite");
 
     return action;
@@ -220,7 +220,6 @@ void actions_reset()
 
 // Tutorial
 u_int8_t current_element = 0;
-static action_new actions_tutorial[6];
 
 static action_t *actions_new_press_tutorial()
 {
@@ -229,6 +228,95 @@ static action_t *actions_new_press_tutorial()
     action->element = ELEMENT_PRESSURIZER;
     action->expected[0] = 2;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-press-2000-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_freq_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_RADIO;
+    action->expected[0] = 500;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-freq-500-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_rod_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_GRID;
+    action->expected[0] = 1;
+    action->expected[1] = 3;
+    action->expected[2] = 3;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-rod-red-D4-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_compass_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_COMPASS;
+    action->expected[0] = 9;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-compass-SouthEast-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_az5_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_AZ5;
+    action->expected[0] = ELEMENT_COMPASS;
+    action->expected[1] = 2;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-az5-compass-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_pumps_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_PUMPS;
+    action->expected[0] = 9;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-pumps-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_power_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TURBINES;
+    action->expected[0] = 250;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-power-250-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_keypad_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_KEYPAD;
+    action->expected[0] = 9;
+    action->expected[1] = 1;
+    action->expected[2] = 1;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-call-911-%d.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -292,6 +380,28 @@ static action_t *actions_new_good_luck_tutorial()
     return action;
 }
 
+static action_new actions_tutorial[] = {
+    actions_new_welcome_tutorial,
+    actions_new_intro_tutorial,
+    actions_new_center_tutorial,
+
+    actions_new_press_tutorial,
+    actions_new_rod_tutorial,
+
+    actions_new_compass_tutorial,
+    actions_new_freq_tutorial,
+    actions_new_az5_tutorial,
+
+    actions_new_pumps_tutorial,
+    actions_new_power_tutorial,
+    actions_new_keypad_tutorial,
+
+    actions_new_geiger_tutorial,
+    actions_new_good_luck_tutorial,
+
+    NULL,
+};
+
 static action_t *get_action_tutorial()
 {
     return actions_tutorial[current_element]();
@@ -311,7 +421,7 @@ bool actions_next_tutorial()
         pair.top = NULL;
     }
     pair.bottom = NULL;
-    if (current_element == 6)
+    if (actions_tutorial[current_element] == NULL)
         return true;
     pair.top = get_action_tutorial();
     current_element++;
@@ -334,11 +444,4 @@ void actions_init()
     actions[ELEMENT_PUMPS] = actions_new_pumps;
     actions[ELEMENT_KEYPAD] = actions_new_spare_part;
     actions[ELEMENT_AZ5] = actions_new_az5;
-
-    actions_tutorial[0] = actions_new_welcome_tutorial;
-    actions_tutorial[1] = actions_new_intro_tutorial;
-    actions_tutorial[2] = actions_new_center_tutorial;
-    actions_tutorial[3] = actions_new_press_tutorial;
-    actions_tutorial[4] = actions_new_geiger_tutorial;
-    actions_tutorial[5] = actions_new_good_luck_tutorial;
 }

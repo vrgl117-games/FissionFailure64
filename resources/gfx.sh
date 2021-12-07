@@ -108,13 +108,17 @@ pos=("A1" "A2" "A3" "A4" "B1" "B2" "B3" "B4" "C1" "C2" "C3" "C4" "D1" "D2" "D3" 
 colors=("red" "blue" "green" "orange")
 for po in ${pos[@]}; do
     for color in ${colors[@]}; do
-        generate_action "Set $color\nControl\nRod\nto $po" resources/gfx/sprites/actions/rod_"$color"_"$po"-%d.png
+        generate_action "Set $color\nControl\nRod\nto $po" resources/gfx/sprites/actions/rod-"$color"-"$po"-%d.png
     done
 done
+generate_action_tutorial "Set red Control Rods to F4 by\nusing the d-pad anc C buttons." resources/gfx/sprites/actions/tuto-rod-red-D4-%d.png
+
 freqs=("200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "50" "150" "250" "350" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "75" "175" "275" "375" "250" "350" "450" "550" "200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "275" "375" "475" "575" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "45" "145" "245" "345" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "70" "170" "270" "370" "245" "345" "445" "545" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "270" "370" "470" "570" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "40" "140" "240" "340" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "65" "165" "265" "365" "240" "340" "440" "540" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "265" "365" "465" "565" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "35" "135" "235" "335" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410" "60" "160" "260" "360" "235" "335" "435" "535" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "260" "360" "460" "560" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410")
 for freq in ${freqs[@]}; do
     generate_action "Set E.M.F\nMonitor\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
 done
+generate_action_tutorial "Set E.M.F Monitor to 500Hz by\nusing the d-pad." resources/gfx/sprites/actions/tuto-freq-500-%d.png
+
 press=("1000" "2000" "3000" "4000")
 for pres in ${press[@]}; do
     generate_action "Set\npressure\nto\n${pres}Pa" resources/gfx/sprites/actions/press-"$pres"-%d.png
@@ -125,16 +129,24 @@ dirs=("NorthWest" "North" "NorthEast" "West" "East" "SouthWest" "South" "SouthEa
 for dir in ${dirs[@]}; do
     generate_action "Set\nCompass\nto\n${dir}" resources/gfx/sprites/actions/compass-"$dir"-%d.png
 done
+generate_action_tutorial "Use L to switch to the left station, then set\nCompass to SouthEast by using the joystick." resources/gfx/sprites/actions/tuto-compass-SouthEast-%d.png
+
 
 powers=("0" "125" "250" "375" "500")
 for power in ${powers[@]}; do
     generate_action "Set\nTurbines\nto\n${power}W" resources/gfx/sprites/actions/power-"$power"-%d.png
 done
-generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps-%d.png
-generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
+generate_action_tutorial 'Set the Turbines to 250W (flip UP\ntwo of them) using the A and C buttons.' resources/gfx/sprites/actions/tuto-power-250-%d.png
 
-generate_action 'Press AZ-5\nwhen\nturbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png
-generate_action 'Press AZ-5\nwhen\ncompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
+generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps-%d.png
+generate_action_tutorial "Use R (2x) to switch to the right station, then\nactivate the pumps by rotating the joystick." resources/gfx/sprites/actions/tuto-pumps-%d.png
+
+generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
+generate_action_tutorial 'Use Z button to switch to keypad, then\ncall 911 using A and C buttons.' resources/gfx/sprites/actions/tuto-call-911-%d.png
+
+generate_action 'Press AZ-5\nwhen\nTurbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png
+generate_action 'Press AZ-5\nwhen\nCompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
+generate_action_tutorial 'Press AZ-5 when Compass points North\nusing the Z button.' resources/gfx/sprites/actions/tuto-az5-compass-%d.png
 
 # title screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
