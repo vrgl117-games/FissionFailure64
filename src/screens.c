@@ -409,10 +409,25 @@ bool screen_tutorial(display_context_t disp, input_t *input)
 
     control_panel_draw_tutorial(disp);
 
-    if (actions_get_current_tutorial().top->element == ELEMENT_PRESSURIZER)
+    switch (current.top->element)
     {
+    case ELEMENT_RADIO:
+    case ELEMENT_AZ5:
+    case ELEMENT_COMPASS:
+        graphics_draw_sprite(disp, __width / 2 - tuto_left->width / 2, 46, tuto_left);
+        break;
+    case ELEMENT_PRESSURIZER:
+    case ELEMENT_GRID:
         graphics_draw_sprite(disp, __width / 2 - tuto_center->width / 2, 46, tuto_center);
+        break;
+    case ELEMENT_KEYPAD:
+    case ELEMENT_PUMPS:
+    case ELEMENT_TURBINES:
+        graphics_draw_sprite(disp, __width / 2 - tuto_right->width / 2, 46, tuto_right);
+    default:
+        break;
     }
+
     return false;
 }
 
@@ -422,6 +437,8 @@ bool screen_win(display_context_t disp, input_t *input)
     rdp_attach(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+
+    scientist_win();
 
     rdp_detach_display();
 

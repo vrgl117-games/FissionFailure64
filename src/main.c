@@ -109,6 +109,7 @@ int main()
                 input_reset_presses();
                 screen = tutorial;
                 sfx_stop(CH_MUSIC);
+                sfx_play(CH_MUSIC, SFX_THEME_TUTORIAL, true);
                 control_panel_reset_tutorial();
                 break;
             default:

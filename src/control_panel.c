@@ -11,7 +11,7 @@
 #include "sfx.h"
 
 control_panel_t control_panel;
-static sprite_t *tiles[816] = {0};
+static sprite_t *tiles[24] = {0};
 static sprite_t *labels[LABEL_IDX] = {0};
 static sprite_t *directions[10] = {0};
 
@@ -40,17 +40,17 @@ static void danger_bar_draw()
     rdp_draw_filled_rectangle_size(x + 12, 10 + 100 - control_panel.geiger / 10, 2, control_panel.geiger / 10, colors[(control_panel.mode == HELL ? COLOR_RED : (control_panel.mode == STRESSED ? COLOR_ORANGE : COLOR_YELLOW))]);
 }
 
-static void instruments_draw(display_context_t disp)
+static void instruments_draw(display_context_t disp, uint8_t offset)
 {
     uint8_t x = 220;
-    uint8_t y = 120;
+    uint8_t y = 140 - offset;
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
     if (!control_panel.lights_off)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
-        y += 20;
+        y += offset;
         rdp_detach_display();
 
         graphics_draw_text(disp, x + 8, y, "POINTS");
@@ -61,7 +61,7 @@ static void instruments_draw(display_context_t disp)
     }
     else
     {
-        y += 20;
+        y += offset;
         rdp_detach_display();
     }
 
@@ -220,8 +220,8 @@ control_panel_status_t control_panel_check_status(action_pair_t pair)
 
 void control_panel_init()
 {
-    for (int i = 0; i < 816; i++)
-        tiles[i] = dfs_load_spritef("/gfx/sprites/stations/tile_%04d.sprite", i);
+    for (int i = 0; i < 24; i++)
+        tiles[i] = dfs_load_spritef("/gfx/sprites/stations/tile_%02d.sprite", i);
 
     labels[LABEL_LIGHTS] = dfs_load_sprite("/gfx/sprites/ui/label_lights.sprite");
     labels[LABEL_RADIO] = dfs_load_sprite("/gfx/sprites/ui/label_radio.sprite");
@@ -321,7 +321,7 @@ void control_panel_reset_tutorial()
     // reset compass to != SouthEast (tutorial action)
     control_panel.left.compass = 1;
 
-    // reset grid to != 1 is not in 2,3 (tutorial action)
+    // reset grid to != red is not in F4 (tutorial action)
     control_panel.center.grid[0][0] = 1;
     control_panel.center.grid[1][1] = 2;
     control_panel.center.grid[2][2] = 3;
@@ -349,9 +349,9 @@ void control_panel_reset_tutorial()
 void control_panel_timer()
 {
     uint8_t points = actions_get_points();
-    if (points < EASY)
+    if (points < NORMAL)
         control_panel.geiger += 10;
-    else if (points < NORMAL)
+    else if (points < HARD)
         control_panel.geiger += 12;
     else
         control_panel.geiger += 15;
@@ -408,7 +408,7 @@ static void station_left_draw()
     if (!control_panel.lights_off)
     {
         rdp_draw_sprite_with_texture(labels[LABEL_AZ_5], x - 20, y - 20, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->button_z ? 516 : 515)], x + 20, y - 20, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->button_z ? 23 : 22)], x + 20, y - 20, 0);
         rdp_draw_sprite_with_texture(labels[LABEL_WIND_TURBINES], x - 20, y + 60, 0);
     }
     x -= 18;
@@ -504,15 +504,15 @@ static void station_center_draw()
     if (!control_panel.lights_off)
     {
         // Button B
-        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 144, y, 0);
-        rdp_draw_sprite_with_texture(tiles[502], x + 151, y + 18, (station->lights ? MIRROR_Y : 0));
+        rdp_draw_sprite_with_texture(labels[LABEL_LIGHTS], x + 146, y, 0);
+        rdp_draw_sprite_with_texture(tiles[21], x + 151, y + 18, (station->lights ? MIRROR_Y : 0));
 
         // Button A
-        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 124, y + 60, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->pressurizer ? 482 : 481)], x + 124, y + 75, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 1 ? 482 : 481)], x + 144, y + 75, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 2 ? 482 : 481)], x + 164, y + 75, 0);
-        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 3 ? 482 : 481)], x + 184, y + 75, 0);
+        rdp_draw_sprite_with_texture(labels[LABEL_PRESSURIZER], x + 126, y + 60, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer ? 16 : 15)], x + 124, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 1 ? 16 : 15)], x + 144, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 2 ? 16 : 15)], x + 164, y + 75, 0);
+        rdp_draw_sprite_with_texture(tiles[(station->pressurizer && control_panel.pressure > 3 ? 16 : 15)], x + 184, y + 75, 0);
 
         // Grid
         rdp_draw_sprite_with_texture(labels[LABEL_CONTROL_RODS], 21, 210, 0);
@@ -678,10 +678,10 @@ static void station_right_draw()
         if (station->mode == MODE_LEVERS)
             rdp_draw_filled_rectangle_size(x + station->lever_selector * 20 + 8, y - 1, 15, 33, colors[COLOR_YELLOW]);
 
-        rdp_draw_sprite_with_texture(tiles[500], x, y, station->levers[0] ? 0 : MIRROR_Y);
-        rdp_draw_sprite_with_texture(tiles[504], x + 20, y, station->levers[1] ? 0 : MIRROR_Y);
-        rdp_draw_sprite_with_texture(tiles[505], x + 40, y, station->levers[2] ? 0 : MIRROR_Y);
-        rdp_draw_sprite_with_texture(tiles[506], x + 60, y, station->levers[3] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[17], x, y, station->levers[0] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[18], x + 20, y, station->levers[1] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[19], x + 40, y, station->levers[2] ? 0 : MIRROR_Y);
+        rdp_draw_sprite_with_texture(tiles[20], x + 60, y, station->levers[3] ? 0 : MIRROR_Y);
     }
 
     if (!control_panel.lights_off)
@@ -701,18 +701,18 @@ static void station_right_draw()
         if (station->mode == MODE_KEYPAD)
             rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
 
-        rdp_draw_sprite_with_texture(tiles[51], x, y, 0);
-        rdp_draw_sprite_with_texture(tiles[52], x + 18, y, 0);
-        rdp_draw_sprite_with_texture(tiles[53], x + 36, y, 0);
-        rdp_draw_sprite_with_texture(tiles[54], x, y + 18, 0);
-        rdp_draw_sprite_with_texture(tiles[55], x + 18, y + 18, 0);
-        rdp_draw_sprite_with_texture(tiles[56], x + 36, y + 18, 0);
-        rdp_draw_sprite_with_texture(tiles[57], x, y + 36, 0);
-        rdp_draw_sprite_with_texture(tiles[58], x + 18, y + 36, 0);
-        rdp_draw_sprite_with_texture(tiles[59], x + 36, y + 36, 0);
-        rdp_draw_sprite_with_texture(tiles[293], x, y + 54, 0);
-        rdp_draw_sprite_with_texture(tiles[60], x + 18, y + 54, 0);
-        rdp_draw_sprite_with_texture(tiles[292], x + 36, y + 54, 0);
+        rdp_draw_sprite_with_texture(tiles[3], x, y, 0);
+        rdp_draw_sprite_with_texture(tiles[4], x + 18, y, 0);
+        rdp_draw_sprite_with_texture(tiles[5], x + 36, y, 0);
+        rdp_draw_sprite_with_texture(tiles[6], x, y + 18, 0);
+        rdp_draw_sprite_with_texture(tiles[7], x + 18, y + 18, 0);
+        rdp_draw_sprite_with_texture(tiles[8], x + 36, y + 18, 0);
+        rdp_draw_sprite_with_texture(tiles[8], x, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[10], x + 18, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[11], x + 36, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[14], x, y + 54, 0);
+        rdp_draw_sprite_with_texture(tiles[12], x + 18, y + 54, 0);
+        rdp_draw_sprite_with_texture(tiles[13], x + 36, y + 54, 0);
     }
 }
 
@@ -853,7 +853,14 @@ void control_panel_input(input_t *input, bool tutorial)
 
 void control_panel_draw_tutorial(display_context_t disp)
 {
+    action_t *current = actions_get_current_tutorial().top;
+    if (current->show == SHOW_DANGER)
+        danger_bar_draw();
+
     instructions_draw_tutorial();
+
+    if (current->show == SHOW_NONE)
+        return;
 
     if (!control_panel.lights_off)
         rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
@@ -872,7 +879,7 @@ void control_panel_draw_tutorial(display_context_t disp)
 
     if (control_panel.current_station == 2)
         station_right_draw_graphics(disp);
-    instruments_draw(disp);
+    instruments_draw(disp, 20);
 }
 
 void control_panel_draw(display_context_t disp)
@@ -898,7 +905,7 @@ void control_panel_draw(display_context_t disp)
     if (control_panel.mode == IDLE || control_panel.geiger % 20 < 10)
     {
         rumble_stop(0);
-        rdp_draw_sprite_with_texture(tiles[12], 198, 10, 0);
+        rdp_draw_sprite_with_texture(tiles[2], 198, 10, 0);
     }
     else
     {
@@ -908,5 +915,5 @@ void control_panel_draw(display_context_t disp)
 
     if (control_panel.current_station == 2)
         station_right_draw_graphics(disp);
-    instruments_draw(disp);
+    instruments_draw(disp, 0);
 }

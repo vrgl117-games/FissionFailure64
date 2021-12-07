@@ -26,6 +26,7 @@ typedef struct scientist
 } scientist_t;
 
 void scientist_draw();
+void scientist_win();
 void scientist_init();
 void scientist_reset();
 void scientist_timer();

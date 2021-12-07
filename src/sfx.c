@@ -20,6 +20,9 @@ void sfx_init(void)
     wav64_open(&SFX_CACHE[SFX_HELL], "/sfx/04_Fission_Failure_64_Hell_mono.wav64");
     wav64_set_loop(&SFX_CACHE[SFX_HELL], true);
 
+    wav64_open(&SFX_CACHE[SFX_THEME_TUTORIAL], "/sfx/05_Fission_Failure_64_Tutorial_mono.wav64");
+    wav64_set_loop(&SFX_CACHE[SFX_THEME_TUTORIAL], true);
+
     wav64_open(&SFX_CACHE[SFX_ACTION], "/sfx/274183__littlerobotsoundfactory__jingle-win-synth-04.wav64");
     wav64_open(&SFX_CACHE[SFX_GAME_OVER], "/sfx/265459__gowlermusic__atomic-explosion-and-sub-rumble.wav64");
 

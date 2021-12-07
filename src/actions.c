@@ -168,14 +168,11 @@ uint16_t actions_get_points()
 
 uint8_t difficulty()
 {
-    if (points < EASY)
-    {
-        return ELEMENT_RADIO;
-    }
     if (points < NORMAL)
-    {
+        return ELEMENT_PUMPS;
+
+    if (points < HARD)
         return ELEMENT_KEYPAD;
-    }
 
     return ELEMENT_TUTORIAL;
 }
@@ -202,7 +199,7 @@ bool actions_next()
     }
 
     pair.top = get_action(255);
-    if (points > EXTRA_HARD && pair.top->element != ELEMENT_AZ5)
+    if (points > HARD && pair.top->element != ELEMENT_AZ5)
     {
         if (pair.bottom != 0)
         {
@@ -212,7 +209,7 @@ bool actions_next()
         pair.bottom = get_action(pair.top->element);
     }
     points++;
-    return (points >= EXTRA_HARD * 2);
+    return (points >= HARD * 2);
 }
 
 void actions_reset()
@@ -223,7 +220,7 @@ void actions_reset()
 
 // Tutorial
 u_int8_t current_element = 0;
-static action_new actions_tutorial[4];
+static action_new actions_tutorial[6];
 
 static action_t *actions_new_press_tutorial()
 {
@@ -232,6 +229,7 @@ static action_t *actions_new_press_tutorial()
     action->element = ELEMENT_PRESSURIZER;
     action->expected[0] = 2;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-press-2000-%d.sprite");
+    action->show = SHOW_STATION;
 
     return action;
 }
@@ -265,6 +263,31 @@ static action_t *actions_new_center_tutorial()
     action->element = ELEMENT_TUTORIAL;
     action->expected[1] = 1;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-center-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_geiger_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TUTORIAL;
+    action->expected[1] = 1;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-geiger-%d.sprite");
+    action->show = SHOW_DANGER;
+
+    return action;
+}
+
+static action_t *actions_new_good_luck_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TUTORIAL;
+    action->expected[1] = 1;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-luck-%d.sprite");
+    action->show = SHOW_DANGER;
 
     return action;
 }
@@ -288,7 +311,7 @@ bool actions_next_tutorial()
         pair.top = NULL;
     }
     pair.bottom = NULL;
-    if (current_element == 4)
+    if (current_element == 6)
         return true;
     pair.top = get_action_tutorial();
     current_element++;
@@ -316,4 +339,6 @@ void actions_init()
     actions_tutorial[1] = actions_new_intro_tutorial;
     actions_tutorial[2] = actions_new_center_tutorial;
     actions_tutorial[3] = actions_new_press_tutorial;
+    actions_tutorial[4] = actions_new_geiger_tutorial;
+    actions_tutorial[5] = actions_new_good_luck_tutorial;
 }

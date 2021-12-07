@@ -21,6 +21,12 @@ void scientist_draw()
     }
 }
 
+void scientist_win()
+{
+    for (uint8_t i = 0; i < NUM_SCIENTIST; i++)
+        rdp_draw_sprites_with_texture(scientists[i].sprites[0], 18 + 40 * i, 34 + scientists[i].y_offset + MAX(scientists[i].y, 8), i % 2);
+}
+
 void scientist_init()
 {
     if (dark == NULL)
@@ -64,7 +70,7 @@ void scientist_init()
 
             scientists[i].sprites[0] = scientists_sp[num][0];
             scientists[i].sprites[1] = scientists_sp[num][1];
-            scientists[i].sprites[2] = scientists_sp[num][2];
+            scientists[i].sprites[2] = scientists_sp[num][1]; // TODO add back 2 when we have new sprites
         }
     }
 }
