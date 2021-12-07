@@ -178,7 +178,7 @@ static control_panel_status_t control_panel_check_action(action_t *action)
             return INCORRECT;
         break;
     case ELEMENT_KEYPAD:
-        if (control_panel.right.calling == false)
+        if (control_panel.right.state != CALLING)
             return INCORRECT;
         if (control_panel.right.screen[0] != '0' + action->expected[0] ||
             control_panel.right.screen[1] != '0' + action->expected[1] ||
@@ -192,7 +192,7 @@ static control_panel_status_t control_panel_check_action(action_t *action)
 
         memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
         control_panel.right.cursor = 0;
-        control_panel.right.calling = false;
+        control_panel.right.state = OK;
         break;
     case ELEMENT_PUMPS:
         if (control_panel.right.rotations != 9)
@@ -234,7 +234,23 @@ static control_panel_status_t control_panel_check_action(action_t *action)
 
 control_panel_status_t control_panel_check_status(action_pair_t pair)
 {
-    if (control_panel.geiger >= 1000)
+
+    if (control_panel.right.state == CALLING &&
+        control_panel.right.screen[0] == '9' &&
+        control_panel.right.screen[1] == '1' &&
+        control_panel.right.screen[2] == '1')
+    {
+        if (control_panel.geiger > 250)
+            control_panel.geiger -= 250;
+        control_panel.geiger = 0;
+        memset(control_panel.right.screen, 0, sizeof(control_panel.right.screen));
+        control_panel.right.cursor = 0;
+        control_panel.right.state = CHEAT;
+        return INCORRECT;
+    }
+    else
+
+        if (control_panel.geiger >= 1000)
         return DEAD;
 
     if (control_panel_check_action(pair.top) == INCORRECT)
@@ -691,22 +707,29 @@ static void station_right_draw_graphics(display_context_t disp)
     x += 126;
 
     graphics_set_color(colors[COLOR_YELLOW], 0);
-    if (station->calling)
+    switch (station->state)
     {
-        if (control_panel.geiger % 20 < 10)
-            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "CALLING.", station->screen);
+    case CALLING:
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "CALLING." : "CALLING "), station->screen);
+        break;
+    case OK:
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "O.K.    " : "SPEAKING"), station->screen);
+        break;
+    case CHEAT:
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "CHEAT   " : "CODE!   "), station->screen);
+        break;
+    default:
+        if (station->cursor == 0)
+        {
+            if (control_panel.geiger % 20 < 10)
+                graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "        ", station->screen);
+            else
+                graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "       _", station->screen);
+        }
         else
-            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "CALLING ", station->screen);
+            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "% 8s", station->screen);
+        break;
     }
-    else if (station->cursor == 0)
-    {
-        if (control_panel.geiger % 20 < 10)
-            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "        ", station->screen);
-        else
-            graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "       _", station->screen);
-    }
-    else
-        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], "% 8s", station->screen);
     graphics_set_color(colors[COLOR_WHITE], 0);
 }
 
@@ -791,16 +814,14 @@ static void station_right_input(input_t *input, bool tutorial)
             if (station->keypadselector_x == 2 && station->keypadselector_y == 3)
             {
                 if (station->cursor > 0)
-                    station->calling = true;
+                    station->state = CALLING;
             }
             else if (station->keypadselector_x == 0 && station->keypadselector_y == 3)
             {
-                if (station->cursor > 0 && station->calling)
-                {
-                    memset(station->screen, 0, sizeof(station->screen));
-                    station->cursor = 0;
-                }
-                station->calling = false;
+
+                memset(station->screen, 0, sizeof(station->screen));
+                station->cursor = 0;
+                station->state = NONE;
             }
             else
             {
@@ -808,6 +829,7 @@ static void station_right_input(input_t *input, bool tutorial)
                 {
                     station->screen[station->cursor] = '0' + station->keypad[station->keypadselector_y][station->keypadselector_x];
                     station->cursor++;
+                    station->state = NONE;
                 }
             }
         }
@@ -816,6 +838,7 @@ static void station_right_input(input_t *input, bool tutorial)
         {
             memset(station->screen, 0, sizeof(station->screen));
             station->cursor = 0;
+            station->state = NONE;
         }
     }
     else

@@ -397,10 +397,10 @@ static action_t *actions_new_keypad_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_KEYPAD;
-    action->expected[0] = 9;
-    action->expected[1] = 1;
-    action->expected[2] = 1;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-call-911-%d.sprite");
+    action->expected[0] = 1;
+    action->expected[1] = 2;
+    action->expected[2] = 3;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-call-123-%d.sprite");
     action->show = SHOW_STATION;
 
     return action;

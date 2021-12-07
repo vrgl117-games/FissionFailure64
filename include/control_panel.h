@@ -86,7 +86,13 @@ typedef struct station_right
     uint8_t keypadselector_y;
     char screen[CURSOR_MAX + 1];
     uint8_t cursor;
-    bool calling;
+    enum
+    {
+        NONE,
+        CALLING,
+        OK,
+        CHEAT,
+    } state;
 
     bool levers[NUM_LEVERS];
     uint8_t lever_selector;

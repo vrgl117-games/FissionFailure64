@@ -160,7 +160,7 @@ generate_action 'Call the\nPresident\n(see menu)' resources/gfx/sprites/actions/
 generate_action 'Call\nPublic\nAffairs\n(see menu)' resources/gfx/sprites/actions/call-public-%d.png
 generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
 generate_action 'Call the\nTreasury\n(see menu)' resources/gfx/sprites/actions/call-treasury-%d.png
-generate_action_tutorial 'Use Z button to switch to keypad, then\ncall 911 using A and C buttons.' resources/gfx/sprites/actions/tuto-call-911-%d.png
+generate_action_tutorial 'Use Z button to switch to keypad, then\ncall 123 using A and C buttons.' resources/gfx/sprites/actions/tuto-call-123-%d.png
 
 generate_action 'Press AZ-5\nwhen\nTurbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png
 generate_action 'Press AZ-5\nwhen\nCompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
