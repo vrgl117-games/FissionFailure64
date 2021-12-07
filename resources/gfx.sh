@@ -83,6 +83,11 @@ generate_label  'COMPASS' resources/gfx/sprites/ui/label_wind_turbines.png
 generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
 # edited by hand
 #generate_label  'G\nE\nI\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
+generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "POINTS" resources/gfx/sprites/ui/text_points.png
+generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "PRESS" resources/gfx/sprites/ui/text_press.png
+generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "POWER" resources/gfx/sprites/ui/text_power.png
+generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "FREQ" resources/gfx/sprites/ui/text_freq.png
+generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "RAM" resources/gfx/sprites/ui/text_ram.png
 
 generate_text 'a'  resources/gfx/sprites/ui/text_a.png
 generate_text 'b'  resources/gfx/sprites/ui/text_b.png
@@ -109,7 +114,7 @@ generate_direction 'SE'  resources/gfx/sprites/ui/dir_se.png
 generate_action_tutorial "\n\n\n\nWelcome new team member!\n\nThe GreenGlo power plant\nis in dire need of your help!" resources/gfx/sprites/actions/tuto-welcome-%d.png
 generate_action_tutorial "\n\n\n\nYour team of brave scientists\nwill be doing all the manual labor\n\nBut they need the reactor's components\nto be set properly from the control room." resources/gfx/sprites/actions/tuto-intro-%d.png
 generate_action_tutorial "You will be in charge of three stations.\n\nLet's start by getting familiar\nwith the center station.\n\nYour team is counting on you!\nThey face grave danger!" resources/gfx/sprites/actions/tuto-center-%d.png
-generate_action_tutorial "\nKeep an eye on the\nGeiger counter level!\n\nThe plant can explode\nif it's too high!" resources/gfx/sprites/actions/tuto-geiger-%d.png
+generate_action_tutorial "\nKeep an eye on the\nGeiger counter level!\n\nThe plant will explode\nif it's too high!" resources/gfx/sprites/actions/tuto-geiger-%d.png
 generate_action_tutorial "\n\nGet as many points as possible,\n\nGood Luck!" resources/gfx/sprites/actions/tuto-luck-%d.png
 
 pos=("A1" "A2" "A3" "A4" "B1" "B2" "B3" "B4" "C1" "C2" "C3" "C4" "D1" "D2" "D3" "D4" "E1" "E2" "E3" "E4" "F1" "F2" "F3" "F4")

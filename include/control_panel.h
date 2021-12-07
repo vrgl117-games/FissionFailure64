@@ -35,6 +35,12 @@ typedef enum
     TEXT_3,
     TEXT_4,
 
+    TEXT_POINTS,
+    TEXT_PRESS,
+    TEXT_POWER,
+    TEXT_FREQ,
+    TEXT_RAM,
+
     LABEL_IDX
 } label_t;
 

@@ -50,19 +50,17 @@ static void instruments_draw(display_context_t disp)
     if (!control_panel.lights_off)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
-        rdp_detach_display();
-
-        graphics_draw_text(disp, x + 8, y, "POINTS");
-        graphics_draw_text(disp, x + 8, y + 18, "PRESS");
-        graphics_draw_text(disp, x + 8, y + 18 + 18, "POWER");
-        graphics_draw_text(disp, x + 8, y + 18 + 18 + 18, "FREQ");
-        graphics_draw_text(disp, x + 8, y + 18 + 18 + 18 + 18, "RAM");
+        rdp_draw_sprite_with_texture(labels[TEXT_POINTS], x + 9, y - 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_PRESS], x + 9, y + 18 - 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_POWER], x + 9, y + 18 + 18 - 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_FREQ], x + 9, y + 18 + 18 + 18 - 2, 0);
+        rdp_draw_sprite_with_texture(labels[TEXT_RAM], x + 9, y + 18 + 18 + 18 + 18 - 2, 0);
     }
-    else
-        rdp_detach_display();
+
+    rdp_detach_display();
 
     graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, x + 60, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
+    graphics_draw_textf_with_background(disp, x + 62, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
 
     graphics_draw_textf_with_background(disp, x + 54, y - 2 + 18, colors[COLOR_BLACK], "%01dkPa", control_panel.pressure);
 
@@ -87,26 +85,21 @@ static void instruments_draw_tutorial(display_context_t disp)
     {
         rdp_draw_filled_rectangle_size(x, y, width, height, colors[COLOR_PANEL]);
         y += 20;
-        rdp_detach_display();
-
         if (current->element == ELEMENT_TUTORIAL && current->expected[1] == 1)
-            graphics_draw_text(disp, x + 8, y, "POINTS");
+            rdp_draw_sprite_with_texture(labels[TEXT_POINTS], x + 9, y - 2, 0);
         else if (current->element == ELEMENT_PRESSURIZER)
-            graphics_draw_text(disp, x + 8, y + 18, "PRESS");
+            rdp_draw_sprite_with_texture(labels[TEXT_PRESS], x + 9, y + 18 - 2, 0);
         else if (current->element == ELEMENT_TURBINES)
-            graphics_draw_text(disp, x + 8, y + 18 + 18, "POWER");
+            rdp_draw_sprite_with_texture(labels[TEXT_POWER], x + 9, y + 18 + 18 - 2, 0);
         else if (current->element == ELEMENT_RADIO)
-            graphics_draw_text(disp, x + 8, y + 18 + 18 + 18, "FREQ");
+            rdp_draw_sprite_with_texture(labels[TEXT_FREQ], x + 9, y + 18 + 18 + 18 - 2, 0);
     }
-    else
-    {
-        y += 20;
-        rdp_detach_display();
-    }
+
+    rdp_detach_display();
 
     graphics_set_color(colors[COLOR_RED], 0);
     if (current->element == ELEMENT_TUTORIAL && current->expected[1] == 1)
-        graphics_draw_textf_with_background(disp, x + 60, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
+        graphics_draw_textf_with_background(disp, x + 62, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
     else if (current->element == ELEMENT_PRESSURIZER)
         graphics_draw_textf_with_background(disp, x + 54, y - 2 + 18, colors[COLOR_BLACK], "%01dkPa", control_panel.pressure);
     else if (current->element == ELEMENT_TURBINES)
@@ -289,6 +282,12 @@ void control_panel_init()
     labels[TEXT_2] = dfs_load_sprite("/gfx/sprites/ui/text_2.sprite");
     labels[TEXT_3] = dfs_load_sprite("/gfx/sprites/ui/text_3.sprite");
     labels[TEXT_4] = dfs_load_sprite("/gfx/sprites/ui/text_4.sprite");
+
+    labels[TEXT_POINTS] = dfs_load_sprite("/gfx/sprites/ui/text_points.sprite");
+    labels[TEXT_PRESS] = dfs_load_sprite("/gfx/sprites/ui/text_press.sprite");
+    labels[TEXT_POWER] = dfs_load_sprite("/gfx/sprites/ui/text_power.sprite");
+    labels[TEXT_FREQ] = dfs_load_sprite("/gfx/sprites/ui/text_freq.sprite");
+    labels[TEXT_RAM] = dfs_load_sprite("/gfx/sprites/ui/text_ram.sprite");
 
     directions[1] = dfs_load_sprite("/gfx/sprites/ui/dir_nw.sprite");
     directions[2] = dfs_load_sprite("/gfx/sprites/ui/dir_n.sprite");
