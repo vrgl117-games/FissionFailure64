@@ -368,13 +368,25 @@ static action_t *actions_new_pumps_tutorial()
     return action;
 }
 
-static action_t *actions_new_power_tutorial()
+static action_t *actions_new_power_up_tutorial()
 {
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TURBINES;
     action->expected[0] = 250;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-power-250-%d.sprite");
+    action->show = SHOW_STATION;
+
+    return action;
+}
+
+static action_t *actions_new_power_down_tutorial()
+{
+    action_t *action = calloc(1, sizeof(action_t));
+
+    action->element = ELEMENT_TURBINES;
+    action->expected[0] = 125;
+    strcpy(action->buffer, "/gfx/sprites/actions/tuto-power-125-%d.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -430,6 +442,7 @@ static action_t *actions_new_geiger_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
+    action->expected[1] = 1;
     strcpy(action->buffer, "/gfx/sprites/actions/tuto-geiger-%d.sprite");
     action->show = SHOW_DANGER;
 
@@ -461,7 +474,8 @@ static action_new actions_tutorial[] = {
     actions_new_az5_tutorial,
 
     actions_new_pumps_tutorial,
-    actions_new_power_tutorial,
+    actions_new_power_up_tutorial,
+    actions_new_power_down_tutorial,
     actions_new_keypad_tutorial,
 
     actions_new_geiger_tutorial,
