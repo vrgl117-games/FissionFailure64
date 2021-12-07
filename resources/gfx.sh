@@ -35,7 +35,6 @@ generate_direction() {
 
 
 # scientist
-convert -strip resources/gfx/pngs/scientists/dark.png -crop 16 resources/gfx/sprites/scientists/dark-%d.png
 convert -strip resources/gfx/pngs/scientists/idle0.png -crop 16 resources/gfx/sprites/scientists/idle0-%d.png
 convert -strip resources/gfx/pngs/scientists/stressed0.png -crop 16 resources/gfx/sprites/scientists/stressed0-%d.png
 convert -strip resources/gfx/pngs/scientists/hell0.png -crop 16 resources/gfx/sprites/scientists/hell0-%d.png
@@ -48,6 +47,12 @@ convert -strip resources/gfx/pngs/scientists/hell2.png -crop 16 resources/gfx/sp
 convert -strip resources/gfx/pngs/scientists/idle3.png -crop 16 resources/gfx/sprites/scientists/idle3-%d.png
 convert -strip resources/gfx/pngs/scientists/stressed3.png -crop 16 resources/gfx/sprites/scientists/stressed3-%d.png
 convert -strip resources/gfx/pngs/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
+
+convert -strip resources/gfx/pngs/scientists/idle0.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-%d.png
+convert -strip resources/gfx/pngs/scientists/hell0.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-hell0-%d.png
+convert -strip resources/gfx/pngs/scientists/hell1.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-hell1-%d.png
+convert -strip resources/gfx/pngs/scientists/hell2.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-hell2-%d.png
+convert -strip resources/gfx/pngs/scientists/hell3.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-hell3-%d.png
 
 # window
 convert -strip resources/gfx/pngs/window/idle.png -crop 16 resources/gfx/sprites/window/idle-%d.png
