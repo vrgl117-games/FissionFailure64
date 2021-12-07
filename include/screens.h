@@ -34,6 +34,8 @@ bool screen_intro(display_context_t disp);
 void screen_game_load();
 void screen_game_unload();
 screen_t screen_game(display_context_t disp, input_t *input);
+void screen_game_over_load();
+void screen_game_over_unload();
 bool screen_game_over(display_context_t disp, input_t *input);
 void screen_load_title_resources();
 bool screen_message_draw(display_context_t disp, input_t *input);
@@ -50,5 +52,7 @@ bool screen_tutorial(display_context_t disp, input_t *input);
 void screen_tutorial_load();
 void screen_tutorial_unload();
 bool screen_win(display_context_t disp, input_t *input);
+void screen_win_load();
+void screen_win_unload();
 
 #endif //__SCREENS_H__

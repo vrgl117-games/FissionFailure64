@@ -47,7 +47,6 @@ convert -strip resources/gfx/pngs/scientists/hell2.png -crop 16 resources/gfx/sp
 convert -strip resources/gfx/pngs/scientists/idle3.png -crop 16 resources/gfx/sprites/scientists/idle3-%d.png
 convert -strip resources/gfx/pngs/scientists/stressed3.png -crop 16 resources/gfx/sprites/scientists/stressed3-%d.png
 convert -strip resources/gfx/pngs/scientists/hell3.png -crop 16 resources/gfx/sprites/scientists/hell3-%d.png
-
 convert -strip resources/gfx/pngs/scientists/idle0.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-%d.png
 convert -strip resources/gfx/pngs/scientists/hell0.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-hell0-%d.png
 convert -strip resources/gfx/pngs/scientists/hell1.png -negate -threshold 0 -negate -crop 16 resources/gfx/sprites/scientists/dark-hell1-%d.png
@@ -60,6 +59,16 @@ convert -strip resources/gfx/pngs/window/stressed.png -crop 16 resources/gfx/spr
 convert -strip resources/gfx/pngs/window/hell.png -crop 16 resources/gfx/sprites/window/hell-%d.png
 convert -strip resources/gfx/pngs/window/hell_alt.png -crop 16 resources/gfx/sprites/window/hell_alt-%d.png
 
+# tutorial hands
+convert -strip resources/gfx/pngs/tutorial/left.png -crop 16 resources/gfx/sprites/tutorial/left-%d.png
+convert -strip resources/gfx/pngs/tutorial/center.png -crop 16 resources/gfx/sprites/tutorial/center-%d.png
+convert -strip resources/gfx/pngs/tutorial/right.png -crop 16 resources/gfx/sprites/tutorial/right-%d.png
+
+# gameover / win
+convert -strip resources/gfx/pngs/boom.png -crop 16 resources/gfx/sprites/boom-%d.png
+convert -strip resources/gfx/pngs/ui/continue.png -crop 16 resources/gfx/sprites/ui/continue-%d.png
+convert -strip resources/gfx/pngs/ui/gameover.png -crop 16 resources/gfx/sprites/ui/gameover-%d.png
+convert -strip resources/gfx/pngs/ui/win.png -crop 16 resources/gfx/sprites/ui/win-%d.png
 
 # message
 generate  "#1f2029ff" "#f9d72fff" "$font" 20 'This game is best enjoyed\nusing the original N64 controller' resources/gfx/sprites/ui/message.png

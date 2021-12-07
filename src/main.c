@@ -144,9 +144,13 @@ int main()
                     {
                         sfx_play(CH_SFX, SFX_GAME_OVER, false);
                         rumble_start(0);
+                        screen_game_over_load();
                     }
                     else if (screen == win)
+                    {
                         sfx_play(CH_SFX, SFX_WIN, false);
+                        screen_win_load();
+                    }
                 }
             }
             break;
@@ -209,9 +213,9 @@ int main()
             if (screen_game_over(disp, &input))
             {
                 rumble_stop(0);
+                screen_game_over_unload();
                 screen_title_load();
                 screen = title;
-                sfx_stop(CH_MUSIC);
                 sfx_reset();
                 sfx_play(CH_MUSIC, SFX_THEME, true);
             }
@@ -219,6 +223,7 @@ int main()
         case win:
             if (screen_win(disp, &input))
             {
+                screen_win_unload();
                 prev_screen = win;
                 screen = credits;
             }
