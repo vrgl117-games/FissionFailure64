@@ -118,10 +118,11 @@ typedef enum control_panel_mode
 
 typedef struct control_panel
 {
-    int8_t pressure;
+    uint8_t pressure; // 1 to 4
     int16_t freq;
     int16_t power;
     uint16_t geiger; // 0 to 1000
+    uint8_t rumble;
     station_left_t left;
     station_center_t center;
     station_right_t right;

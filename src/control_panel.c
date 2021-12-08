@@ -376,7 +376,7 @@ void control_panel_reset()
     }
 
     // reset pressurizer
-    control_panel.pressure = 1 + rand() % 6;
+    control_panel.pressure = 1 + rand() % 4;
 
     // reset keypad
     control_panel.right.keypad[0][0] = 1;

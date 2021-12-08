@@ -231,8 +231,6 @@ static sprite_t *rumble_sp = NULL;
 void screen_message_load()
 {
     message_sp = dfs_load_sprite("/gfx/sprites/ui/message.sprite");
-    pak_sp = dfs_load_sprite("/gfx/sprites/ui/pak_detected.sprite");
-    pak_not_sp = dfs_load_sprite("/gfx/sprites/ui/pak_not_detected.sprite");
     rumble_sp = dfs_load_sprite("/gfx/sprites/ui/rumble_not_detected.sprite");
 }
 void screen_message_unload()
@@ -255,7 +253,13 @@ bool screen_message_draw(display_context_t disp, input_t *input)
 
     graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
 
-    graphics_draw_sprite(disp, __width / 2 - rumble_sp->width / 2, 120, rumble_sp);
+    if (identify_accessory(0) != ACCESSORY_RUMBLEPAK)
+    {
+        graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
+        graphics_draw_sprite(disp, __width / 2 - rumble_sp->width / 2, 120, rumble_sp);
+    }
+    else
+        graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, __height / 2 - message_sp->height / 2, message_sp);
 
     anim++;
     return (anim > 128 || input->A || input->start);

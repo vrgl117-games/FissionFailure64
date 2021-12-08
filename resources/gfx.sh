@@ -124,7 +124,7 @@ for po in ${pos[@]}; do
         generate_action "Set $color\nControl\nRod\nto $po" resources/gfx/sprites/actions/rod-"$color"-"$po"-%d.png
     done
 done
-generate_action_tutorial "Set red Control Rods to F4 by\nusing the d-pad anc C buttons." resources/gfx/sprites/actions/tuto-rod-red-D4-%d.png
+generate_action_tutorial "Set red Control Rods to D4 by\nusing the d-pad anc C buttons." resources/gfx/sprites/actions/tuto-rod-red-D4-%d.png
 
 freqs=("200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "50" "150" "250" "350" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "75" "175" "275" "375" "250" "350" "450" "550" "200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "275" "375" "475" "575" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "45" "145" "245" "345" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "70" "170" "270" "370" "245" "345" "445" "545" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "270" "370" "470" "570" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "40" "140" "240" "340" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "65" "165" "265" "365" "240" "340" "440" "540" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "265" "365" "465" "565" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "35" "135" "235" "335" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410" "60" "160" "260" "360" "235" "335" "435" "535" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "260" "360" "460" "560" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410")
 for freq in ${freqs[@]}; do
@@ -149,7 +149,7 @@ for power in ${powers[@]}; do
     generate_action "Set\nTurbines\nto\n${power}W" resources/gfx/sprites/actions/power-"$power"-%d.png
 done
 generate_action_tutorial 'Set the Turbines to 250W (flip UP\ntwo of them) using the B and C buttons.' resources/gfx/sprites/actions/tuto-power-250-%d.png
-generate_action_tutorial 'Set the Turbines to 150W (flip DOWN\none of them) using the A and C buttons.' resources/gfx/sprites/actions/tuto-power-125-%d.png
+generate_action_tutorial 'Set the Turbines to 125W (flip DOWN\none of them) using the A and C buttons.' resources/gfx/sprites/actions/tuto-power-125-%d.png
 
 generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps-%d.png
 generate_action_tutorial "Use R (2x) to switch to the right station, then\nactivate the pumps by rotating the joystick." resources/gfx/sprites/actions/tuto-pumps-%d.png

@@ -71,7 +71,7 @@ static action_t *actions_new_press()
     uint16_t press[] = {1000, 2000, 3000, 4000};
     uint8_t pres = rand() % 4;
 
-    while (pres == control_panel.pressure)
+    while (1 + pres == control_panel.pressure)
         pres = rand() % 4;
 
     action->element = ELEMENT_PRESSURIZER;
@@ -85,12 +85,19 @@ static action_t *actions_new_press()
 static action_t *actions_new_rod()
 {
     action_t *action = calloc(1, sizeof(action_t));
-    uint8_t color = (color_prev + 1) % 4;
     char *colors[] = {"red", "green", "blue", "orange"};
     char letters[] = {'A', 'B', 'C', 'D', 'E', 'F'};
     char numbers[] = {'1', '2', '3', '4'};
-    uint8_t pos_x = (pos_x_prev + 1) % 6;
-    uint8_t pos_y = (pos_y_prev + 1) % 4;
+    uint8_t color = rand() % 4;
+    while (color == color_prev)
+        color = rand() % 4;
+
+    uint8_t pos_x = rand() % 6;
+    while (pos_x == pos_x_prev)
+        pos_x = rand() % 6;
+    uint8_t pos_y = rand() % 4;
+    while (pos_y == pos_y_prev)
+        pos_y = rand() % 4;
 
     action->element = ELEMENT_GRID;
     action->expected[0] = 1 + color;
@@ -296,8 +303,8 @@ bool actions_next()
 
 void actions_reset()
 {
-    actions_next();
     points = 0;
+    actions_next();
 }
 
 // Tutorial
