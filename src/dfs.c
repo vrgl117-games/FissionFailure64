@@ -69,6 +69,7 @@ sprites_t *dfs_load_sprites(const char *const path)
     }
     data->slices = i;
     data->height = data->sprites[0]->height;
+    data->loaded = -1;
     return data;
 }
 sprites_t *dfs_load_sprites_by_frame(sprites_t *self, const char *const path)

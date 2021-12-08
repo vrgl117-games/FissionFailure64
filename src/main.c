@@ -16,13 +16,7 @@
 #define MS20 20000
 #define MS50 50000
 
-#if DISPLAY_SAFE_AREAS
-extern uint32_t __width;
-extern uint32_t __height;
-extern uint32_t colors[];
-#endif
-
-screen_t screen = message;
+screen_t screen = intro;
 screen_t prev_screen; //used in credits to know where to go back to
 
 int main()
@@ -38,7 +32,6 @@ int main()
     timer_init();
     input_init();
     colors_init();
-    control_panel_init();
     srand(timer_ticks() & 0x7FFFFFFF);
 
     // blinking "press start" and window
@@ -79,6 +72,8 @@ int main()
         case message:
             if (screen_message_draw(disp, &input))
             {
+                control_panel_init();
+                actions_reset_tutorial();
                 screen_message_unload();
                 screen_title_load();
                 srand(timer_ticks() & 0x7FFFFFFF);
@@ -230,23 +225,6 @@ int main()
             break;
         }
 
-#if DISPLAY_SAFE_AREAS
-        if (input.L && input.R)
-        {
-            graphics_draw_box(disp, 0, 0, __width, 8, colors[COLOR_RED]);            // top
-            graphics_draw_box(disp, 0, __height - 8, __width, 8, colors[COLOR_RED]); // bottom
-
-            graphics_draw_box(disp, 0, 8, __width, 8, colors[COLOR_YELLOW]);                 // top
-            graphics_draw_box(disp, 0, __height - 13, __width, 5, colors[COLOR_YELLOW]);     // bottom
-            graphics_draw_box(disp, 0, 8, 8, __height - 16, colors[COLOR_YELLOW]);           // left
-            graphics_draw_box(disp, __width - 8, 8, 8, __height - 16, colors[COLOR_YELLOW]); // right
-
-            // graphics_draw_box(disp, 8, 16, __width - 16, 8, colors[COLOR_BROWN]);             // top
-            // graphics_draw_box(disp, 8, __height - 24, __width - 16, 11, colors[COLOR_BROWN]); // bottom
-            // graphics_draw_box(disp, 8, 16, 8, __height - 32, colors[COLOR_BROWN]);            // left
-            // graphics_draw_box(disp, __width - 16, 16, 8, __height - 32, colors[COLOR_BROWN]); // right
-        }
-#endif
         // update display
         display_show(disp);
 

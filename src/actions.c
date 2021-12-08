@@ -23,8 +23,8 @@ extern control_panel_t control_panel;
 static action_t *actions_new_freq()
 {
     action_t *action = calloc(1, sizeof(action_t));
-    uint16_t freqs[] = {200, 300, 400, 500, 150, 250, 350, 450, 100, 200, 300, 400, 50, 150, 250, 350, 225, 325, 425, 525, 175, 275, 375, 475, 125, 225, 325, 425, 75, 175, 275, 375, 250, 350, 450, 550, 200, 300, 400, 500, 150, 250, 350, 450, 100, 200, 300, 400, 275, 375, 475, 575, 225, 325, 425, 525, 175, 275, 375, 475, 125, 225, 325, 425, 195, 295, 395, 495, 145, 245, 345, 445, 95, 195, 295, 395, 45, 145, 245, 345, 220, 320, 420, 520, 170, 270, 370, 470, 120, 220, 320, 420, 70, 170, 270, 370, 245, 345, 445, 545, 195, 295, 395, 495, 145, 245, 345, 445, 95, 195, 295, 395, 270, 370, 470, 570, 220, 320, 420, 520, 170, 270, 370, 470, 120, 220, 320, 420, 190, 290, 390, 490, 140, 240, 340, 440, 90, 190, 290, 390, 40, 140, 240, 340, 215, 315, 415, 515, 165, 265, 365, 465, 115, 215, 315, 415, 65, 165, 265, 365, 240, 340, 440, 540, 190, 290, 390, 490, 140, 240, 340, 440, 90, 190, 290, 390, 265, 365, 465, 565, 215, 315, 415, 515, 165, 265, 365, 465, 115, 215, 315, 415, 185, 285, 385, 485, 135, 235, 335, 435, 85, 185, 285, 385, 35, 135, 235, 335, 210, 310, 410, 510, 160, 260, 360, 460, 110, 210, 310, 410, 60, 160, 260, 360, 235, 335, 435, 535, 185, 285, 385, 485, 135, 235, 335, 435, 85, 185, 285, 385, 260, 360, 460, 560, 210, 310, 410, 510, 160, 260, 360, 460, 110, 210, 310, 410};
-    uint16_t freq = rand() % 88;
+    uint16_t freqs[] = {0, 10, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 15, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 20, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 25, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 30, 300, 305, 310, 315, 320, 325, 330, 335, 340, 345, 35, 350, 355, 360, 365, 370, 375, 380, 385, 390, 395, 40, 400, 405, 410, 415, 420, 425, 430, 435, 440, 445, 45, 450, 455, 460, 465, 470, 475, 480, 485, 490, 495, 5, 50, 500, 505, 510, 515, 520, 525, 530, 535, 540, 545, 55, 550, 555, 560, 565, 570, 575, 580, 585, 590, 595, 60, 600, 605, 610, 615, 620, 65, 70, 75, 80, 85, 90, 95};
+    uint16_t freq = rand() % 125;
 
     while (freqs[freq] == control_panel.freq)
         freq = rand() % 88;
@@ -266,11 +266,12 @@ uint8_t difficulty()
     return ELEMENT_TUTORIAL;
 }
 
-static action_t *get_action(uint8_t unwanted_action)
+static action_t *get_action(uint8_t unwanted_action1, uint8_t unwanted_action2)
 {
-    uint8_t wanted_action = rand() % (difficulty());
-    while (wanted_action == unwanted_action)
-        wanted_action = rand() % (difficulty());
+    uint8_t element = difficulty();
+    uint8_t wanted_action = rand() % element;
+    while (wanted_action == unwanted_action1 || wanted_action == unwanted_action2)
+        wanted_action = rand() % element;
     return actions[wanted_action]();
 }
 
@@ -287,7 +288,8 @@ bool actions_next()
         free(pair.top);
     }
 
-    pair.top = get_action(255);
+    pair.top = get_action(255, 255);
+    pair.bottom = NULL;
     if (points > HARD && pair.top->element != ELEMENT_AZ5)
     {
         if (pair.bottom != 0)
@@ -295,7 +297,7 @@ bool actions_next()
             dfs_free_sprites(pair.bottom->text);
             free(pair.bottom);
         }
-        pair.bottom = get_action(pair.top->element);
+        pair.bottom = get_action(pair.top->element, ELEMENT_AZ5);
     }
     points++;
     return (points >= HARD * 2);
@@ -305,6 +307,7 @@ void actions_reset()
 {
     points = 0;
     actions_next();
+    points = 0;
 }
 
 // Tutorial
@@ -316,7 +319,7 @@ static action_t *actions_new_press_tutorial()
 
     action->element = ELEMENT_PRESSURIZER;
     action->expected[0] = 2;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-press-2000-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-press-2000.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -327,8 +330,8 @@ static action_t *actions_new_freq_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_RADIO;
-    action->expected[0] = 500;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-freq-500-%d.sprite");
+    action->expected[0] = 360;
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-freq-360.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -342,7 +345,7 @@ static action_t *actions_new_rod_tutorial()
     action->expected[0] = 1;
     action->expected[1] = 3;
     action->expected[2] = 3;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-rod-red-D4-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-rod-red-D4.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -354,7 +357,7 @@ static action_t *actions_new_compass_tutorial()
 
     action->element = ELEMENT_COMPASS;
     action->expected[0] = 9;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-compass-SouthEast-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-compass-SouthEast.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -367,7 +370,7 @@ static action_t *actions_new_az5_tutorial()
     action->element = ELEMENT_AZ5;
     action->expected[0] = ELEMENT_COMPASS;
     action->expected[1] = 2;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-az5-compass-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-az5-compass.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -379,7 +382,7 @@ static action_t *actions_new_pumps_tutorial()
 
     action->element = ELEMENT_PUMPS;
     action->expected[0] = 9;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-pumps-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-pumps.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -391,7 +394,7 @@ static action_t *actions_new_power_up_tutorial()
 
     action->element = ELEMENT_TURBINES;
     action->expected[0] = 250;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-power-250-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-power-250.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -402,7 +405,7 @@ action_t *actions_new_lights_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_PRESSURIZER;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-lights-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-lights.sprite");
 
     return action;
 }
@@ -413,7 +416,7 @@ static action_t *actions_new_power_down_tutorial()
 
     action->element = ELEMENT_TURBINES;
     action->expected[0] = 125;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-power-125-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-power-125.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -427,7 +430,7 @@ static action_t *actions_new_keypad_tutorial()
     action->expected[0] = 1;
     action->expected[1] = 2;
     action->expected[2] = 3;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-call-123-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-call-123.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -438,7 +441,7 @@ static action_t *actions_new_welcome_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-welcome-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-welcome.sprite");
 
     return action;
 }
@@ -448,7 +451,7 @@ static action_t *actions_new_intro_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-intro-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-intro.sprite");
 
     return action;
 }
@@ -458,7 +461,7 @@ static action_t *actions_new_center_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-center-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-center.sprite");
     action->show = SHOW_STATION;
 
     return action;
@@ -470,7 +473,7 @@ static action_t *actions_new_geiger_tutorial()
 
     action->element = ELEMENT_TUTORIAL;
     action->expected[1] = 1;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-geiger-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-geiger.sprite");
     action->show = SHOW_DANGER;
 
     return action;
@@ -482,7 +485,7 @@ static action_t *actions_new_good_luck_tutorial()
 
     action->element = ELEMENT_TUTORIAL;
     action->expected[1] = 1;
-    strcpy(action->buffer, "/gfx/sprites/actions/tuto-luck-%d.sprite");
+    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-luck.sprite");
     action->show = SHOW_DANGER;
 
     return action;
@@ -511,10 +514,7 @@ static action_new actions_tutorial[] = {
     NULL,
 };
 
-static action_t *get_action_tutorial()
-{
-    return actions_tutorial[current_element]();
-}
+static action_t *actual_actions[14];
 
 action_pair_t actions_get_current_tutorial()
 {
@@ -523,22 +523,23 @@ action_pair_t actions_get_current_tutorial()
 
 bool actions_next_tutorial()
 {
-    if (pair.top != NULL)
-    {
-        dfs_free_sprites(pair.top->text);
-        free(pair.top);
-        pair.top = NULL;
-    }
+    pair.top = NULL;
     pair.bottom = NULL;
     if (actions_tutorial[current_element] == NULL)
         return true;
-    pair.top = get_action_tutorial();
+    pair.top = actual_actions[current_element];
     current_element++;
     return false;
 }
 
 void actions_reset_tutorial()
 {
+    if (actual_actions[0] == NULL)
+    {
+        for (uint8_t i = 0; i < 14; i++)
+            actual_actions[i] = actions_tutorial[i]();
+    }
+
     current_element = 0;
     actions_next_tutorial();
 }

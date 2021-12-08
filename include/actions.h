@@ -33,6 +33,7 @@ typedef struct action
     uint16_t expected[8];
     char buffer[256];
     sprites_t *text;
+    sprite_t *text2;
 
     enum
     {
@@ -68,6 +69,7 @@ void actions_reset();
 // Tutorial
 action_pair_t actions_get_current_tutorial();
 bool actions_next_tutorial();
+void action_init_tutorial();
 void actions_reset_tutorial();
 
 #endif //__ACTIONS_H__

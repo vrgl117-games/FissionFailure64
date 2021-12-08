@@ -161,15 +161,6 @@ static void instructions_draw_tutorial()
 
         return;
     }
-
-    action_pair_t current = actions_get_current_tutorial();
-    if (current.top != NULL)
-    {
-        if (current.top->text == NULL || current.top->text->loaded != -1)
-            current.top->text = dfs_load_sprites_by_frame(current.top->text, current.top->buffer);
-
-        rdp_draw_sprites_with_texture(current.top->text, __width / 2 - current.top->text->width / 2, 14, 0);
-    }
 }
 
 static control_panel_status_t control_panel_check_action(action_t *action)
@@ -356,7 +347,7 @@ void control_panel_reset()
     // reset sliders
     for (uint8_t i = 0; i < NUM_SLIDERS; i++)
         control_panel.left.sliders[i] = 1 + rand() % 3;
-    control_panel.freq = 200 + (-5 * control_panel.left.sliders[0]) + (25 * control_panel.left.sliders[1]) + (-50 * control_panel.left.sliders[2]) + (100 * control_panel.left.sliders[3]);
+    control_panel.freq = 220 + (-5 * control_panel.left.sliders[0]) + (25 * control_panel.left.sliders[1]) + (-50 * control_panel.left.sliders[2]) + (100 * control_panel.left.sliders[3]);
 
     // reset compass
     while (control_panel.left.compass == 0 || control_panel.left.compass == 5)
@@ -407,7 +398,7 @@ void control_panel_reset_tutorial()
     control_panel.current_station = 1;
 
     // reset sliders to != 500Hz (tutorial action)
-    control_panel.freq = 200 + (-5 * control_panel.left.sliders[0]) + (25 * control_panel.left.sliders[1]) + (-50 * control_panel.left.sliders[2]) + (100 * control_panel.left.sliders[3]);
+    control_panel.freq = 220 + (-5 * control_panel.left.sliders[0]) + (25 * control_panel.left.sliders[1]) + (-50 * control_panel.left.sliders[2]) + (100 * control_panel.left.sliders[3]);
 
     // reset compass to != SouthEast (tutorial action)
     control_panel.left.compass = 1;
@@ -417,9 +408,6 @@ void control_panel_reset_tutorial()
     control_panel.center.grid[1][1] = 2;
     control_panel.center.grid[2][2] = 3;
     control_panel.center.grid[3][3] = 4;
-
-    // reset pressurizer != 1 (tutorial welcome) and != 2 (tutorial action)
-    control_panel.pressure = 4;
 
     // reset keypad
     control_panel.right.keypad[0][0] = 1;
@@ -479,7 +467,7 @@ static void station_left_draw()
     for (uint8_t i = 0; i < 6; i++)
         rdp_draw_filled_rectangle_size(x + 61 + i * 10, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
 
-    rdp_draw_filled_rectangle_size(x + 52 + control_panel.freq * 12 / 100, y - 17, 1, 8, colors[COLOR_ORANGE]);
+    rdp_draw_filled_rectangle_size(x + 52 + control_panel.freq * 70 / 70, y - 17, 1, 8, colors[COLOR_ORANGE]);
     if (!control_panel.lights_off)
     {
         for (uint8_t i = 0; i < NUM_SLIDERS; i++)
@@ -544,7 +532,7 @@ static void station_left_input(input_t *input, bool tutorial)
         if (station->sliders[station->selected_slider] < SLIDER_POSITONS - 1)
             station->sliders[station->selected_slider]++;
 
-    control_panel.freq = 200 + (-5 * station->sliders[0]) + (25 * station->sliders[1]) + (-50 * station->sliders[2]) + (100 * station->sliders[3]);
+    control_panel.freq = 220 + (-5 * station->sliders[0]) + (25 * station->sliders[1]) + (-50 * station->sliders[2]) + (100 * station->sliders[3]);
 
     if (input->Z)
     {
@@ -744,10 +732,10 @@ static void station_right_draw_graphics(display_context_t disp)
     switch (station->state)
     {
     case CALLING:
-        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "CALLING." : "CALLING "), station->screen);
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "BAD NUM." : "BAD NUM "), station->screen);
         break;
     case OK:
-        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "O.K.    " : "SPEAKING"), station->screen);
+        graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "LINKED.." : "LINKED. "), station->screen);
         break;
     case CHEAT:
         graphics_draw_textf_with_background(disp, x, y - 20, colors[COLOR_BLACK], (control_panel.geiger % 20 < 10 ? "CHEAT   " : "CODE!   "), station->screen);
@@ -971,27 +959,31 @@ void control_panel_draw_tutorial(display_context_t disp)
 
     instructions_draw_tutorial();
 
-    if (current->show == SHOW_NONE)
-        return;
-
-    if (!control_panel.lights_off)
-        rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
-    switch (control_panel.current_station)
+    if (current->show != SHOW_NONE)
     {
-    case 0:
-        station_left_draw(disp);
-        break;
-    case 1:
-        station_center_draw(disp);
-        break;
-    case 2:
-        station_right_draw(disp);
-        break;
-    }
 
-    if (control_panel.current_station == 2)
-        station_right_draw_graphics(disp);
-    instruments_draw_tutorial(disp);
+        if (!control_panel.lights_off)
+            rdp_draw_filled_rectangle_absolute(0, 120, 220, __height, colors[COLOR_PANEL]);
+        switch (control_panel.current_station)
+        {
+        case 0:
+            station_left_draw(disp);
+            break;
+        case 1:
+            station_center_draw(disp);
+            break;
+        case 2:
+            station_right_draw(disp);
+            break;
+        }
+
+        if (control_panel.current_station == 2)
+            station_right_draw_graphics(disp);
+        instruments_draw_tutorial(disp);
+    }
+    else
+        rdp_detach_display();
+    graphics_draw_sprite(disp, __width / 2 - current->text2->width / 2, 14, current->text2);
 }
 
 void control_panel_draw(display_context_t disp)

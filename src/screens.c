@@ -251,8 +251,6 @@ bool screen_message_draw(display_context_t disp, input_t *input)
 
     rdp_detach_display();
 
-    graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
-
     if (identify_accessory(0) != ACCESSORY_RUMBLEPAK)
     {
         graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);

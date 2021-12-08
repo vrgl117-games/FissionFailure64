@@ -119,7 +119,7 @@ typedef enum control_panel_mode
 typedef struct control_panel
 {
     uint8_t pressure; // 1 to 4
-    int16_t freq;
+    uint32_t freq;
     int16_t power;
     uint16_t geiger; // 0 to 1000
     uint8_t rumble;

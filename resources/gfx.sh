@@ -21,7 +21,7 @@ generate_action() {
 }
 
 generate_action_tutorial() {
-    convert -strip -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 8 -crop 16 -gravity Center label:"$1" $2
+    convert -background "#1f2029ff" -fill "#f9d72fff" -font  "$font_uni_b" -pointsize 8 -gravity Center label:"$1" $2
 }
 
 generate_label() {
@@ -111,11 +111,11 @@ generate_direction 'S'  resources/gfx/sprites/ui/dir_s.png
 generate_direction 'SE'  resources/gfx/sprites/ui/dir_se.png
 
 # actions
-generate_action_tutorial "\n\n\n\nWelcome new team member!\n\nThe GreenGlo power plant\nis in dire need of your help!" resources/gfx/sprites/actions/tuto-welcome-%d.png
-generate_action_tutorial "\n\n\n\nYour team of brave scientists\nwill be doing all the manual labor\n\nBut they need the reactor's components\nto be set properly from the control room." resources/gfx/sprites/actions/tuto-intro-%d.png
-generate_action_tutorial "You will be in charge of three stations.\n\nLet's start by getting familiar\nwith the center station.\n\nYour team is counting on you!\nThey face grave danger!" resources/gfx/sprites/actions/tuto-center-%d.png
-generate_action_tutorial "\nKeep an eye on the\nGeiger counter level!\n\nThe plant will explode\nif it's too high!" resources/gfx/sprites/actions/tuto-geiger-%d.png
-generate_action_tutorial "\n\nGet as many points as possible\n\nGood Luck!" resources/gfx/sprites/actions/tuto-luck-%d.png
+generate_action_tutorial "\n\n\n\nWelcome new team member!\n\nThe GreenGlo power plant\nis in dire need of your help!" resources/gfx/sprites/actions/tuto-welcome.png
+generate_action_tutorial "\n\n\n\nYour team of brave scientists\nwill be doing all the manual labor\n\nBut they need the reactor's components\nto be set properly from the control room." resources/gfx/sprites/actions/tuto-intro.png
+generate_action_tutorial "You will be in charge of three stations.\n\nLet's start by getting familiar\nwith the center station.\n\nYour team is counting on you!\nThey face grave danger!" resources/gfx/sprites/actions/tuto-center.png
+generate_action_tutorial "\nKeep an eye on the\nGeiger counter level!\n\nThe plant will explode\nif it's too high!" resources/gfx/sprites/actions/tuto-geiger.png
+generate_action_tutorial "\n\nGet as many points as possible\n\nGood Luck!" resources/gfx/sprites/actions/tuto-luck.png
 
 pos=("A1" "A2" "A3" "A4" "B1" "B2" "B3" "B4" "C1" "C2" "C3" "C4" "D1" "D2" "D3" "D4" "E1" "E2" "E3" "E4" "F1" "F2" "F3" "F4")
 colors=("red" "blue" "green" "orange")
@@ -124,35 +124,35 @@ for po in ${pos[@]}; do
         generate_action "Set $color\nControl\nRod\nto $po" resources/gfx/sprites/actions/rod-"$color"-"$po"-%d.png
     done
 done
-generate_action_tutorial "Set red Control Rods to D4 by\nusing the d-pad anc C buttons." resources/gfx/sprites/actions/tuto-rod-red-D4-%d.png
+generate_action_tutorial "Set red Control Rods to D4 by\nusing the d-pad anc C buttons." resources/gfx/sprites/actions/tuto-rod-red-D4.png
 
-freqs=("200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "50" "150" "250" "350" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "75" "175" "275" "375" "250" "350" "450" "550" "200" "300" "400" "500" "150" "250" "350" "450" "100" "200" "300" "400" "275" "375" "475" "575" "225" "325" "425" "525" "175" "275" "375" "475" "125" "225" "325" "425" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "45" "145" "245" "345" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "70" "170" "270" "370" "245" "345" "445" "545" "195" "295" "395" "495" "145" "245" "345" "445" "95" "195" "295" "395" "270" "370" "470" "570" "220" "320" "420" "520" "170" "270" "370" "470" "120" "220" "320" "420" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "40" "140" "240" "340" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "65" "165" "265" "365" "240" "340" "440" "540" "190" "290" "390" "490" "140" "240" "340" "440" "90" "190" "290" "390" "265" "365" "465" "565" "215" "315" "415" "515" "165" "265" "365" "465" "115" "215" "315" "415" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "35" "135" "235" "335" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410" "60" "160" "260" "360" "235" "335" "435" "535" "185" "285" "385" "485" "135" "235" "335" "435" "85" "185" "285" "385" "260" "360" "460" "560" "210" "310" "410" "510" "160" "260" "360" "460" "110" "210" "310" "410")
+freqs=("0" "10" "100" "105" "110" "115" "120" "125" "130" "135" "140" "145" "15" "150" "155" "160" "165" "170" "175" "180" "185" "190" "195" "20" "200" "205" "210" "215" "220" "225" "230" "235" "240" "245" "25" "250" "255" "260" "265" "270" "275" "280" "285" "290" "295" "30" "300" "305" "310" "315" "320" "325" "330" "335" "340" "345" "35" "350" "355" "360" "365" "370" "375" "380" "385" "390" "395" "40" "400" "405" "410" "415" "420" "425" "430" "435" "440" "445" "45" "450" "455" "460" "465" "470" "475" "480" "485" "490" "495" "5" "50" "500" "505" "510" "515" "520" "525" "530" "535" "540" "545" "55" "550" "555" "560" "565" "570" "575" "580" "585" "590" "595" "60" "600" "605" "610" "615" "620" "65" "70" "75" "80" "85" "90" "95")
 for freq in ${freqs[@]}; do
     generate_action "Set E.M.F\nMonitor\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
 done
-generate_action_tutorial "Set E.M.F Monitor to 500Hz by\nusing the d-pad." resources/gfx/sprites/actions/tuto-freq-500-%d.png
+generate_action_tutorial "Set E.M.F Monitor to 360Hz by\nusing the d-pad." resources/gfx/sprites/actions/tuto-freq-360.png
 
 press=("1000" "2000" "3000" "4000")
 for pres in ${press[@]}; do
     generate_action "Set\npressure\nto\n${pres}Pa" resources/gfx/sprites/actions/press-"$pres"-%d.png
 done
-generate_action_tutorial "Set pressure to 2000Pa by\ndouble tapping A button." resources/gfx/sprites/actions/tuto-press-2000-%d.png
+generate_action_tutorial "Set pressure to 2000Pa by\ndouble tapping A button." resources/gfx/sprites/actions/tuto-press-2000.png
 
 dirs=("NorthWest" "North" "NorthEast" "West" "East" "SouthWest" "South" "SouthEast")
 for dir in ${dirs[@]}; do
     generate_action "Set\nCompass\nto\n${dir}" resources/gfx/sprites/actions/compass-"$dir"-%d.png
 done
-generate_action_tutorial "Use L to switch to the left station, then set\nCompass to SouthEast by using the joystick." resources/gfx/sprites/actions/tuto-compass-SouthEast-%d.png
+generate_action_tutorial "Use L to switch to the left station, then set\nCompass to SouthEast by using the joystick." resources/gfx/sprites/actions/tuto-compass-SouthEast.png
 
 powers=("0" "125" "250" "375" "500")
 for power in ${powers[@]}; do
     generate_action "Set\nTurbines\nto\n${power}W" resources/gfx/sprites/actions/power-"$power"-%d.png
 done
-generate_action_tutorial 'Set the Turbines to 250W (flip UP\ntwo of them) using the B and C buttons.' resources/gfx/sprites/actions/tuto-power-250-%d.png
-generate_action_tutorial 'Set the Turbines to 125W (flip DOWN\none of them) using the A and C buttons.' resources/gfx/sprites/actions/tuto-power-125-%d.png
+generate_action_tutorial 'Set the Turbines to 250W (flip UP\ntwo of them) using the B and C buttons.' resources/gfx/sprites/actions/tuto-power-250.png
+generate_action_tutorial 'Set the Turbines to 125W (flip DOWN\none of them) using the A and C buttons.' resources/gfx/sprites/actions/tuto-power-125.png
 
-generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps-%d.png
-generate_action_tutorial "Use R (2x) to switch to the right station, then\nactivate the pumps by rotating the joystick." resources/gfx/sprites/actions/tuto-pumps-%d.png
+generate_action 'Activate\nthe Pumps' resources/gfx/sprites/actions/pumps.png
+generate_action_tutorial "Use R (2x) to switch to the right station, then\nactivate the pumps by rotating the joystick." resources/gfx/sprites/actions/tuto-pumps.png
 
 generate_action 'Call\nIncident\nResponse\n(see menu)' resources/gfx/sprites/actions/call-incident-%d.png
 generate_action 'Call\nNuclear\nSafety\n(see menu)' resources/gfx/sprites/actions/call-nuclear-%d.png
@@ -160,14 +160,14 @@ generate_action 'Call the\nPresident\n(see menu)' resources/gfx/sprites/actions/
 generate_action 'Call\nPublic\nAffairs\n(see menu)' resources/gfx/sprites/actions/call-public-%d.png
 generate_action 'Call\nSpare\nParts\n(see menu)' resources/gfx/sprites/actions/call-spare-%d.png
 generate_action 'Call the\nTreasury\n(see menu)' resources/gfx/sprites/actions/call-treasury-%d.png
-generate_action_tutorial 'Use Z button to switch to keypad, then\ncall 123 using A and C buttons.' resources/gfx/sprites/actions/tuto-call-123-%d.png
+generate_action_tutorial 'Use Z button to switch to keypad, then\ncall 123 using A and C buttons.' resources/gfx/sprites/actions/tuto-call-123.png
 
 generate_action 'Press AZ-5\nwhen\nTurbines\nare off' resources/gfx/sprites/actions/az5-turbines-%d.png
 generate_action 'Press AZ-5\nwhen\nCompass\npoints\nNorth' resources/gfx/sprites/actions/az5-compass-%d.png
-generate_action_tutorial 'Press AZ-5 when Compass points North\nusing the Z button.' resources/gfx/sprites/actions/tuto-az5-compass-%d.png
+generate_action_tutorial 'Press AZ-5 when Compass points North\nusing the Z button.' resources/gfx/sprites/actions/tuto-az5-compass.png
 
 generate_action 'Stop\nplaying\nwith the\nlights!!!' resources/gfx/sprites/actions/lights-%d.png
-generate_action_tutorial '\nStop playing with the lights!!!' resources/gfx/sprites/actions/tuto-lights-%d.png
+generate_action_tutorial '\nStop playing with the lights!!!' resources/gfx/sprites/actions/tuto-lights.png
 
 # title screen
 generate "#1f2029ff" "#f9d72fff" "$font_uni_b" 24 "Fission\nFailure\n64" resources/gfx/sprites/ui/logo.png
@@ -214,6 +214,7 @@ generate "#1f2029ff" "#F0F1FAff" "$font" 16 "LittleRobotSoundFactory" resources/
 convert -strip -background "#F0F1FAff" -bordercolor "#F0F1FAff"  -border 2x  -fill "#1f2029ff"  -font "$font_uni" -pointsize 12 -interline-spacing -5 -gravity Center label:"phonebook\n\nCommissioner............0598-4627\nEmergency Services............911\nFuel Procurement......5294-2647\nIncident Response.....4676-4729\nNintendo...............800-255-3700\nNuclear Safety..........5733-4738\nPresident..................2982-2941\nPublic Affairs..........1029-4859\nReactor Supervisor..7268-2638\nSpare Parts...............3905-1273\nTreasury...................3648-3957" resources/gfx/sprites/phonebook.png
 
 # studio logo
+cp resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo.png
 convert -strip -brightness-contrast -10 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_9.png
 convert -strip -brightness-contrast -20 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_8.png
 convert -strip -brightness-contrast -30 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_7.png
@@ -225,6 +226,7 @@ convert -strip -brightness-contrast -80 resources/gfx/pngs/intro/vrgl117_logo.pn
 convert -strip -brightness-contrast -90 resources/gfx/pngs/intro/vrgl117_logo.png resources/gfx/sprites/intro/vrgl117_logo_1.png
 
 # n64 + n64brew jam logo
+cp resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo.png
 convert -strip -brightness-contrast -10 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_9.png
 convert -strip -brightness-contrast -20 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_8.png
 convert -strip -brightness-contrast -30 resources/gfx/pngs/intro/n64brew_jam_logo.png resources/gfx/sprites/intro/n64brew_jam_logo_7.png
