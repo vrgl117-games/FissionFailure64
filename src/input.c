@@ -35,16 +35,6 @@ input_t input_get()
     input.x = pressed.x;
     input.y = pressed.y;
 
-#if DISPLAY_SAFE_AREAS
-    if (pressed.L)
-    {
-        input.L = true;
-    }
-    if (pressed.R)
-    {
-        input.R = true;
-    }
-#endif
     return input;
 }
 

@@ -8,11 +8,13 @@
 typedef enum sfx_id
 {
     SFX_THEME = 0,
+    SFX_THEME_TUTORIAL,
     SFX_IDLE,
     SFX_STRESS,
     SFX_HELL,
     SFX_ACTION,
     SFX_GAME_OVER,
+    SFX_WIN,
     SFX_ID_COUNT,
 } sfx_id_t;
 

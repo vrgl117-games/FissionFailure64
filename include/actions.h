@@ -14,12 +14,14 @@ typedef enum element
     ELEMENT_TURBINES,
     ELEMENT_COMPASS,
     ELEMENT_PRESSURIZER,
-    // NORMAL
-    ELEMENT_RADIO,
     ELEMENT_GRID,
     ELEMENT_PUMPS,
-    // HARD
+
+    // NORMAL
+    ELEMENT_RADIO,
     ELEMENT_KEYPAD,
+
+    // HARD
     ELEMENT_AZ5,
 
     ELEMENT_TUTORIAL,
@@ -31,6 +33,14 @@ typedef struct action
     uint16_t expected[8];
     char buffer[256];
     sprites_t *text;
+    sprite_t *text2;
+
+    enum
+    {
+        SHOW_NONE,
+        SHOW_STATION,
+        SHOW_DANGER,
+    } show;
 
 } action_t;
 
@@ -42,23 +52,24 @@ typedef struct action_pair
 
 typedef enum level
 {
-    EASY = 10,
-    NORMAL = 40,
-    HARD = 80,
-    EXTRA_HARD = 120,
+    EASY = 0,
+    NORMAL = 15,
+    HARD = 40,
 } level_t;
 
 typedef action_t *(*action_new)();
 
 uint16_t actions_get_points();
+action_t *actions_new_lights();
+action_t *actions_new_lights_tutorial();
 action_pair_t actions_get_current();
-void actions_init();
 bool actions_next();
 void actions_reset();
 
 // Tutorial
 action_pair_t actions_get_current_tutorial();
 bool actions_next_tutorial();
+void action_init_tutorial();
 void actions_reset_tutorial();
 
 #endif //__ACTIONS_H__

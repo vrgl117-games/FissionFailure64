@@ -35,6 +35,12 @@ typedef enum
     TEXT_3,
     TEXT_4,
 
+    TEXT_POINTS,
+    TEXT_PRESS,
+    TEXT_POWER,
+    TEXT_FREQ,
+    TEXT_RAM,
+
     LABEL_IDX
 } label_t;
 
@@ -64,6 +70,7 @@ typedef struct station_center
     uint8_t gridselector_y;
     bool pressurizer;
     bool lights;
+    uint8_t nb_switch_lights;
 
     bool A;
 } station_center_t;
@@ -80,7 +87,13 @@ typedef struct station_right
     uint8_t keypadselector_y;
     char screen[CURSOR_MAX + 1];
     uint8_t cursor;
-    bool calling;
+    enum
+    {
+        NONE,
+        CALLING,
+        OK,
+        CHEAT,
+    } state;
 
     bool levers[NUM_LEVERS];
     uint8_t lever_selector;
@@ -105,10 +118,11 @@ typedef enum control_panel_mode
 
 typedef struct control_panel
 {
-    int8_t pressure;
-    int16_t freq;
+    uint8_t pressure; // 1 to 4
+    uint32_t freq;
     int16_t power;
     uint16_t geiger; // 0 to 1000
+    uint8_t rumble;
     station_left_t left;
     station_center_t center;
     station_right_t right;

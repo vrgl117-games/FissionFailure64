@@ -1,6 +1,16 @@
 # FissionFailure64 for Nintendo64
 
+The GreenGlo power plant is in dire need of your help!
+
 N64 game developed for the N64brew Jam #2
+
+Support 1 player and Rumble Pak.
+
+![title](./resources/screenshots/title.png?raw=true)
+![station1](./resources/screenshots/station1.png?raw=true)
+![station2](./resources/screenshots/station2.png?raw=true)
+![station3](./resources/screenshots/station3.png?raw=true)
+![credits](./resources/screenshots/credits.png?raw=true)
 
 ## Note
 
@@ -35,5 +45,4 @@ All development can be done using Docker. It's the easiest way to build the ROM 
 
 ## Thanks
 
-* Thanks to [Kenney](https://www.kenney.nl) for the art used in the game.
 * Thanks to [Jennifer Taylor](https://github.com/DragonMinded) for libdragon.

@@ -192,25 +192,34 @@ screen_t screen_game(display_context_t disp, input_t *input)
 }
 
 // game over screen
+static sprites_t *boom_sp = NULL;
+static sprites_t *continue_sp = NULL;
+static sprites_t *gameover_sp = NULL;
+void screen_game_over_load()
+{
+    boom_sp = dfs_load_sprites("/gfx/sprites/boom-%d.sprite");
+    continue_sp = dfs_load_sprites("/gfx/sprites/ui/continue-%d.sprite");
+    gameover_sp = dfs_load_sprites("/gfx/sprites/ui/gameover-%d.sprite");
+}
+
+void screen_game_over_unload()
+{
+    dfs_free_sprites(boom_sp);
+    dfs_free_sprites(continue_sp);
+    dfs_free_sprites(gameover_sp);
+}
+
 bool screen_game_over(display_context_t disp, input_t *input)
 {
     rdp_attach(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
+    rdp_draw_sprites_with_texture(boom_sp, __width / 2 - boom_sp->width / 2, __height / 2 - boom_sp->height / 2, 0);
+    rdp_draw_sprites_with_texture(gameover_sp, __width / 2 - gameover_sp->width / 2, 20, 0);
+    rdp_draw_sprites_with_texture(continue_sp, __width / 2 - continue_sp->width / 2, 200, 0);
+
     rdp_detach_display();
-
-    sprite_t *boom_sp = dfs_load_sprite("/gfx/sprites/boom.sprite");
-    graphics_draw_sprite_trans(disp, __width / 2 - boom_sp->width / 2, __height / 2 - boom_sp->height / 2, boom_sp);
-    free(boom_sp);
-
-    sprite_t *gameover_sp = dfs_load_sprite("/gfx/sprites/ui/gameover.sprite");
-    graphics_draw_sprite(disp, __width / 2 - gameover_sp->width / 2, 20, gameover_sp);
-    free(gameover_sp);
-
-    sprite_t *continue_sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
-    graphics_draw_sprite(disp, __width / 2 - continue_sp->width / 2, 200, continue_sp);
-    free(continue_sp);
 
     return (input->A || input->start);
 }
@@ -219,14 +228,10 @@ static sprite_t *message_sp = NULL;
 static sprite_t *pak_sp = NULL;
 static sprite_t *pak_not_sp = NULL;
 static sprite_t *rumble_sp = NULL;
-static sprite_t *continue_sp = NULL;
 void screen_message_load()
 {
     message_sp = dfs_load_sprite("/gfx/sprites/ui/message.sprite");
-    pak_sp = dfs_load_sprite("/gfx/sprites/ui/pak_detected.sprite");
-    pak_not_sp = dfs_load_sprite("/gfx/sprites/ui/pak_not_detected.sprite");
     rumble_sp = dfs_load_sprite("/gfx/sprites/ui/rumble_not_detected.sprite");
-    continue_sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
 }
 void screen_message_unload()
 {
@@ -234,7 +239,6 @@ void screen_message_unload()
     free(pak_sp);
     free(pak_not_sp);
     free(rumble_sp);
-    free(continue_sp);
 }
 
 bool screen_message_draw(display_context_t disp, input_t *input)
@@ -247,9 +251,13 @@ bool screen_message_draw(display_context_t disp, input_t *input)
 
     rdp_detach_display();
 
-    graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
-
-    graphics_draw_sprite(disp, __width / 2 - rumble_sp->width / 2, 120, rumble_sp);
+    if (identify_accessory(0) != ACCESSORY_RUMBLEPAK)
+    {
+        graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
+        graphics_draw_sprite(disp, __width / 2 - rumble_sp->width / 2, 120, rumble_sp);
+    }
+    else
+        graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, __height / 2 - message_sp->height / 2, message_sp);
 
     anim++;
     return (anim > 128 || input->A || input->start);
@@ -313,27 +321,30 @@ bool screen_phonebook(display_context_t disp, input_t *input)
     return (input->A || input->start);
 }
 
-static sprite_t *logo_sp = NULL;
-static sprite_t *start_sp = NULL;
-static sprite_t *start_selected_sp = NULL;
-static sprite_t *tutorial_sp = NULL;
-static sprite_t *tutorial_selected_sp = NULL;
+static sprites_t *logo_sp = NULL;
+static sprites_t *start_sp = NULL;
+static sprites_t *start_selected_sp = NULL;
+static sprites_t *tutorial_sp = NULL;
+static sprites_t *tutorial_selected_sp = NULL;
+static sprite_t *nuclear_sp = NULL;
 void screen_title_load()
 {
-    logo_sp = dfs_load_sprite("/gfx/sprites/ui/logo.sprite");
-    start_sp = dfs_load_sprite("/gfx/sprites/ui/caps_start.sprite");
-    start_selected_sp = dfs_load_sprite("/gfx/sprites/ui/caps_start_selected.sprite");
-    tutorial_sp = dfs_load_sprite("/gfx/sprites/ui/caps_tutorial.sprite");
-    tutorial_selected_sp = dfs_load_sprite("/gfx/sprites/ui/caps_tutorial_selected.sprite");
+    logo_sp = dfs_load_sprites("/gfx/sprites/ui/logo-%d.sprite");
+    start_sp = dfs_load_sprites("/gfx/sprites/ui/caps_start-%d.sprite");
+    start_selected_sp = dfs_load_sprites("/gfx/sprites/ui/caps_start_selected-%d.sprite");
+    tutorial_sp = dfs_load_sprites("/gfx/sprites/ui/caps_tutorial-%d.sprite");
+    tutorial_selected_sp = dfs_load_sprites("/gfx/sprites/ui/caps_tutorial_selected-%d.sprite");
+    nuclear_sp = dfs_load_sprite("/gfx/sprites/ui/nuclear.sprite");
 }
 
 void screen_title_unload()
 {
-    free(logo_sp);
-    free(start_sp);
-    free(start_selected_sp);
-    free(tutorial_sp);
-    free(tutorial_selected_sp);
+    dfs_free_sprites(logo_sp);
+    dfs_free_sprites(start_sp);
+    dfs_free_sprites(start_selected_sp);
+    dfs_free_sprites(tutorial_sp);
+    dfs_free_sprites(tutorial_selected_sp);
+    free(nuclear_sp);
 }
 
 screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
@@ -348,20 +359,25 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
     rdp_attach(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
+    if (ticks % 40 > 19)
+    {
+        rdp_draw_sprite_with_texture(nuclear_sp, 100, (selected == screen_selection_resume ? 162 : 192), 0);
+        rdp_draw_sprite_with_texture(nuclear_sp, __width - 100 - nuclear_sp->width, (selected == screen_selection_resume ? 162 : 192), 0);
+    }
 
-    rdp_detach_display();
-
-    graphics_draw_sprite(disp, __width / 2 - logo_sp->width / 2, 20, logo_sp);
+    rdp_draw_sprites_with_texture(logo_sp, __width / 2 - logo_sp->width / 2, 20, 0);
 
     if (selected == screen_selection_tutorial)
-        graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_sp);
+        rdp_draw_sprites_with_texture(start_sp, __width / 2 - start_sp->width / 2, 160, 0);
     else if (ticks % 40 > 19)
-        graphics_draw_sprite(disp, __width / 2 - start_sp->width / 2, 160, start_selected_sp);
+        rdp_draw_sprites_with_texture(start_selected_sp, __width / 2 - start_sp->width / 2, 160, 0);
 
     if (selected == screen_selection_resume)
-        graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_sp);
+        rdp_draw_sprites_with_texture(tutorial_sp, __width / 2 - tutorial_sp->width / 2, 190, 0);
     else if (ticks % 40 > 19)
-        graphics_draw_sprite(disp, __width / 2 - tutorial_sp->width / 2, 190, tutorial_selected_sp);
+        rdp_draw_sprites_with_texture(tutorial_selected_sp, __width / 2 - tutorial_sp->width / 2, 190, 0);
+
+    rdp_detach_display();
 
     if (input->A || input->start)
         return selected;
@@ -369,21 +385,21 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
 }
 
 // tutorial screen
-static sprite_t *tuto_left = NULL;
-static sprite_t *tuto_center = NULL;
-static sprite_t *tuto_right = NULL;
+static sprites_t *tuto_left = NULL;
+static sprites_t *tuto_center = NULL;
+static sprites_t *tuto_right = NULL;
 void screen_tutorial_load()
 {
-    tuto_left = dfs_load_sprite("/gfx/sprites/tutorial/left.sprite");
-    tuto_center = dfs_load_sprite("/gfx/sprites/tutorial/center.sprite");
-    tuto_right = dfs_load_sprite("/gfx/sprites/tutorial/right.sprite");
+    tuto_left = dfs_load_sprites("/gfx/sprites/tutorial/left-%d.sprite");
+    tuto_center = dfs_load_sprites("/gfx/sprites/tutorial/center-%d.sprite");
+    tuto_right = dfs_load_sprites("/gfx/sprites/tutorial/right-%d.sprite");
 }
 
 void screen_tutorial_unload()
 {
-    free(tuto_left);
-    free(tuto_center);
-    free(tuto_right);
+    dfs_free_sprites(tuto_left);
+    dfs_free_sprites(tuto_center);
+    dfs_free_sprites(tuto_right);
 }
 
 bool screen_tutorial(display_context_t disp, input_t *input)
@@ -407,31 +423,55 @@ bool screen_tutorial(display_context_t disp, input_t *input)
     else
         rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
 
+    switch (current.top->element)
+    {
+    case ELEMENT_RADIO:
+    case ELEMENT_AZ5:
+    case ELEMENT_COMPASS:
+        rdp_draw_sprites_with_texture(tuto_left, __width / 2 - tuto_left->width / 2, 46, 0);
+        break;
+    case ELEMENT_PRESSURIZER:
+    case ELEMENT_GRID:
+        rdp_draw_sprites_with_texture(tuto_center, __width / 2 - tuto_center->width / 2, 46, 0);
+        break;
+    case ELEMENT_KEYPAD:
+    case ELEMENT_PUMPS:
+    case ELEMENT_TURBINES:
+        rdp_draw_sprites_with_texture(tuto_right, __width / 2 - tuto_right->width / 2, 46, 0);
+    default:
+        break;
+    }
+
     control_panel_draw_tutorial(disp);
 
-    if (actions_get_current_tutorial().top->element == ELEMENT_PRESSURIZER)
-    {
-        graphics_draw_sprite(disp, __width / 2 - tuto_center->width / 2, 46, tuto_center);
-    }
     return false;
 }
 
 // end game screen
+static sprites_t *win_sp = NULL;
+void screen_win_load()
+{
+    continue_sp = dfs_load_sprites("/gfx/sprites/ui/continue-%d.sprite");
+    win_sp = dfs_load_sprites("/gfx/sprites/ui/win-%d.sprite");
+}
+
+void screen_win_unload()
+{
+    dfs_free_sprites(continue_sp);
+    dfs_free_sprites(win_sp);
+}
 bool screen_win(display_context_t disp, input_t *input)
 {
     rdp_attach(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
+    rdp_draw_sprites_with_texture(win_sp, __width / 2 - win_sp->width / 2, 20, 0);
+    rdp_draw_sprites_with_texture(continue_sp, __width / 2 - continue_sp->width / 2, 200, 0);
+
+    scientist_win();
+
     rdp_detach_display();
-
-    sprite_t *win_sp = dfs_load_sprite("/gfx/sprites/ui/win.sprite");
-    graphics_draw_sprite(disp, __width / 2 - win_sp->width / 2, 20, win_sp);
-    free(win_sp);
-
-    sprite_t *continue_sp = dfs_load_sprite("/gfx/sprites/ui/continue.sprite");
-    graphics_draw_sprite(disp, __width / 2 - continue_sp->width / 2, 200, continue_sp);
-    free(continue_sp);
 
     return (input->A || input->start);
 }
