@@ -5,6 +5,7 @@
 #include "colors.h"
 #include "control_panel.h"
 #include "dfs.h"
+#include "graphics.h"
 #include "rdp.h"
 #include "scientist.h"
 #include "sfx.h"
@@ -220,6 +221,12 @@ bool screen_game_over(display_context_t disp, input_t *input)
     rdp_draw_sprites_with_texture(continue_sp, __width / 2 - continue_sp->width / 2, 200, 0);
 
     rdp_detach_display();
+
+    graphics_set_color(colors[COLOR_RED], 0);
+    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS: %03d", actions_get_points());
+    graphics_set_color(colors[COLOR_YELLOW], 0);
+    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS:");
+    graphics_set_color(colors[COLOR_WHITE], 0);
 
     return (input->A || input->start);
 }
@@ -460,6 +467,7 @@ void screen_win_unload()
     dfs_free_sprites(continue_sp);
     dfs_free_sprites(win_sp);
 }
+
 bool screen_win(display_context_t disp, input_t *input)
 {
     rdp_attach(disp);
@@ -472,6 +480,12 @@ bool screen_win(display_context_t disp, input_t *input)
     scientist_win();
 
     rdp_detach_display();
+
+    graphics_set_color(colors[COLOR_RED], 0);
+    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS: %03d", actions_get_points());
+    graphics_set_color(colors[COLOR_YELLOW], 0);
+    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS:");
+    graphics_set_color(colors[COLOR_WHITE], 0);
 
     return (input->A || input->start);
 }
