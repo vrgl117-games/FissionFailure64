@@ -15,7 +15,7 @@
 typedef struct scientist
 {
     uint8_t mode; //0 -> idle, 1 -> stressed, 2 -> hell
-    sprites_t *sprites[4];
+    sprites_t *sprites[6];
 
     int16_t x;
     uint8_t y;

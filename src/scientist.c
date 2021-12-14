@@ -8,7 +8,6 @@
 extern control_panel_t control_panel;
 
 static scientist_t scientists[NUM_SCIENTIST];
-static sprites_t *dark = NULL;
 
 void scientist_draw()
 {
@@ -16,11 +15,7 @@ void scientist_draw()
     {
         if (scientists[i].x >= 0 && scientists[i].x < MAX_VISIBLE_X)
         {
-            sprites_t *sp;
-            if (control_panel.lights_off)
-                sp = (scientists[i].mode == 2 ? scientists[i].sprites[3] : dark);
-            else
-                sp = scientists[i].sprites[scientists[i].mode];
+            sprites_t *sp = scientists[i].sprites[(control_panel.lights_off ? 3 + scientists[i].mode : scientists[i].mode)];
 
             rdp_draw_sprites_with_texture(sp, scientists[i].x, scientists[i].y_offset + MAX(scientists[i].y, 8), scientists[i].h_direction);
         }
@@ -37,34 +32,42 @@ void scientist_win()
 
 void scientist_init()
 {
-    if (dark == NULL)
+    if (scientists[0].sprites[0] == NULL)
     {
-        dark = dfs_load_sprites("/gfx/sprites/scientists/dark-%d.sprite");
+        sprites_t *dark_idle = dfs_load_sprites("/gfx/sprites/scientists/dark-idle-%d.sprite");
+        sprites_t *dark_stressed = dfs_load_sprites("/gfx/sprites/scientists/dark-stressed-%d.sprite");
 
-        sprites_t *scientists_sp[4][4] = {
+        sprites_t *scientists_sp[4][6] = {
             {
                 dfs_load_sprites("/gfx/sprites/scientists/idle0-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/stressed0-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/hell0-%d.sprite"),
+                dark_idle,
+                dark_stressed,
                 dfs_load_sprites("/gfx/sprites/scientists/dark-hell0-%d.sprite"),
-
             },
             {
                 dfs_load_sprites("/gfx/sprites/scientists/idle1-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/stressed1-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/hell1-%d.sprite"),
+                dark_idle,
+                dark_stressed,
                 dfs_load_sprites("/gfx/sprites/scientists/dark-hell1-%d.sprite"),
             },
             {
                 dfs_load_sprites("/gfx/sprites/scientists/idle2-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/stressed2-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/hell2-%d.sprite"),
+                dark_idle,
+                dark_stressed,
                 dfs_load_sprites("/gfx/sprites/scientists/dark-hell2-%d.sprite"),
             },
             {
                 dfs_load_sprites("/gfx/sprites/scientists/idle3-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/stressed3-%d.sprite"),
                 dfs_load_sprites("/gfx/sprites/scientists/hell3-%d.sprite"),
+                dark_idle,
+                dark_stressed,
                 dfs_load_sprites("/gfx/sprites/scientists/dark-hell3-%d.sprite"),
             },
         };
@@ -85,6 +88,8 @@ void scientist_init()
             scientists[i].sprites[1] = scientists_sp[num][1];
             scientists[i].sprites[2] = scientists_sp[num][2];
             scientists[i].sprites[3] = scientists_sp[num][3];
+            scientists[i].sprites[4] = scientists_sp[num][4];
+            scientists[i].sprites[5] = scientists_sp[num][5];
         }
     }
 }
