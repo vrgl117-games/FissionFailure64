@@ -472,7 +472,6 @@ static action_t *actions_new_geiger_tutorial()
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_TUTORIAL;
-    action->expected[1] = 1;
     action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-geiger.sprite");
     action->show = SHOW_DANGER;
 
