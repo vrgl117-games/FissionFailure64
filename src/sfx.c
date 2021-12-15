@@ -60,9 +60,12 @@ void sfx_set_next_music(const sfx_id_t sfx_id)
             // stop loop on current music
             mixer_ch_stop(CH_MUSIC);
             float pos = mixer_ch_get_pos(CH_MUSIC);
-            wav64_set_loop(&SFX_CACHE[sfx_id_next_music], false);
-            mixer_ch_play(CH_MUSIC, &SFX_CACHE[sfx_id_next_music].wave);
-            mixer_ch_set_pos(CH_MUSIC, pos);
+            if (pos < SFX_CACHE[sfx_id_next_music].wave.len)
+            {
+                wav64_set_loop(&SFX_CACHE[sfx_id_next_music], false);
+                mixer_ch_play(CH_MUSIC, &SFX_CACHE[sfx_id_next_music].wave);
+                mixer_ch_set_pos(CH_MUSIC, pos);
+            }
         }
 
         sfx_id_next_music = sfx_id;

@@ -14,6 +14,7 @@ static void input_timer()
 
 void input_init()
 {
+    controller_init();
     presses_timer = new_timer(TIMER_TICKS(500000), TF_DISABLED, input_timer); //500ms
     running = false;
 }

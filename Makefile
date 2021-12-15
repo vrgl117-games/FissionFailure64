@@ -73,7 +73,11 @@ setup:		##    Create dev environment (docker image).
 
 resetup:	##  Force recreate the dev environment (docker image).
 	@echo "Rebuilding dev environment in docker..."
-	@ docker build -q -t build  --no-cache  - < Dockerfile > /dev/null
+	@docker build -q -t build  --no-cache  - < Dockerfile > /dev/null
+
+resetup-v:	##  Force recreate the dev environment (docker image).
+	@echo "Rebuilding dev environment in docker..."
+	@docker build -t build  --no-cache  - < Dockerfile
 
 cen64:		##    Start rom in CEN64 emulator.
 	@echo "Starting cen64..."
