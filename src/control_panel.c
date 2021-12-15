@@ -798,7 +798,7 @@ static void station_right_draw()
         rdp_draw_sprite_with_texture(tiles[6], x, y + 18, 0);
         rdp_draw_sprite_with_texture(tiles[7], x + 18, y + 18, 0);
         rdp_draw_sprite_with_texture(tiles[8], x + 36, y + 18, 0);
-        rdp_draw_sprite_with_texture(tiles[8], x, y + 36, 0);
+        rdp_draw_sprite_with_texture(tiles[9], x, y + 36, 0);
         rdp_draw_sprite_with_texture(tiles[10], x + 18, y + 36, 0);
         rdp_draw_sprite_with_texture(tiles[11], x + 36, y + 36, 0);
         rdp_draw_sprite_with_texture(tiles[14], x, y + 54, 0);
