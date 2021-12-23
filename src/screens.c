@@ -411,13 +411,13 @@ void screen_tutorial_unload()
 
 bool screen_tutorial(display_context_t disp, input_t *input)
 {
-
     control_panel_input(input, true);
+    action_t *current = actions_get_current_tutorial();
+    action_pair_t pair = {.top = current, .bottom = NULL};
 
-    action_pair_t current = actions_get_current_tutorial();
-    if (control_panel_check_status(current) == CORRECT)
+    if (control_panel_check_status(pair) == CORRECT)
     {
-        if (current.top->element != ELEMENT_TUTORIAL)
+        if (current->element != ELEMENT_TUTORIAL)
             sfx_play(CH_SFX, SFX_ACTION, false);
         if (actions_next_tutorial())
             return true;
@@ -429,8 +429,7 @@ bool screen_tutorial(display_context_t disp, input_t *input)
         rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
     else
         rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
-
-    switch (current.top->element)
+    switch (current->element)
     {
     case ELEMENT_RADIO:
     case ELEMENT_AZ5:

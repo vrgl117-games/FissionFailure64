@@ -81,7 +81,7 @@ static void instruments_draw_tutorial(display_context_t disp)
     uint8_t width = __width - x;
     uint8_t height = __height - y;
 
-    action_t *current = actions_get_current_tutorial().top;
+    action_t *current = actions_get_current_tutorial();
 
     if (!control_panel.lights_off)
     {
@@ -514,7 +514,7 @@ static void station_left_draw()
 
 static void station_left_input(input_t *input, bool tutorial)
 {
-    if (input->R && (!tutorial || actions_get_current_tutorial().top->element == ELEMENT_PUMPS))
+    if (input->R && (!tutorial || actions_get_current_tutorial()->element == ELEMENT_PUMPS))
         control_panel.current_station++;
 
     station_left_t *station = &(control_panel.left);
@@ -628,9 +628,9 @@ static void station_center_draw()
 
 static void station_center_input(input_t *input, bool tutorial)
 {
-    if (input->L && (!tutorial || actions_get_current_tutorial().top->element == ELEMENT_COMPASS))
+    if (input->L && (!tutorial || actions_get_current_tutorial()->element == ELEMENT_COMPASS))
         control_panel.current_station--;
-    else if (input->R && (!tutorial || actions_get_current_tutorial().top->element == ELEMENT_PUMPS))
+    else if (input->R && (!tutorial || actions_get_current_tutorial()->element == ELEMENT_PUMPS))
         control_panel.current_station++;
 
     station_center_t *station = &(control_panel.center);
@@ -675,7 +675,7 @@ static void station_center_input(input_t *input, bool tutorial)
     else
         control_panel.lights_off = false;
 
-    if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+    if (tutorial && actions_get_current_tutorial()->element == ELEMENT_TUTORIAL)
     {
         station->A = input->A;
         input_reset_presses();
@@ -829,7 +829,7 @@ static void station_right_input(input_t *input, bool tutorial)
             if (station->keypadselector_x < KEYPAD_W - 1)
                 station->keypadselector_x++;
 
-        if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+        if (tutorial && actions_get_current_tutorial()->element == ELEMENT_TUTORIAL)
             control_panel.center.A = input->A;
         else if (input->A)
         {
@@ -875,7 +875,7 @@ static void station_right_input(input_t *input, bool tutorial)
             if (station->lever_selector < NUM_LEVERS - 1)
                 station->lever_selector++;
 
-        if (tutorial && actions_get_current_tutorial().top->element == ELEMENT_TUTORIAL)
+        if (tutorial && actions_get_current_tutorial()->element == ELEMENT_TUTORIAL)
             control_panel.center.A = input->A;
         else if (input->A)
             station->levers[station->lever_selector] = false;
@@ -953,7 +953,7 @@ void control_panel_input(input_t *input, bool tutorial)
 
 void control_panel_draw_tutorial(display_context_t disp)
 {
-    action_t *current = actions_get_current_tutorial().top;
+    action_t *current = actions_get_current_tutorial();
     if (current->show == SHOW_DANGER)
         danger_bar_draw();
 

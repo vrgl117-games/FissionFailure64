@@ -239,7 +239,7 @@ static action_t *actions_new_az5()
     return action;
 }
 
-static action_new actions[] = {
+static action_new actions_new[] = {
     actions_new_power,
     actions_new_compass,
     actions_new_press,
@@ -272,7 +272,7 @@ static action_t *get_action(uint8_t unwanted_action1, uint8_t unwanted_action2)
     uint8_t wanted_action = rand() % element;
     while (wanted_action == unwanted_action1 || wanted_action == unwanted_action2)
         wanted_action = rand() % element;
-    return actions[wanted_action]();
+    return actions_new[wanted_action]();
 }
 
 action_pair_t actions_get_current()
@@ -490,7 +490,7 @@ static action_t *actions_new_good_luck_tutorial()
     return action;
 }
 
-static action_new actions_tutorial[] = {
+static action_new actions_new_tutorial[] = {
     actions_new_welcome_tutorial,
     actions_new_intro_tutorial,
     actions_new_center_tutorial,
@@ -513,30 +513,27 @@ static action_new actions_tutorial[] = {
     NULL,
 };
 
-static action_t *actual_actions[14];
-
-action_pair_t actions_get_current_tutorial()
+static action_t *actions_tutorial[14];
+action_t *actions_get_current_tutorial()
 {
-    return pair;
+    return actions_tutorial[current_element - 1];
 }
 
 bool actions_next_tutorial()
 {
-    pair.top = NULL;
-    pair.bottom = NULL;
-    if (actions_tutorial[current_element] == NULL)
+
+    if (actions_new_tutorial[current_element] == NULL)
         return true;
-    pair.top = actual_actions[current_element];
     current_element++;
     return false;
 }
 
 void actions_reset_tutorial()
 {
-    if (actual_actions[0] == NULL)
+    if (actions_tutorial[0] == NULL)
     {
         for (uint8_t i = 0; i < 14; i++)
-            actual_actions[i] = actions_tutorial[i]();
+            actions_tutorial[i] = actions_new_tutorial[i]();
     }
 
     current_element = 0;
