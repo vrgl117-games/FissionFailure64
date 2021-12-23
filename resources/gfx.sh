@@ -32,6 +32,10 @@ generate_text() {
     convert -strip -background "#5b607aff" -fill "#f0f1faff"  -font "$font_uni" -pointsize 12 -extent 10x10 -gravity Center label:"$1" $2
 }
 
+generate_num() {
+    convert -strip -background "#1f2029ff" -fill  "#eb4b4eff"   -font "$font_uni" -pointsize 12 -extent 8x8 -gravity Center label:"$1" $2
+}
+
 generate_direction() {
     convert -strip -background "#f9d72fff" -fill "#1f2029ff"  -font "$font_uni" -pointsize 7 -extent 13x10 -gravity Center label:"$1" $2
 }
@@ -85,10 +89,22 @@ generate_label  'PRESSURIZER' resources/gfx/sprites/ui/label_pressurizer.png
 # edited by hand
 #generate_label  'G\nE\nI\nG\nE\nR\n\nL\nE\nV\nE\nL' resources/gfx/sprites/ui/label_danger.png
 generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "POINTS" resources/gfx/sprites/ui/text_points.png
+generate "#1f2029ff" "#f9d72fff" "$font_uni" 8 "POINTS:" resources/gfx/sprites/ui/text_points_end.png
 generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "PRESS" resources/gfx/sprites/ui/text_press.png
 generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "POWER" resources/gfx/sprites/ui/text_power.png
 generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "FREQ" resources/gfx/sprites/ui/text_freq.png
 generate "#5b607aff" "#f0f1faff" "$font_uni" 8 "RAM" resources/gfx/sprites/ui/text_ram.png
+
+generate_num "0" resources/gfx/sprites/ui/text_num-0.png
+generate_num "1" resources/gfx/sprites/ui/text_num-1.png
+generate_num "2" resources/gfx/sprites/ui/text_num-2.png
+generate_num "3" resources/gfx/sprites/ui/text_num-3.png
+generate_num "4" resources/gfx/sprites/ui/text_num-4.png
+generate_num "5" resources/gfx/sprites/ui/text_num-5.png
+generate_num "6" resources/gfx/sprites/ui/text_num-6.png
+generate_num "7" resources/gfx/sprites/ui/text_num-7.png
+generate_num "8" resources/gfx/sprites/ui/text_num-8.png
+generate_num "9" resources/gfx/sprites/ui/text_num-9.png
 
 generate_text 'a'  resources/gfx/sprites/ui/text_a.png
 generate_text 'b'  resources/gfx/sprites/ui/text_b.png

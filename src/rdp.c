@@ -66,6 +66,38 @@ void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
     rdp_draw_sprite(0, x, y, mirror);
 }
 
+static int _rdp_draw_sprites_int(int x, int y, sprites_t *sprites, int n, mirror_t mirror)
+{
+    if (n >= 10)
+        x = _rdp_draw_sprites_int(x, y, sprites, n / 10, mirror);
+
+    rdp_draw_sprite_with_texture(sprites->sprites[n % 10], x, y, mirror);
+    return x + 8;
+}
+
+int rdp_draw_sprites_int(int x, int y, sprites_t *sprites, int size, int n, mirror_t mirror)
+{
+    int count = 0;
+    if (n == 0)
+        count = 1;
+    else
+    {
+        int nn = n;
+        while (nn > 0)
+        {
+            nn /= 10;
+            count++;
+        }
+    }
+    size -= count;
+    while (size > 0)
+    {
+        x = _rdp_draw_sprites_int(x, y, sprites, 0, mirror);
+        size--;
+    }
+    return _rdp_draw_sprites_int(x, y, sprites, n, mirror);
+}
+
 void rdp_draw_sprites_with_texture(sprites_t *sprites, int x, int y, mirror_t mirror)
 {
     int offset = 0;

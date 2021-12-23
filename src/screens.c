@@ -196,11 +196,15 @@ screen_t screen_game(display_context_t disp, input_t *input)
 static sprites_t *boom_sp = NULL;
 static sprites_t *continue_sp = NULL;
 static sprites_t *gameover_sp = NULL;
+static sprite_t *points_sp = NULL;
+static sprites_t *nums = 0;
 void screen_game_over_load()
 {
     boom_sp = dfs_load_sprites("/gfx/sprites/boom-%d.sprite");
     continue_sp = dfs_load_sprites("/gfx/sprites/ui/continue-%d.sprite");
     gameover_sp = dfs_load_sprites("/gfx/sprites/ui/gameover-%d.sprite");
+    points_sp = dfs_load_sprite("/gfx/sprites/ui/text_points_end.sprite");
+    nums = dfs_load_sprites("/gfx/sprites/ui/text_num-%d.sprite");
 }
 
 void screen_game_over_unload()
@@ -208,6 +212,8 @@ void screen_game_over_unload()
     dfs_free_sprites(boom_sp);
     dfs_free_sprites(continue_sp);
     dfs_free_sprites(gameover_sp);
+    free(points_sp);
+    dfs_free_sprites(nums);
 }
 
 bool screen_game_over(display_context_t disp, input_t *input)
@@ -220,13 +226,10 @@ bool screen_game_over(display_context_t disp, input_t *input)
     rdp_draw_sprites_with_texture(gameover_sp, __width / 2 - gameover_sp->width / 2, 20, 0);
     rdp_draw_sprites_with_texture(continue_sp, __width / 2 - continue_sp->width / 2, 200, 0);
 
-    rdp_detach_display();
+    rdp_draw_sprite_with_texture(points_sp, __width / 2 - 36, 180, 0);
+    rdp_draw_sprites_int(__width / 2 + 10, 182, nums, 3, actions_get_points(), 0);
 
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS: %03d", actions_get_points());
-    graphics_set_color(colors[COLOR_YELLOW], 0);
-    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS:");
-    graphics_set_color(colors[COLOR_WHITE], 0);
+    rdp_detach_display();
 
     return (input->A || input->start);
 }
@@ -459,12 +462,16 @@ void screen_win_load()
 {
     continue_sp = dfs_load_sprites("/gfx/sprites/ui/continue-%d.sprite");
     win_sp = dfs_load_sprites("/gfx/sprites/ui/win-%d.sprite");
+    points_sp = dfs_load_sprite("/gfx/sprites/ui/text_points_end.sprite");
+    nums = dfs_load_sprites("/gfx/sprites/ui/text_num-%d.sprite");
 }
 
 void screen_win_unload()
 {
     dfs_free_sprites(continue_sp);
     dfs_free_sprites(win_sp);
+    free(points_sp);
+    dfs_free_sprites(nums);
 }
 
 bool screen_win(display_context_t disp, input_t *input)
@@ -478,13 +485,10 @@ bool screen_win(display_context_t disp, input_t *input)
 
     scientist_win();
 
-    rdp_detach_display();
+    rdp_draw_sprite_with_texture(points_sp, __width / 2 - 36, 180, 0);
+    rdp_draw_sprites_int(__width / 2 + 10, 182, nums, 3, actions_get_points(), 0);
 
-    graphics_set_color(colors[COLOR_RED], 0);
-    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS: %03d", actions_get_points());
-    graphics_set_color(colors[COLOR_YELLOW], 0);
-    graphics_draw_textf_with_background(disp, __width / 2 - 44, 180, colors[COLOR_BLACK], "POINTS:");
-    graphics_set_color(colors[COLOR_WHITE], 0);
+    rdp_detach_display();
 
     return (input->A || input->start);
 }
