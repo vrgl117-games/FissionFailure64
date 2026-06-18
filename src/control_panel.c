@@ -59,7 +59,7 @@ static void instruments_draw(display_context_t disp)
         rdp_draw_sprite_with_texture(labels[TEXT_RAM], x + 9, y + 18 + 18 + 18 + 18 - 2, 0);
     }
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     graphics_set_color(colors[COLOR_RED], 0);
     graphics_draw_textf_with_background(disp, x + 62, y - 2, colors[COLOR_BLACK], "%03d", actions_get_points());
@@ -99,7 +99,7 @@ static void instruments_draw_tutorial(display_context_t disp)
     else
         y += 20;
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     graphics_set_color(colors[COLOR_RED], 0);
     if (current->element == ELEMENT_TUTORIAL && current->expected[1] == 1)
@@ -982,7 +982,7 @@ void control_panel_draw_tutorial(display_context_t disp)
         instruments_draw_tutorial(disp);
     }
     else
-        rdp_detach_display();
+        rdpq_detach_wait();
     graphics_draw_sprite(disp, __width / 2 - current->text2->width / 2, 14, current->text2);
 }
 
@@ -1008,12 +1008,12 @@ void control_panel_draw(display_context_t disp)
 
     if (control_panel.mode == IDLE || control_panel.geiger % 20 < 10)
     {
-        rumble_stop(0);
+        joypad_set_rumble_active(JOYPAD_PORT_1, false);
         rdp_draw_sprite_with_texture(tiles[2], 198, 10, 0);
     }
     else
     {
-        rumble_start(0);
+        joypad_set_rumble_active(JOYPAD_PORT_1, true);
         rdp_draw_sprite_with_texture(tiles[1], 198, 10, 0);
     }
 

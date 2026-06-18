@@ -42,12 +42,16 @@ static action_t *actions_new_compass()
     action_t *action = calloc(1, sizeof(action_t));
     char *dirs[] = {"NorthWest", "North", "NorthEast", "West", "East", "SouthWest", "South", "SouthEast"};
     uint16_t dir = rand() % 8;
+    uint16_t expected = (dir < 4 ? dir + 1 : dir + 2);
 
-    while (dir == control_panel.left.compass)
+    while (expected == control_panel.left.compass)
+    {
         dir = rand() % 8;
+        expected = (dir < 4 ? dir + 1 : dir + 2);
+    }
 
     action->element = ELEMENT_COMPASS;
-    action->expected[0] = (dir < 4 ? dir + 1 : dir + 2);
+    action->expected[0] = expected;
     sprintf(action->buffer, "/gfx/sprites/actions/compass-%s", dirs[dir]);
     strcat(action->buffer, "-%d.sprite");
 
@@ -93,11 +97,12 @@ static action_t *actions_new_rod()
         color = rand() % 4;
 
     uint8_t pos_x = rand() % 6;
-    while (pos_x == pos_x_prev)
-        pos_x = rand() % 6;
     uint8_t pos_y = rand() % 4;
-    while (pos_y == pos_y_prev)
+    while (pos_x == pos_x_prev || pos_y == pos_y_prev || control_panel.center.grid[pos_y][pos_x] == color + 1)
+    {
+        pos_x = rand() % 6;
         pos_y = rand() % 4;
+    }
 
     action->element = ELEMENT_GRID;
     action->expected[0] = 1 + color;
@@ -119,7 +124,7 @@ static action_t *actions_new_power()
     uint16_t powers[] = {0, 125, 250, 375, 500};
     uint8_t power = rand() % 5;
 
-    while (power == control_panel.power)
+    while (powers[power] == control_panel.power)
         power = rand() % 5;
 
     action->element = ELEMENT_TURBINES;
@@ -311,7 +316,7 @@ void actions_reset()
 }
 
 // Tutorial
-u_int8_t current_element = 0;
+uint8_t current_element = 0;
 
 static action_t *actions_new_press_tutorial()
 {

@@ -14,16 +14,33 @@ static void input_timer()
 
 void input_init()
 {
-    controller_init();
+    joypad_init();
     presses_timer = new_timer(TIMER_TICKS(500000), TF_DISABLED, input_timer); //500ms
     running = false;
 }
 
 input_t input_get()
 {
-    controller_scan();
-    input_t input = get_keys_down().c[0];
-    input_t pressed = get_keys_pressed().c[0];
+    joypad_poll();
+    joypad_buttons_t buttons = joypad_get_buttons_pressed(JOYPAD_PORT_1);
+    joypad_inputs_t held = joypad_get_inputs(JOYPAD_PORT_1);
+    input_t input = {0};
+    input.A = buttons.a;
+    input.B = buttons.b;
+    input.Z = buttons.z;
+    input.start = buttons.start;
+    input.up = buttons.d_up;
+    input.down = buttons.d_down;
+    input.left = buttons.d_left;
+    input.right = buttons.d_right;
+    input.L = buttons.l;
+    input.R = buttons.r;
+    input.C_up = buttons.c_up;
+    input.C_down = buttons.c_down;
+    input.C_left = buttons.c_left;
+    input.C_right = buttons.c_right;
+    input.x = held.stick_x;
+    input.y = held.stick_y;
     if (input.A)
     {
         if (!running)
@@ -33,9 +50,6 @@ input_t input_get()
         }
         presses++;
     }
-    input.x = pressed.x;
-    input.y = pressed.y;
-
     return input;
 }
 

@@ -3,5 +3,6 @@ FissionFailure64.*
 *.sprite
 .DS_Store
 *~
+build/
 filesystem/
 .vscode/

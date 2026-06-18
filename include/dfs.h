@@ -16,6 +16,7 @@ typedef struct sprites
 } sprites_t;
 
 void dfs_free_sprites(sprites_t *sprites);
+void dfs_free_sprite(sprite_t *sprite);
 sprite_t *dfs_load_sprite(const char *const path);
 sprite_t *dfs_load_spritef(const char *const format, ...);
 sprites_t *dfs_load_sprites(const char *const path);

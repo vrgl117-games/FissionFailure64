@@ -16,17 +16,26 @@
 #define MS20 20000
 #define MS50 50000
 
+uint32_t __width = 320;
+uint32_t __height = 240;
+
+#ifndef NDEBUG
+screen_t screen = title;
+#else
 screen_t screen = intro;
+#endif
 screen_t prev_screen; //used in credits to know where to go back to
 
 int main()
 {
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, ANTIALIAS_RESAMPLE);
     dfs_init(DFS_DEFAULT_LOCATION);
-    rdp_init();
+    rdpq_init();
     audio_init(44100, 4);
     audio_write_silence();
+#ifndef NDEBUG
     debug_init_isviewer();
+#endif
     sfx_init();
     control_panel_init();
     timer_init();
@@ -57,7 +66,7 @@ int main()
         input_t input = input_get();
 
         // wait for display
-        while (!(disp = display_lock()))
+        while (!(disp = display_try_get()))
             ;
 
         switch (screen)
@@ -88,11 +97,11 @@ int main()
                 screen_title_unload();
                 screen_game_load();
                 scientist_init();
-                actions_reset();
                 input_reset_presses();
                 screen = game;
                 sfx_stop(CH_MUSIC);
                 control_panel_reset();
+                actions_reset();
                 scientist_reset();
                 game_timer = new_timer(TIMER_TICKS(MS500), TF_CONTINUOUS, control_panel_timer);
                 break;
@@ -138,7 +147,7 @@ int main()
                     if (screen == game_over)
                     {
                         sfx_play(CH_SFX, SFX_GAME_OVER, false);
-                        rumble_start(0);
+                        joypad_set_rumble_active(JOYPAD_PORT_1, true);
                         screen_game_over_load();
                     }
                     else if (screen == win)
@@ -207,7 +216,7 @@ int main()
         case game_over:
             if (screen_game_over(disp, &input))
             {
-                rumble_stop(0);
+                joypad_set_rumble_active(JOYPAD_PORT_1, false);
                 screen_game_over_unload();
                 screen_title_load();
                 screen = title;

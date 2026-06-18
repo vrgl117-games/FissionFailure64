@@ -21,55 +21,55 @@ static volatile bool alt = false;
 // credits screen
 bool screen_credits(display_context_t disp, input_t *input)
 {
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     sprite_t *credits_sp = dfs_load_sprite("/gfx/sprites/ui/credits_big.sprite");
     graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 10, credits_sp);
-    free(credits_sp);
+    dfs_free_sprite(credits_sp);
 
     sprite_t *programming_sp = dfs_load_sprite("/gfx/sprites/ui/programming.sprite");
     graphics_draw_sprite(disp, 100 - programming_sp->width / 2, 70, programming_sp);
-    free(programming_sp);
+    dfs_free_sprite(programming_sp);
     sprite_t *isabel_victor_sp = dfs_load_sprite("/gfx/sprites/ui/isabel_victor.sprite");
     graphics_draw_sprite(disp, 100 - isabel_victor_sp->width / 2, 100, isabel_victor_sp);
-    free(isabel_victor_sp);
+    dfs_free_sprite(isabel_victor_sp);
     sprite_t *vrgl117games_sp = dfs_load_sprite("/gfx/sprites/ui/vrgl117games.sprite");
     graphics_draw_sprite(disp, 100 - vrgl117games_sp->width / 2, 124, vrgl117games_sp);
-    free(vrgl117games_sp);
+    dfs_free_sprite(vrgl117games_sp);
 
     sprite_t *art_sp = dfs_load_sprite("/gfx/sprites/ui/art.sprite");
     graphics_draw_sprite(disp, __width - 80 - art_sp->width / 2, 70, art_sp);
-    free(art_sp);
+    dfs_free_sprite(art_sp);
     sprite_t *jphosho_sp = dfs_load_sprite("/gfx/sprites/ui/jphosho.sprite");
     graphics_draw_sprite(disp, __width - 80 - jphosho_sp->width / 2, 100, jphosho_sp);
-    free(jphosho_sp);
+    dfs_free_sprite(jphosho_sp);
     sprite_t *atjphosho_sp = dfs_load_sprite("/gfx/sprites/ui/atjphosho.sprite");
     graphics_draw_sprite(disp, __width - 80 - atjphosho_sp->width / 2, 124, atjphosho_sp);
-    free(atjphosho_sp);
+    dfs_free_sprite(atjphosho_sp);
 
     sprite_t *sfx_sp = dfs_load_sprite("/gfx/sprites/ui/sfx.sprite");
     graphics_draw_sprite(disp, 100 - sfx_sp->width / 2, 150, sfx_sp);
-    free(sfx_sp);
+    dfs_free_sprite(sfx_sp);
     sprite_t *littlerobotsoundfactory_sp = dfs_load_sprite("/gfx/sprites/ui/littlerobotsoundfactory.sprite");
     graphics_draw_sprite(disp, 100 - littlerobotsoundfactory_sp->width / 2, 180, littlerobotsoundfactory_sp);
-    free(littlerobotsoundfactory_sp);
+    dfs_free_sprite(littlerobotsoundfactory_sp);
     sprite_t *gowlermusic_sp = dfs_load_sprite("/gfx/sprites/ui/gowlermusic.sprite");
     graphics_draw_sprite(disp, 100 - gowlermusic_sp->width / 2, 204, gowlermusic_sp);
-    free(gowlermusic_sp);
+    dfs_free_sprite(gowlermusic_sp);
 
     sprite_t *music_sp = dfs_load_sprite("/gfx/sprites/ui/music.sprite");
     graphics_draw_sprite(disp, __width - 80 - music_sp->width / 2, 150, music_sp);
-    free(music_sp);
+    dfs_free_sprite(music_sp);
     sprite_t *manuhoz_sp = dfs_load_sprite("/gfx/sprites/ui/manuhoz.sprite");
     graphics_draw_sprite(disp, __width - 80 - manuhoz_sp->width / 2, 180, manuhoz_sp);
-    free(manuhoz_sp);
+    dfs_free_sprite(manuhoz_sp);
     sprite_t *radiatorhymn_sp = dfs_load_sprite("/gfx/sprites/ui/radiatorhymn.sprite");
     graphics_draw_sprite(disp, __width - 80 - radiatorhymn_sp->width / 2, 204, radiatorhymn_sp);
-    free(radiatorhymn_sp);
+    dfs_free_sprite(radiatorhymn_sp);
 
     return (input->A || input->start);
 }
@@ -80,11 +80,11 @@ bool screen_intro(display_context_t disp)
 {
     static int anim = 0;
 
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_DARK]);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
     sprite_t *intro = NULL;
 
     switch (anim)
@@ -112,7 +112,7 @@ bool screen_intro(display_context_t disp)
     if (intro != NULL)
     {
         graphics_draw_sprite(disp, __width / 2 - intro->width / 2, __height / 2 - intro->height / 2, intro);
-        free(intro);
+        dfs_free_sprite(intro);
     }
 
     anim++;
@@ -173,7 +173,7 @@ screen_t screen_game(display_context_t disp, input_t *input)
         break;
     }
 
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     if (!control_panel.lights_off)
     {
@@ -212,13 +212,13 @@ void screen_game_over_unload()
     dfs_free_sprites(boom_sp);
     dfs_free_sprites(continue_sp);
     dfs_free_sprites(gameover_sp);
-    free(points_sp);
+    dfs_free_sprite(points_sp);
     dfs_free_sprites(nums);
 }
 
 bool screen_game_over(display_context_t disp, input_t *input)
 {
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
@@ -229,7 +229,7 @@ bool screen_game_over(display_context_t disp, input_t *input)
     rdp_draw_sprite_with_texture(points_sp, __width / 2 - 36, 180, 0);
     rdp_draw_sprites_int(__width / 2 + 10, 182, nums, 3, actions_get_points(), 0);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     return (input->A || input->start);
 }
@@ -245,23 +245,23 @@ void screen_message_load()
 }
 void screen_message_unload()
 {
-    free(message_sp);
-    free(pak_sp);
-    free(pak_not_sp);
-    free(rumble_sp);
+    dfs_free_sprite(message_sp);
+    dfs_free_sprite(pak_sp);
+    dfs_free_sprite(pak_not_sp);
+    dfs_free_sprite(rumble_sp);
 }
 
 bool screen_message_draw(display_context_t disp, input_t *input)
 {
     static uint8_t anim = 0;
 
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
-    if (identify_accessory(0) != ACCESSORY_RUMBLEPAK)
+    if (joypad_get_accessory_type(JOYPAD_PORT_1) != JOYPAD_ACCESSORY_TYPE_RUMBLE_PAK)
     {
         graphics_draw_sprite(disp, __width / 2 - message_sp->width / 2, 40, message_sp);
         graphics_draw_sprite(disp, __width / 2 - rumble_sp->width / 2, 120, rumble_sp);
@@ -286,27 +286,27 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
     else if (input->down)
         selected = (selected == 3 ? 0 : selected + 1);
 
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     sprite_t *pause_sp = dfs_load_sprite("/gfx/sprites/ui/pause_big.sprite");
     graphics_draw_sprite(disp, __width / 2 - pause_sp->width / 2, 10, pause_sp);
-    free(pause_sp);
+    dfs_free_sprite(pause_sp);
     sprite_t *resume_sp = dfs_load_sprite((selected == 0 ? "/gfx/sprites/ui/resume_selected.sprite" : "/gfx/sprites/ui/resume.sprite"));
     graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 90, resume_sp);
-    free(resume_sp);
+    dfs_free_sprite(resume_sp);
     sprite_t *phonebook_sp = dfs_load_sprite((selected == 1 ? "/gfx/sprites/ui/phonebook_selected.sprite" : "/gfx/sprites/ui/phonebook.sprite"));
     graphics_draw_sprite(disp, __width / 2 - phonebook_sp->width / 2, 115, phonebook_sp);
-    free(phonebook_sp);
+    dfs_free_sprite(phonebook_sp);
     sprite_t *credits_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
     graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 140, credits_sp);
-    free(credits_sp);
+    dfs_free_sprite(credits_sp);
     sprite_t *quit_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
     graphics_draw_sprite(disp, __width / 2 - quit_sp->width / 2, 165, quit_sp);
-    free(quit_sp);
+    dfs_free_sprite(quit_sp);
 
     if (input->A)
         return selected;
@@ -318,15 +318,15 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
 //phonebook menu
 bool screen_phonebook(display_context_t disp, input_t *input)
 {
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_WHITE]);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     sprite_t *sp = dfs_load_sprite("/gfx/sprites/phonebook.sprite");
     graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
-    free(sp);
+    dfs_free_sprite(sp);
 
     return (input->A || input->start);
 }
@@ -354,7 +354,7 @@ void screen_title_unload()
     dfs_free_sprites(start_selected_sp);
     dfs_free_sprites(tutorial_sp);
     dfs_free_sprites(tutorial_selected_sp);
-    free(nuclear_sp);
+    dfs_free_sprite(nuclear_sp);
 }
 
 screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
@@ -366,7 +366,7 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
     else if (input->down)
         selected = (selected == screen_selection_tutorial ? screen_selection_resume : screen_selection_tutorial);
 
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
     if (ticks % 40 > 19)
@@ -387,7 +387,7 @@ screen_selection_t screen_title_draw(display_context_t disp, input_t *input)
     else if (ticks % 40 > 19)
         rdp_draw_sprites_with_texture(tutorial_selected_sp, __width / 2 - tutorial_sp->width / 2, 190, 0);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     if (input->A || input->start)
         return selected;
@@ -426,7 +426,7 @@ bool screen_tutorial(display_context_t disp, input_t *input)
             return true;
     }
 
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     if (!control_panel.lights_off)
         rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
@@ -470,13 +470,13 @@ void screen_win_unload()
 {
     dfs_free_sprites(continue_sp);
     dfs_free_sprites(win_sp);
-    free(points_sp);
+    dfs_free_sprite(points_sp);
     dfs_free_sprites(nums);
 }
 
 bool screen_win(display_context_t disp, input_t *input)
 {
-    rdp_attach(disp);
+    rdp_attach_display_context(disp);
 
     rdp_draw_filled_fullscreen(colors[COLOR_BLACK]);
 
@@ -488,7 +488,7 @@ bool screen_win(display_context_t disp, input_t *input)
     rdp_draw_sprite_with_texture(points_sp, __width / 2 - 36, 180, 0);
     rdp_draw_sprites_int(__width / 2 + 10, 182, nums, 3, actions_get_points(), 0);
 
-    rdp_detach_display();
+    rdpq_detach_wait();
 
     return (input->A || input->start);
 }

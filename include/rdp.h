@@ -6,7 +6,7 @@
 
 #include "dfs.h"
 
-void rdp_attach(display_context_t disp);
+void rdp_attach_display_context(display_context_t disp);
 void rdp_draw_filled_fullscreen(uint32_t color);
 void rdp_draw_filled_rectangle_size(int x, int y, int width, int height, uint32_t color);
 void rdp_draw_filled_rectangle_absolute(int x, int y, int xx, int yy, uint32_t color);
