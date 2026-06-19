@@ -977,9 +977,9 @@ void control_panel_draw_tutorial(display_context_t disp)
             break;
         }
 
+        instruments_draw_tutorial(disp);
         if (control_panel.current_station == 2)
             station_right_draw_graphics(disp);
-        instruments_draw_tutorial(disp);
     }
     else
         rdpq_detach_wait();
@@ -1017,7 +1017,7 @@ void control_panel_draw(display_context_t disp)
         rdp_draw_sprite_with_texture(tiles[1], 198, 10, 0);
     }
 
+    instruments_draw(disp);
     if (control_panel.current_station == 2)
         station_right_draw_graphics(disp);
-    instruments_draw(disp);
 }
