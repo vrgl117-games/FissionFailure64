@@ -464,10 +464,11 @@ static void station_left_draw()
 
     rdp_draw_filled_rectangle_size(x + 50, y - 20, 74, 14, colors[COLOR_BG]);
     rdp_draw_filled_rectangle_size(x + 52, y - 18, 70, 10, colors[COLOR_WHITE]);
-    for (uint8_t i = 0; i < 6; i++)
-        rdp_draw_filled_rectangle_size(x + 61 + i * 10, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
+    for (uint8_t i = 0; i < 7; i++)
+        rdp_draw_filled_rectangle_size(x + 53 + i * 67 / 6, y - (i % 2 ? 16 : 14), 1, (i % 2 ? 6 : 4), colors[COLOR_BLACK]);
 
-    rdp_draw_filled_rectangle_size(x + 52 + control_panel.freq * 70 / 70, y - 17, 1, 8, colors[COLOR_ORANGE]);
+    uint16_t freq = control_panel.freq > 720 ? 720 : control_panel.freq;
+    rdp_draw_filled_rectangle_size(x + 53 + freq * 67 / 720, y - 17, 1, 8, colors[COLOR_ORANGE]);
     if (!control_panel.lights_off)
     {
         for (uint8_t i = 0; i < NUM_SLIDERS; i++)
