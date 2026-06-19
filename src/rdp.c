@@ -47,6 +47,15 @@ void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
     });
 }
 
+void rdp_draw_sprite_copy(sprite_t *sp, int x, int y, mirror_t mirror)
+{
+    rdpq_set_mode_copy(true);
+    rdpq_sprite_blit(sp, x, y, &(rdpq_blitparms_t){
+        .flip_x = mirror == MIRROR_X,
+        .flip_y = mirror == MIRROR_Y,
+    });
+}
+
 static int _rdp_draw_sprites_int(int x, int y, sprites_t *sprites, int n, mirror_t mirror)
 {
     if (n >= 10)

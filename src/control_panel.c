@@ -507,7 +507,7 @@ static void station_left_draw()
             if ((xx + yy * MINIGRID_SIZE + 1 == station->compass) || (xx + yy * MINIGRID_SIZE + 1 == 5 && station->compass == 0))
             {
                 rdp_draw_filled_rectangle_size(x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)), cell_size, cell_size, colors[COLOR_YELLOW]);
-                rdp_draw_sprite_with_texture(directions[xx + yy * MINIGRID_SIZE + 1], x + border + (xx * (border + cell_size)) + 1, y + border + (yy * (border + cell_size)) + 4, 0);
+                rdp_draw_sprite_copy(directions[xx + yy * MINIGRID_SIZE + 1], x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)) + 4, 0);
             }
         }
     }
