@@ -294,42 +294,56 @@ void control_panel_init()
     for (int i = 0; i < 24; i++)
         tiles[i] = dfs_load_spritef("/gfx/sprites/stations/tile_%02d.sprite", i);
 
-    labels[LABEL_LIGHTS] = dfs_load_sprite("/gfx/sprites/ui/label_lights.sprite");
-    labels[LABEL_RADIO] = dfs_load_sprite("/gfx/sprites/ui/label_radio.sprite");
-    labels[LABEL_TURBINES] = dfs_load_sprite("/gfx/sprites/ui/label_turbines.sprite");
-    labels[LABEL_PUMPS] = dfs_load_sprite("/gfx/sprites/ui/label_pumps.sprite");
-    labels[LABEL_CONTROL_RODS] = dfs_load_sprite("/gfx/sprites/ui/label_control_rods.sprite");
-    labels[LABEL_AZ_5] = dfs_load_sprite("/gfx/sprites/ui/label_az_5.sprite");
-    labels[LABEL_PRESSURIZER] = dfs_load_sprite("/gfx/sprites/ui/label_pressurizer.sprite");
-    labels[LABEL_DANGER] = dfs_load_sprite("/gfx/sprites/ui/label_danger.sprite");
-    labels[LABEL_WIND_TURBINES] = dfs_load_sprite("/gfx/sprites/ui/label_wind_turbines.sprite");
+    static const struct
+    {
+        label_t label;
+        const char *path;
+    } label_paths[] = {
+        {LABEL_LIGHTS, "/gfx/sprites/ui/label_lights.sprite"},
+        {LABEL_RADIO, "/gfx/sprites/ui/label_radio.sprite"},
+        {LABEL_TURBINES, "/gfx/sprites/ui/label_turbines.sprite"},
+        {LABEL_PUMPS, "/gfx/sprites/ui/label_pumps.sprite"},
+        {LABEL_CONTROL_RODS, "/gfx/sprites/ui/label_control_rods.sprite"},
+        {LABEL_AZ_5, "/gfx/sprites/ui/label_az_5.sprite"},
+        {LABEL_PRESSURIZER, "/gfx/sprites/ui/label_pressurizer.sprite"},
+        {LABEL_DANGER, "/gfx/sprites/ui/label_danger.sprite"},
+        {LABEL_WIND_TURBINES, "/gfx/sprites/ui/label_wind_turbines.sprite"},
+        {TEXT_A, "/gfx/sprites/ui/text_a.sprite"},
+        {TEXT_B, "/gfx/sprites/ui/text_b.sprite"},
+        {TEXT_C, "/gfx/sprites/ui/text_c.sprite"},
+        {TEXT_D, "/gfx/sprites/ui/text_d.sprite"},
+        {TEXT_E, "/gfx/sprites/ui/text_e.sprite"},
+        {TEXT_F, "/gfx/sprites/ui/text_f.sprite"},
+        {TEXT_0, "/gfx/sprites/ui/text_0.sprite"},
+        {TEXT_1, "/gfx/sprites/ui/text_1.sprite"},
+        {TEXT_2, "/gfx/sprites/ui/text_2.sprite"},
+        {TEXT_3, "/gfx/sprites/ui/text_3.sprite"},
+        {TEXT_4, "/gfx/sprites/ui/text_4.sprite"},
+        {TEXT_POINTS, "/gfx/sprites/ui/text_points.sprite"},
+        {TEXT_PRESS, "/gfx/sprites/ui/text_press.sprite"},
+        {TEXT_POWER, "/gfx/sprites/ui/text_power.sprite"},
+        {TEXT_FREQ, "/gfx/sprites/ui/text_freq.sprite"},
+        {TEXT_RAM, "/gfx/sprites/ui/text_ram.sprite"},
+    };
+    for (uint8_t i = 0; i < sizeof(label_paths) / sizeof(label_paths[0]); i++)
+        labels[label_paths[i].label] = dfs_load_sprite(label_paths[i].path);
 
-    labels[TEXT_A] = dfs_load_sprite("/gfx/sprites/ui/text_a.sprite");
-    labels[TEXT_B] = dfs_load_sprite("/gfx/sprites/ui/text_b.sprite");
-    labels[TEXT_C] = dfs_load_sprite("/gfx/sprites/ui/text_c.sprite");
-    labels[TEXT_D] = dfs_load_sprite("/gfx/sprites/ui/text_d.sprite");
-    labels[TEXT_E] = dfs_load_sprite("/gfx/sprites/ui/text_e.sprite");
-    labels[TEXT_F] = dfs_load_sprite("/gfx/sprites/ui/text_f.sprite");
-    labels[TEXT_0] = dfs_load_sprite("/gfx/sprites/ui/text_0.sprite");
-    labels[TEXT_1] = dfs_load_sprite("/gfx/sprites/ui/text_1.sprite");
-    labels[TEXT_2] = dfs_load_sprite("/gfx/sprites/ui/text_2.sprite");
-    labels[TEXT_3] = dfs_load_sprite("/gfx/sprites/ui/text_3.sprite");
-    labels[TEXT_4] = dfs_load_sprite("/gfx/sprites/ui/text_4.sprite");
-
-    labels[TEXT_POINTS] = dfs_load_sprite("/gfx/sprites/ui/text_points.sprite");
-    labels[TEXT_PRESS] = dfs_load_sprite("/gfx/sprites/ui/text_press.sprite");
-    labels[TEXT_POWER] = dfs_load_sprite("/gfx/sprites/ui/text_power.sprite");
-    labels[TEXT_FREQ] = dfs_load_sprite("/gfx/sprites/ui/text_freq.sprite");
-    labels[TEXT_RAM] = dfs_load_sprite("/gfx/sprites/ui/text_ram.sprite");
-
-    directions[1] = dfs_load_sprite("/gfx/sprites/ui/dir_nw.sprite");
-    directions[2] = dfs_load_sprite("/gfx/sprites/ui/dir_n.sprite");
-    directions[3] = dfs_load_sprite("/gfx/sprites/ui/dir_ne.sprite");
-    directions[4] = dfs_load_sprite("/gfx/sprites/ui/dir_w.sprite");
-    directions[6] = dfs_load_sprite("/gfx/sprites/ui/dir_e.sprite");
-    directions[7] = dfs_load_sprite("/gfx/sprites/ui/dir_sw.sprite");
-    directions[8] = dfs_load_sprite("/gfx/sprites/ui/dir_s.sprite");
-    directions[9] = dfs_load_sprite("/gfx/sprites/ui/dir_se.sprite");
+    static const struct
+    {
+        uint8_t direction;
+        const char *path;
+    } direction_paths[] = {
+        {1, "/gfx/sprites/ui/dir_nw.sprite"},
+        {2, "/gfx/sprites/ui/dir_n.sprite"},
+        {3, "/gfx/sprites/ui/dir_ne.sprite"},
+        {4, "/gfx/sprites/ui/dir_w.sprite"},
+        {6, "/gfx/sprites/ui/dir_e.sprite"},
+        {7, "/gfx/sprites/ui/dir_sw.sprite"},
+        {8, "/gfx/sprites/ui/dir_s.sprite"},
+        {9, "/gfx/sprites/ui/dir_se.sprite"},
+    };
+    for (uint8_t i = 0; i < sizeof(direction_paths) / sizeof(direction_paths[0]); i++)
+        directions[direction_paths[i].direction] = dfs_load_sprite(direction_paths[i].path);
 
     action_lights = actions_new_lights();
     action_lights_tuto = actions_new_lights_tutorial();
@@ -507,7 +521,7 @@ static void station_left_draw()
             if ((xx + yy * MINIGRID_SIZE + 1 == station->compass) || (xx + yy * MINIGRID_SIZE + 1 == 5 && station->compass == 0))
             {
                 rdp_draw_filled_rectangle_size(x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)), cell_size, cell_size, colors[COLOR_YELLOW]);
-                rdp_draw_sprite_copy(directions[xx + yy * MINIGRID_SIZE + 1], x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)) + 4, 0);
+                rdp_draw_sprite_with_texture(directions[xx + yy * MINIGRID_SIZE + 1], x + border + (xx * (border + cell_size)), y + border + (yy * (border + cell_size)) + 4, 0);
             }
         }
     }
@@ -791,7 +805,7 @@ static void station_right_draw()
     if (!control_panel.lights_off)
     {
         if (station->mode == MODE_KEYPAD)
-            rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18, y + station->keypadselector_y * 18, 14, 15, colors[COLOR_YELLOW]);
+            rdp_draw_filled_rectangle_size(x + station->keypadselector_x * 18 - 1, y + station->keypadselector_y * 18 - 1, 18, 18, colors[COLOR_YELLOW]);
 
         rdp_draw_sprite_with_texture(tiles[3], x, y, 0);
         rdp_draw_sprite_with_texture(tiles[4], x + 18, y, 0);

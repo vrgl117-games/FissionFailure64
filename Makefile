@@ -18,7 +18,7 @@ else
 N64_CFLAGS += -O0 -g
 endif
 
-.PHONY: all build docker gengfx docker-gengfx rebuild release setup resetup resetup-v ares ares-release cen64 clean help
+.PHONY: all build docker gengfx docker-gengfx rebuild release setup resetup ares ares-release cen64 clean help
 
 all: build
 
@@ -93,10 +93,6 @@ setup:		##    Create dev environment (docker image).
 	@docker build --platform linux/amd64 -t build - < Dockerfile
 
 resetup:	##  Force recreate the dev environment (docker image).
-	@echo "Rebuilding dev environment in docker..."
-	@docker build --platform linux/amd64 -t build --no-cache - < Dockerfile
-
-resetup-v:	##  Force recreate the dev environment (docker image).
 	@echo "Rebuilding dev environment in docker..."
 	@docker build --platform linux/amd64 -t build --no-cache - < Dockerfile
 

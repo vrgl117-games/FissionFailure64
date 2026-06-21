@@ -31,25 +31,10 @@ void rdp_draw_filled_rectangle_size(int x, int y, int width, int height, uint32_
     rdp_draw_filled_rectangle_absolute(x, y, x + width, y + height, color);
 }
 
-void rdp_draw_filled_rectangle_with_border_size(int x, int y, int width, int height, uint32_t color, uint32_t border_color)
-{
-    rdp_draw_filled_rectangle_size(x, y, width, height, border_color);
-    rdp_draw_filled_rectangle_size(x + 2, y + 2, width - 4, height - 4, color);
-}
-
 void rdp_draw_sprite_with_texture(sprite_t *sp, int x, int y, mirror_t mirror)
 {
     rdpq_set_mode_standard();
     rdpq_mode_alphacompare(1);
-    rdpq_sprite_blit(sp, x, y, &(rdpq_blitparms_t){
-        .flip_x = mirror == MIRROR_X,
-        .flip_y = mirror == MIRROR_Y,
-    });
-}
-
-void rdp_draw_sprite_copy(sprite_t *sp, int x, int y, mirror_t mirror)
-{
-    rdpq_set_mode_copy(true);
     rdpq_sprite_blit(sp, x, y, &(rdpq_blitparms_t){
         .flip_x = mirror == MIRROR_X,
         .flip_y = mirror == MIRROR_Y,

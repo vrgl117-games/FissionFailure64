@@ -69,7 +69,6 @@ void actions_reset();
 // Tutorial
 action_t *actions_get_current_tutorial();
 bool actions_next_tutorial();
-void action_init_tutorial();
 void actions_reset_tutorial();
 
 #endif //__ACTIONS_H__

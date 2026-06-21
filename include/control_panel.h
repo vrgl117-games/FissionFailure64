@@ -122,7 +122,6 @@ typedef struct control_panel
     uint32_t freq;
     int16_t power;
     uint16_t geiger; // 0 to 1000
-    uint8_t rumble;
     station_left_t left;
     station_center_t center;
     station_right_t right;

@@ -143,8 +143,7 @@ for po in ${pos[@]}; do
 done
 generate_action_tutorial "Set red Control Rods to D4 by\nusing the d-pad anc C buttons." resources/gfx/sprites/actions/tuto-rod-red-D4.png
 
-freqs=("0" "10" "100" "105" "110" "115" "120" "125" "130" "135" "140" "145" "15" "150" "155" "160" "165" "170" "175" "180" "185" "190" "195" "20" "200" "205" "210" "215" "220" "225" "230" "235" "240" "245" "25" "250" "255" "260" "265" "270" "275" "280" "285" "290" "295" "30" "300" "305" "310" "315" "320" "325" "330" "335" "340" "345" "35" "350" "355" "360" "365" "370" "375" "380" "385" "390" "395" "40" "400" "405" "410" "415" "420" "425" "430" "435" "440" "445" "45" "450" "455" "460" "465" "470" "475" "480" "485" "490" "495" "5" "50" "500" "505" "510" "515" "520" "525" "530" "535" "540" "545" "55" "550" "555" "560" "565" "570" "575" "580" "585" "590" "595" "60" "600" "605" "610" "615" "620" "65" "70" "75" "80" "85" "90" "95")
-for freq in ${freqs[@]}; do
+for freq in $(seq 0 5 620); do
     generate_action "Set E.M.F\nMonitor\nto\n${freq}Hz" resources/gfx/sprites/actions/freq-"$freq"-%d.png
 done
 generate_action_tutorial "Set E.M.F Monitor to 360Hz by\nusing the d-pad." resources/gfx/sprites/actions/tuto-freq-360.png

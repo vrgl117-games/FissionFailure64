@@ -18,6 +18,20 @@ extern control_panel_t control_panel;
 static volatile uint32_t ticks = 0;
 static volatile bool alt = false;
 
+static void screen_draw_sprite_centered(display_context_t disp, const char *path, int center_x, int y)
+{
+    sprite_t *sp = dfs_load_sprite(path);
+    graphics_draw_sprite(disp, center_x - sp->width / 2, y, sp);
+    dfs_free_sprite(sp);
+}
+
+static void screen_draw_sprite_centered_xy(display_context_t disp, const char *path, int center_x, int center_y)
+{
+    sprite_t *sp = dfs_load_sprite(path);
+    graphics_draw_sprite(disp, center_x - sp->width / 2, center_y - sp->height / 2, sp);
+    dfs_free_sprite(sp);
+}
+
 // credits screen
 bool screen_credits(display_context_t disp, input_t *input)
 {
@@ -27,49 +41,19 @@ bool screen_credits(display_context_t disp, input_t *input)
 
     rdpq_detach_wait();
 
-    sprite_t *credits_sp = dfs_load_sprite("/gfx/sprites/ui/credits_big.sprite");
-    graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 10, credits_sp);
-    dfs_free_sprite(credits_sp);
-
-    sprite_t *programming_sp = dfs_load_sprite("/gfx/sprites/ui/programming.sprite");
-    graphics_draw_sprite(disp, 100 - programming_sp->width / 2, 70, programming_sp);
-    dfs_free_sprite(programming_sp);
-    sprite_t *isabel_victor_sp = dfs_load_sprite("/gfx/sprites/ui/isabel_victor.sprite");
-    graphics_draw_sprite(disp, 100 - isabel_victor_sp->width / 2, 100, isabel_victor_sp);
-    dfs_free_sprite(isabel_victor_sp);
-    sprite_t *vrgl117games_sp = dfs_load_sprite("/gfx/sprites/ui/vrgl117games.sprite");
-    graphics_draw_sprite(disp, 100 - vrgl117games_sp->width / 2, 124, vrgl117games_sp);
-    dfs_free_sprite(vrgl117games_sp);
-
-    sprite_t *art_sp = dfs_load_sprite("/gfx/sprites/ui/art.sprite");
-    graphics_draw_sprite(disp, __width - 80 - art_sp->width / 2, 70, art_sp);
-    dfs_free_sprite(art_sp);
-    sprite_t *jphosho_sp = dfs_load_sprite("/gfx/sprites/ui/jphosho.sprite");
-    graphics_draw_sprite(disp, __width - 80 - jphosho_sp->width / 2, 100, jphosho_sp);
-    dfs_free_sprite(jphosho_sp);
-    sprite_t *atjphosho_sp = dfs_load_sprite("/gfx/sprites/ui/atjphosho.sprite");
-    graphics_draw_sprite(disp, __width - 80 - atjphosho_sp->width / 2, 124, atjphosho_sp);
-    dfs_free_sprite(atjphosho_sp);
-
-    sprite_t *sfx_sp = dfs_load_sprite("/gfx/sprites/ui/sfx.sprite");
-    graphics_draw_sprite(disp, 100 - sfx_sp->width / 2, 150, sfx_sp);
-    dfs_free_sprite(sfx_sp);
-    sprite_t *littlerobotsoundfactory_sp = dfs_load_sprite("/gfx/sprites/ui/littlerobotsoundfactory.sprite");
-    graphics_draw_sprite(disp, 100 - littlerobotsoundfactory_sp->width / 2, 180, littlerobotsoundfactory_sp);
-    dfs_free_sprite(littlerobotsoundfactory_sp);
-    sprite_t *gowlermusic_sp = dfs_load_sprite("/gfx/sprites/ui/gowlermusic.sprite");
-    graphics_draw_sprite(disp, 100 - gowlermusic_sp->width / 2, 204, gowlermusic_sp);
-    dfs_free_sprite(gowlermusic_sp);
-
-    sprite_t *music_sp = dfs_load_sprite("/gfx/sprites/ui/music.sprite");
-    graphics_draw_sprite(disp, __width - 80 - music_sp->width / 2, 150, music_sp);
-    dfs_free_sprite(music_sp);
-    sprite_t *manuhoz_sp = dfs_load_sprite("/gfx/sprites/ui/manuhoz.sprite");
-    graphics_draw_sprite(disp, __width - 80 - manuhoz_sp->width / 2, 180, manuhoz_sp);
-    dfs_free_sprite(manuhoz_sp);
-    sprite_t *radiatorhymn_sp = dfs_load_sprite("/gfx/sprites/ui/radiatorhymn.sprite");
-    graphics_draw_sprite(disp, __width - 80 - radiatorhymn_sp->width / 2, 204, radiatorhymn_sp);
-    dfs_free_sprite(radiatorhymn_sp);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/credits_big.sprite", __width / 2, 10);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/programming.sprite", 100, 70);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/isabel_victor.sprite", 100, 100);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/vrgl117games.sprite", 100, 124);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/art.sprite", __width - 80, 70);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/jphosho.sprite", __width - 80, 100);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/atjphosho.sprite", __width - 80, 124);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/sfx.sprite", 100, 150);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/littlerobotsoundfactory.sprite", 100, 180);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/gowlermusic.sprite", 100, 204);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/music.sprite", __width - 80, 150);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/manuhoz.sprite", __width - 80, 180);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/radiatorhymn.sprite", __width - 80, 204);
 
     return (input->A || input->start);
 }
@@ -235,8 +219,6 @@ bool screen_game_over(display_context_t disp, input_t *input)
 }
 
 static sprite_t *message_sp = NULL;
-static sprite_t *pak_sp = NULL;
-static sprite_t *pak_not_sp = NULL;
 static sprite_t *rumble_sp = NULL;
 void screen_message_load()
 {
@@ -246,8 +228,6 @@ void screen_message_load()
 void screen_message_unload()
 {
     dfs_free_sprite(message_sp);
-    dfs_free_sprite(pak_sp);
-    dfs_free_sprite(pak_not_sp);
     dfs_free_sprite(rumble_sp);
 }
 
@@ -292,21 +272,11 @@ screen_selection_t screen_pause(display_context_t disp, input_t *input, bool res
 
     rdpq_detach_wait();
 
-    sprite_t *pause_sp = dfs_load_sprite("/gfx/sprites/ui/pause_big.sprite");
-    graphics_draw_sprite(disp, __width / 2 - pause_sp->width / 2, 10, pause_sp);
-    dfs_free_sprite(pause_sp);
-    sprite_t *resume_sp = dfs_load_sprite((selected == 0 ? "/gfx/sprites/ui/resume_selected.sprite" : "/gfx/sprites/ui/resume.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - resume_sp->width / 2, 90, resume_sp);
-    dfs_free_sprite(resume_sp);
-    sprite_t *phonebook_sp = dfs_load_sprite((selected == 1 ? "/gfx/sprites/ui/phonebook_selected.sprite" : "/gfx/sprites/ui/phonebook.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - phonebook_sp->width / 2, 115, phonebook_sp);
-    dfs_free_sprite(phonebook_sp);
-    sprite_t *credits_sp = dfs_load_sprite((selected == 2 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - credits_sp->width / 2, 140, credits_sp);
-    dfs_free_sprite(credits_sp);
-    sprite_t *quit_sp = dfs_load_sprite((selected == 3 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"));
-    graphics_draw_sprite(disp, __width / 2 - quit_sp->width / 2, 165, quit_sp);
-    dfs_free_sprite(quit_sp);
+    screen_draw_sprite_centered(disp, "/gfx/sprites/ui/pause_big.sprite", __width / 2, 10);
+    screen_draw_sprite_centered(disp, (selected == 0 ? "/gfx/sprites/ui/resume_selected.sprite" : "/gfx/sprites/ui/resume.sprite"), __width / 2, 90);
+    screen_draw_sprite_centered(disp, (selected == 1 ? "/gfx/sprites/ui/phonebook_selected.sprite" : "/gfx/sprites/ui/phonebook.sprite"), __width / 2, 115);
+    screen_draw_sprite_centered(disp, (selected == 2 ? "/gfx/sprites/ui/credits_selected.sprite" : "/gfx/sprites/ui/credits.sprite"), __width / 2, 140);
+    screen_draw_sprite_centered(disp, (selected == 3 ? "/gfx/sprites/ui/quit_selected.sprite" : "/gfx/sprites/ui/quit.sprite"), __width / 2, 165);
 
     if (input->A)
         return selected;
@@ -324,9 +294,7 @@ bool screen_phonebook(display_context_t disp, input_t *input)
 
     rdpq_detach_wait();
 
-    sprite_t *sp = dfs_load_sprite("/gfx/sprites/phonebook.sprite");
-    graphics_draw_sprite(disp, __width / 2 - sp->width / 2, __height / 2 - sp->height / 2, sp);
-    dfs_free_sprite(sp);
+    screen_draw_sprite_centered_xy(disp, "/gfx/sprites/phonebook.sprite", __width / 2, __height / 2);
 
     return (input->A || input->start);
 }

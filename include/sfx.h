@@ -3,8 +3,6 @@
 
 #include <libdragon.h>
 
-#define FREQUENCY_44KHZ 44100
-
 typedef enum sfx_id
 {
     SFX_THEME = 0,

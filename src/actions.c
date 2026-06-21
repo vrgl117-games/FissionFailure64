@@ -23,15 +23,14 @@ extern control_panel_t control_panel;
 static action_t *actions_new_freq()
 {
     action_t *action = calloc(1, sizeof(action_t));
-    uint16_t freqs[] = {0, 10, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 15, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 20, 200, 205, 210, 215, 220, 225, 230, 235, 240, 245, 25, 250, 255, 260, 265, 270, 275, 280, 285, 290, 295, 30, 300, 305, 310, 315, 320, 325, 330, 335, 340, 345, 35, 350, 355, 360, 365, 370, 375, 380, 385, 390, 395, 40, 400, 405, 410, 415, 420, 425, 430, 435, 440, 445, 45, 450, 455, 460, 465, 470, 475, 480, 485, 490, 495, 5, 50, 500, 505, 510, 515, 520, 525, 530, 535, 540, 545, 55, 550, 555, 560, 565, 570, 575, 580, 585, 590, 595, 60, 600, 605, 610, 615, 620, 65, 70, 75, 80, 85, 90, 95};
-    uint16_t freq = rand() % 125;
+    uint16_t freq = (rand() % 125) * 5;
 
-    while (freqs[freq] == control_panel.freq)
-        freq = rand() % 88;
+    while (freq == control_panel.freq)
+        freq = (rand() % 125) * 5;
 
     action->element = ELEMENT_RADIO;
-    action->expected[0] = freqs[freq];
-    sprintf(action->buffer, "/gfx/sprites/actions/freq-%d", freqs[freq]);
+    action->expected[0] = freq;
+    sprintf(action->buffer, "/gfx/sprites/actions/freq-%d", freq);
     strcat(action->buffer, "-%d.sprite");
 
     return action;
@@ -148,80 +147,26 @@ static action_t *actions_new_pumps()
 
 static action_t *actions_new_keypad()
 {
+    static const struct
+    {
+        uint8_t expected[8];
+        const char *buffer;
+    } calls[] = {
+        {{4, 6, 7, 6, 4, 7, 2, 9}, "/gfx/sprites/actions/call-incident-%d.sprite"},
+        {{5, 7, 3, 3, 4, 7, 3, 8}, "/gfx/sprites/actions/call-nuclear-%d.sprite"},
+        {{2, 9, 8, 2, 2, 9, 4, 1}, "/gfx/sprites/actions/call-president-%d.sprite"},
+        {{1, 0, 2, 9, 4, 8, 5, 9}, "/gfx/sprites/actions/call-public-%d.sprite"},
+        {{3, 9, 0, 5, 1, 2, 7, 3}, "/gfx/sprites/actions/call-spare-%d.sprite"},
+        {{3, 6, 4, 8, 3, 9, 5, 7}, "/gfx/sprites/actions/call-treasury-%d.sprite"},
+    };
     uint16_t name = rand() % 6;
 
     action_t *action = calloc(1, sizeof(action_t));
 
     action->element = ELEMENT_KEYPAD;
-    switch (name)
-    {
-    case 0:
-        action->expected[0] = 4;
-        action->expected[1] = 6;
-        action->expected[2] = 7;
-        action->expected[3] = 6;
-        action->expected[4] = 4;
-        action->expected[5] = 7;
-        action->expected[6] = 2;
-        action->expected[7] = 9;
-        strcpy(action->buffer, "/gfx/sprites/actions/call-incident-%d.sprite");
-        break;
-    case 1:
-        action->expected[0] = 5;
-        action->expected[1] = 7;
-        action->expected[2] = 3;
-        action->expected[3] = 3;
-        action->expected[4] = 4;
-        action->expected[5] = 7;
-        action->expected[6] = 3;
-        action->expected[7] = 8;
-        strcpy(action->buffer, "/gfx/sprites/actions/call-nuclear-%d.sprite");
-        break;
-    case 2:
-        action->expected[0] = 2;
-        action->expected[1] = 9;
-        action->expected[2] = 8;
-        action->expected[3] = 2;
-        action->expected[4] = 2;
-        action->expected[5] = 9;
-        action->expected[6] = 4;
-        action->expected[7] = 1;
-        strcpy(action->buffer, "/gfx/sprites/actions/call-president-%d.sprite");
-        break;
-    case 3:
-        action->expected[0] = 1;
-        action->expected[1] = 0;
-        action->expected[2] = 2;
-        action->expected[3] = 9;
-        action->expected[4] = 4;
-        action->expected[5] = 8;
-        action->expected[6] = 5;
-        action->expected[7] = 9;
-        strcpy(action->buffer, "/gfx/sprites/actions/call-public-%d.sprite");
-        break;
-    case 4:
-        action->expected[0] = 3;
-        action->expected[1] = 9;
-        action->expected[2] = 0;
-        action->expected[3] = 5;
-        action->expected[4] = 1;
-        action->expected[5] = 2;
-        action->expected[6] = 7;
-        action->expected[7] = 3;
-        strcpy(action->buffer, "/gfx/sprites/actions/call-spare-%d.sprite");
-        break;
-    case 5:
-        action->expected[0] = 3;
-        action->expected[1] = 6;
-        action->expected[2] = 4;
-        action->expected[3] = 8;
-        action->expected[4] = 3;
-        action->expected[5] = 9;
-        action->expected[6] = 5;
-        action->expected[7] = 7;
-        strcpy(action->buffer, "/gfx/sprites/actions/call-treasury-%d.sprite");
-        break;
-    }
+    for (uint8_t i = 0; i < 8; i++)
+        action->expected[i] = calls[name].expected[i];
+    strcpy(action->buffer, calls[name].buffer);
 
     return action;
 }
@@ -316,91 +261,44 @@ void actions_reset()
 }
 
 // Tutorial
-uint8_t current_element = 0;
+#define ACTIONS_TUTORIAL_COUNT 14
 
-static action_t *actions_new_press_tutorial()
+static uint8_t current_element = 0;
+static action_t *actions_tutorial[ACTIONS_TUTORIAL_COUNT];
+
+static const struct
+{
+    element_t element;
+    uint16_t expected[3];
+    const char *path;
+    uint8_t show;
+} actions_tutorial_specs[ACTIONS_TUTORIAL_COUNT] = {
+    {ELEMENT_TUTORIAL, {0}, "/gfx/sprites/actions/tuto-welcome.sprite", SHOW_NONE},
+    {ELEMENT_TUTORIAL, {0}, "/gfx/sprites/actions/tuto-intro.sprite", SHOW_NONE},
+    {ELEMENT_TUTORIAL, {0}, "/gfx/sprites/actions/tuto-center.sprite", SHOW_STATION},
+    {ELEMENT_PRESSURIZER, {2}, "/gfx/sprites/actions/tuto-press-2000.sprite", SHOW_STATION},
+    {ELEMENT_GRID, {1, 3, 3}, "/gfx/sprites/actions/tuto-rod-red-D4.sprite", SHOW_STATION},
+    {ELEMENT_COMPASS, {9}, "/gfx/sprites/actions/tuto-compass-SouthEast.sprite", SHOW_STATION},
+    {ELEMENT_RADIO, {360}, "/gfx/sprites/actions/tuto-freq-360.sprite", SHOW_STATION},
+    {ELEMENT_AZ5, {ELEMENT_COMPASS, 2}, "/gfx/sprites/actions/tuto-az5-compass.sprite", SHOW_STATION},
+    {ELEMENT_PUMPS, {9}, "/gfx/sprites/actions/tuto-pumps.sprite", SHOW_STATION},
+    {ELEMENT_TURBINES, {250}, "/gfx/sprites/actions/tuto-power-250.sprite", SHOW_STATION},
+    {ELEMENT_TURBINES, {125}, "/gfx/sprites/actions/tuto-power-125.sprite", SHOW_STATION},
+    {ELEMENT_KEYPAD, {1, 2, 3}, "/gfx/sprites/actions/tuto-call-123.sprite", SHOW_STATION},
+    {ELEMENT_TUTORIAL, {0}, "/gfx/sprites/actions/tuto-geiger.sprite", SHOW_DANGER},
+    {ELEMENT_TUTORIAL, {0, 1}, "/gfx/sprites/actions/tuto-luck.sprite", SHOW_DANGER},
+};
+
+static action_t *actions_new_tutorial(uint8_t i)
 {
     action_t *action = calloc(1, sizeof(action_t));
 
-    action->element = ELEMENT_PRESSURIZER;
-    action->expected[0] = 2;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-press-2000.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_freq_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_RADIO;
-    action->expected[0] = 360;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-freq-360.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_rod_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_GRID;
-    action->expected[0] = 1;
-    action->expected[1] = 3;
-    action->expected[2] = 3;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-rod-red-D4.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_compass_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_COMPASS;
-    action->expected[0] = 9;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-compass-SouthEast.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_az5_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_AZ5;
-    action->expected[0] = ELEMENT_COMPASS;
-    action->expected[1] = 2;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-az5-compass.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_pumps_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_PUMPS;
-    action->expected[0] = 9;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-pumps.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_power_up_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TURBINES;
-    action->expected[0] = 250;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-power-250.sprite");
-    action->show = SHOW_STATION;
+    action->element = actions_tutorial_specs[i].element;
+    action->expected[0] = actions_tutorial_specs[i].expected[0];
+    action->expected[1] = actions_tutorial_specs[i].expected[1];
+    action->expected[2] = actions_tutorial_specs[i].expected[2];
+    action->text2 = dfs_load_sprite(actions_tutorial_specs[i].path);
+    action->show = actions_tutorial_specs[i].show;
 
     return action;
 }
@@ -414,111 +312,6 @@ action_t *actions_new_lights_tutorial()
 
     return action;
 }
-
-static action_t *actions_new_power_down_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TURBINES;
-    action->expected[0] = 125;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-power-125.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_keypad_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_KEYPAD;
-    action->expected[0] = 1;
-    action->expected[1] = 2;
-    action->expected[2] = 3;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-call-123.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_welcome_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TUTORIAL;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-welcome.sprite");
-
-    return action;
-}
-
-static action_t *actions_new_intro_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TUTORIAL;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-intro.sprite");
-
-    return action;
-}
-
-static action_t *actions_new_center_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TUTORIAL;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-center.sprite");
-    action->show = SHOW_STATION;
-
-    return action;
-}
-
-static action_t *actions_new_geiger_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TUTORIAL;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-geiger.sprite");
-    action->show = SHOW_DANGER;
-
-    return action;
-}
-
-static action_t *actions_new_good_luck_tutorial()
-{
-    action_t *action = calloc(1, sizeof(action_t));
-
-    action->element = ELEMENT_TUTORIAL;
-    action->expected[1] = 1;
-    action->text2 = dfs_load_sprite("/gfx/sprites/actions/tuto-luck.sprite");
-    action->show = SHOW_DANGER;
-
-    return action;
-}
-
-static action_new actions_new_tutorial[] = {
-    actions_new_welcome_tutorial,
-    actions_new_intro_tutorial,
-    actions_new_center_tutorial,
-
-    actions_new_press_tutorial,
-    actions_new_rod_tutorial,
-
-    actions_new_compass_tutorial,
-    actions_new_freq_tutorial,
-    actions_new_az5_tutorial,
-
-    actions_new_pumps_tutorial,
-    actions_new_power_up_tutorial,
-    actions_new_power_down_tutorial,
-    actions_new_keypad_tutorial,
-
-    actions_new_geiger_tutorial,
-    actions_new_good_luck_tutorial,
-
-    NULL,
-};
-
-static action_t *actions_tutorial[14];
 action_t *actions_get_current_tutorial()
 {
     return actions_tutorial[current_element - 1];
@@ -527,7 +320,7 @@ action_t *actions_get_current_tutorial()
 bool actions_next_tutorial()
 {
 
-    if (actions_new_tutorial[current_element] == NULL)
+    if (current_element >= ACTIONS_TUTORIAL_COUNT)
         return true;
     current_element++;
     return false;
@@ -537,8 +330,8 @@ void actions_reset_tutorial()
 {
     if (actions_tutorial[0] == NULL)
     {
-        for (uint8_t i = 0; i < 14; i++)
-            actions_tutorial[i] = actions_new_tutorial[i]();
+        for (uint8_t i = 0; i < ACTIONS_TUTORIAL_COUNT; i++)
+            actions_tutorial[i] = actions_new_tutorial(i);
     }
 
     current_element = 0;
